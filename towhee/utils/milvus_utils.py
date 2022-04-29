@@ -17,7 +17,7 @@ from towhee.utils.log import engine_log
 try:
     # pylint: disable=unused-import
     from pymilvus.orm.mutation import MutationResult
-    from pymilvus import Collection
+    from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 except ModuleNotFoundError as e:
     engine_log.error('pymilvus not found, you can install via `pip install pymilvus`.')
     raise ModuleNotFoundError('pymilvus not found, you can install via `pip install pymilvus`.') from e
