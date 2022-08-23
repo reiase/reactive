@@ -12,8 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from towhee.engine.factory import ops, create_op
+from towhee.engine.factory import create_op, ops
 from towhee.hparam import param_scope
+
+
+def getattr_nested(mod, path):
+    # pylint: disable=bare-except
+
+    obj = mod
+    for par in path.split('.'):
+        try:
+            obj = getattr(obj, par)
+        except:
+            return None
+    return obj
 
 
 class DispatcherMixin:
@@ -42,6 +54,18 @@ class DispatcherMixin:
                     op = locals_[path]
                 elif path in globals_:
                     op = globals_[path]
+            else:
+                mod_name, attr_name = path.split('.', 1)
+                mod = None
+                if mod_name in locals_:
+                    mod = locals_[mod_name]
+                elif mod_name in globals_:
+                    mod = globals_[mod_name]
+                if mod is ops:
+                    return getattr(ops, attr_name)[index](*arg, **kws)
+                if mod is not None:
+                    op = getattr_nested(mod, attr_name)
+
             if op is not None and callable(op):
                 if isinstance(op, type):
                     instance = op(*arg, **kws)

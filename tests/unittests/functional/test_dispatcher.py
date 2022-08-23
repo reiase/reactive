@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=unused-variable
+# pylint: disable=unused-import
+
 from unittest import TestCase
 
 import towhee
-
-# pylint: disable=unused-variable
+from towhee import ops
 
 
 def add_global(x):
@@ -37,6 +39,18 @@ class AddX:
 @towhee.register
 def add_register(x):
     return x + 1
+
+
+class MockOject:
+    """ mocked object
+    """
+    pass
+
+
+mock_ns = MockOject()
+mock_ns.path_1 = MockOject()
+mock_ns.path_1.path_2 = MockOject()
+mock_ns.path_1.path_2.path_3 = lambda x: x + 1
 
 
 class TestDispatcher(TestCase):
@@ -67,7 +81,10 @@ class TestDispatcher(TestCase):
         retval = towhee.range(3).AddX(2).to_list()
         self.assertListEqual(retval, [2, 3, 4])
 
-    # TODO: support import module in towhee dispatcher
-    # def test_import_method(self):
-    #     retval = towhee.range(3).ops.add_register().to_list()
-    #     self.assertListEqual(retval, [1, 2, 3])
+    def test_import_method(self):
+        retval = towhee.range(3).ops.add_register().to_list()
+        self.assertListEqual(retval, [1, 2, 3])
+
+    def test_import_method_nested(self):
+        retval = towhee.range(3).mock_ns.path_1.path_2.path_3().to_list()
+        self.assertListEqual(retval, [1, 2, 3])

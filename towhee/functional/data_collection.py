@@ -117,6 +117,11 @@ class DataCollection(Iterable, DCMixins):
         if name.startswith('_'):
             return super().__getattribute__(name)
 
+        stacks = inspect.stack()[1][0]
+
+        def drop_self(kv):
+            return {k: v for k, v in kv.items() if k != 'self'}
+
         @dynamic_dispatch
         def wrapper(*arg, **kws):
             with param_scope() as hp:
@@ -128,17 +133,8 @@ class DataCollection(Iterable, DCMixins):
             if self._jit is not None:
                 op = self.jit_resolve(path, index, *arg, **kws)
             else:
-                with param_scope(  #
-                        locals={
-                            k: v
-                            for k, v in inspect.stack()[2]
-                            [0].f_locals.items() if k != 'self'
-                        },
-                        globals={
-                            k: v
-                            for k, v in inspect.stack()[2]
-                            [0].f_globals.items() if k != 'self'
-                        }):
+                with param_scope(locals=drop_self(stacks.f_locals),
+                                 globals=drop_self(stacks.f_globals)):
                     op = self.resolve(path, index, *arg, **kws)
             return self.map(op)
 
