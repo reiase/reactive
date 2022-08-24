@@ -224,8 +224,6 @@ class DataCollection(Iterable, DCMixins):
             >>> (dc0 + dc1 + dc2)
             [0, 1, 2, 3, 4, 0, ...]
         """
-        self.parent_ids.append(other.id)
-        other.notify_consumed(self.id)
 
         def inner():
             for x in self:

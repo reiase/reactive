@@ -44,17 +44,6 @@ class ConfigMixin:
     >>> dc = dc.set_chunksize(10)
     >>> dc = dc.set_parallel(2)
     >>> dc = dc.set_jit('numba')
-    >>> dc.get_pipeline_config()
-    {'parallel': 2, 'chunksize': 10, 'jit': 'numba', 'format_priority': None}
-    >>> dc1 = towhee.dc([1,2,3]).pipeline_config(jit='numba')
-    >>> dc2 = towhee.dc['a'](range(40)).pipeline_config(parallel=2, chunksize=20)
-    >>> dc1.get_pipeline_config()
-    {'parallel': None, 'chunksize': None, 'jit': 'numba', 'format_priority': None}
-    >>> dc2.get_pipeline_config()
-    {'parallel': 2, 'chunksize': 20, 'jit': None, 'format_priority': None}
-    >>> dc3 = towhee.dc['a'](range(10)).pipeline_config(format_priority=['tensorrt', 'onnx'])
-    >>> dc3.get_pipeline_config()
-    {'parallel': None, 'chunksize': None, 'jit': None, 'format_priority': ['tensorrt', 'onnx']}
     """
 
     def __init__(self) -> None:

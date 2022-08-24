@@ -37,8 +37,6 @@ class DataProcessingMixin:
         >>> list(dc3)
         [[0.9, 8.1, 0.8], [8.1, 9.2, 0.8]]
         """
-        self.parent_ids.append(other.id)
-        other.notify_consumed(self.id)
 
         def inner(x):
             if isinstance(x, Iterable):
@@ -67,10 +65,6 @@ class DataProcessingMixin:
         >>> list(dc3)
         [(1, 2), (2, 3), (3, 4), (4, 5)]
         """
-        self.parent_ids.extend([other.id for other in others])
-
-        for x in others:
-            x.notify_consumed(self.id)
 
         return self._factory(zip(self, *others))
 
