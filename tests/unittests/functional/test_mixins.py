@@ -29,7 +29,6 @@ import towhee.functional.mixins.parallel
 import towhee.functional.mixins.state
 import towhee.functional.mixins.serve
 import towhee.functional.mixins.config
-import towhee.functional.mixins.remote
 import towhee.functional.mixins.data_processing
 import towhee.functional.mixins.safe
 import towhee.functional.mixins.list
@@ -53,7 +52,6 @@ def load_tests(loader, tests, ignore):
         towhee.functional.mixins.serve,
         towhee.functional.mixins.column,
         towhee.functional.mixins.config,
-        towhee.functional.mixins.remote,
         towhee.functional.mixins.list,
         towhee.functional.mixins.data_processing,
         towhee.functional.mixins.stream,
