@@ -20,7 +20,7 @@ def getattr_nested(mod, path):
     # pylint: disable=bare-except
 
     obj = mod
-    for par in path.split('.'):
+    for par in path.split("."):
         try:
             obj = getattr(obj, par)
         except:
@@ -49,13 +49,13 @@ class DispatcherMixin:
             locals_ = hp.locals
             globals_ = hp.globals
             op = None
-            if '.' not in path:
+            if "." not in path:
                 if path in locals_:
                     op = locals_[path]
                 elif path in globals_:
                     op = globals_[path]
             else:
-                mod_name, attr_name = path.split('.', 1)
+                mod_name, attr_name = path.split(".", 1)
                 mod = None
                 if mod_name in locals_:
                     mod = locals_[mod_name]

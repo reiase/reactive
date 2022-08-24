@@ -16,7 +16,8 @@
 try:
     # pylint: disable=unused-import
     import pyarrow as pa
-except ModuleNotFoundError as e: # pragma: no cover
+except ModuleNotFoundError as e:  # pragma: no cover
     from towhee.utils.dependency_control import prompt_install
-    prompt_install('pyarrow')
-    import pyarrow as pa # pylint: disable=ungrouped-imports
+
+    prompt_install("pyarrow")
+    import pyarrow as pa  # pylint: disable=ungrouped-imports

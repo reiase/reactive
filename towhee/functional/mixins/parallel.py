@@ -19,7 +19,7 @@ from queue import Queue
 
 try:
     import torch
-except: # pylint: disable=bare-except
+except:  # pylint: disable=bare-except
     pass
 
 from towhee.utils.log import engine_log
@@ -37,6 +37,7 @@ def initializer():
             stream.stream = torch.cuda.Stream()
     except:
         pass
+
 
 class ParallelMixin:
     """
@@ -77,31 +78,32 @@ class ParallelMixin:
     >>> result[990:]
     [992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001]
     """
+
     def __init__(self) -> None:
         super().__init__()
         with param_scope() as hp:
             parent = hp().data_collection.parent(None)
-        if parent is not None and hasattr(parent, '_executor'):
+        if parent is not None and hasattr(parent, "_executor"):
             self._backend = parent._backend
             self._executor = parent._executor
             self._num_worker = parent._num_worker
 
     def get_executor(self):
-        if hasattr(self, '_executor'):
+        if hasattr(self, "_executor"):
             return self._executor
         return None
 
     def get_backend(self):
-        if hasattr(self, '_backend') and isinstance(self._backend, str):
+        if hasattr(self, "_backend") and isinstance(self._backend, str):
             return self._backend
         return None
 
     def get_num_worker(self):
-        if hasattr(self, '_num_worker'):
+        if hasattr(self, "_num_worker"):
             return self._num_worker
         return None
 
-    def set_parallel(self, num_worker=2, backend='thread'):
+    def set_parallel(self, num_worker=2, backend="thread"):
         """
         Set parallel execution for following calls.
 
@@ -123,7 +125,7 @@ class ParallelMixin:
         self._backend = backend
         self._num_worker = num_worker
 
-        if self._backend == 'thread' and self._num_worker is not None:
+        if self._backend == "thread" and self._num_worker is not None:
             self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=num_worker, initializer=initializer)
         else:  # clear executor
             self._executor = None
@@ -168,8 +170,8 @@ class ParallelMixin:
             cached_values = {x: [] for x in range(count)}
 
             for x in self:
-                #TODO: Use some kind of event instead of wait
-                sleepy = .01
+                # TODO: Use some kind of event instead of wait
+                sleepy = 0.01
                 while all(y.full() for y in queues):
                     time.sleep(sleepy)
 
@@ -214,11 +216,13 @@ class ParallelMixin:
                     res = unary_op(x)
                 return res
             except Exception as e:  # pylint: disable=broad-except
-                engine_log.warning(f'{e}, please check {x} with op {unary_op}. Continue...')  # pylint: disable=logging-fstring-interpolation
+                engine_log.warning(
+                    f"{e}, please check {x} with op {unary_op}. Continue..."
+                )  # pylint: disable=logging-fstring-interpolation
                 return Empty(_Reason(x, e))
 
         def map_wrapper():
-            if hasattr(stream, 'stream'):
+            if hasattr(stream, "stream"):
                 torch.cuda.synchronize()
                 with torch.cuda.stream(stream.stream):
                     res = inner()
@@ -256,7 +260,7 @@ class ParallelMixin:
         True
         """
         backend = self.get_backend()
-        if backend == 'ray':
+        if backend == "ray":
             return self._ray_pmap(unary_op, num_worker)
         return self._thread_pmap(unary_op, num_worker)
 
@@ -359,8 +363,9 @@ class ParallelMixin:
         return ret
 
 
-class EOS():
-    '''
+class EOS:
+    """
     Internal object used to signify end of processing queue.
-    '''
+    """
+
     pass

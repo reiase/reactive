@@ -17,12 +17,11 @@ class PandasExecution:
     """
     Execute operator on pandas DataFrame
     """
+
     def __dataframe_apply__(self, df):
         self.__check_init__()
         if isinstance(self._index[1], tuple):
-            df[list(self._index[1])] = df.apply(self.__apply__,
-                                                axis=1,
-                                                result_type='expand')
+            df[list(self._index[1])] = df.apply(self.__apply__, axis=1, result_type="expand")
         else:
             df[self._index[1]] = df.apply(self.__apply__, axis=1)
         return df

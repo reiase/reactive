@@ -18,6 +18,7 @@ from typing import Dict, Any, Optional, Set, Union, List
 
 from towhee.functional.entity import Entity
 from towhee.hparam import dynamic_dispatch, param_scope
+
 # pylint: disable=protected-access
 
 
@@ -96,19 +97,18 @@ class DataFrameMixin:
         >>> dc.select('a')
         [<Entity dict_keys(['a'])>, <Entity dict_keys(['a'])>, <Entity dict_keys(['a'])>]
         """
+
         @dynamic_dispatch
         def selector(*arg):
             index = param_scope()._index
             if isinstance(index, str):
-                index = (index, )
+                index = (index,)
             if index is None and arg is not None and len(arg) > 0:
                 index = arg
 
             def inner(entity: Entity):
                 if index is not None:
-                    return Entity(
-                        **{col: getattr(entity, col)
-                           for col in index})
+                    return Entity(**{col: getattr(entity, col) for col in index})
                 return entity
 
             return self.map(inner)
@@ -116,10 +116,7 @@ class DataFrameMixin:
         return selector
 
     # pylint: disable=invalid-name
-    def fill_entity(self,
-                    _DefaultKVs: Optional[Dict[str, Any]] = None,
-                    _ReplaceNoneValue: bool = False,
-                    **kws):
+    def fill_entity(self, _DefaultKVs: Optional[Dict[str, Any]] = None, _ReplaceNoneValue: bool = False, **kws):
         """
         When DataFrame's iterable exists of Entities and some indexes missing, fill default value for those indexes.
 
@@ -205,11 +202,12 @@ class DataFrameMixin:
 
             def inner(x):
                 return Entity(**x)
+
         else:
 
             def inner(x):
                 if len(schema) == 1:
-                    x = (x, )
+                    x = (x,)
                 data = dict(zip(schema, x))
                 return Entity(**data)
 
@@ -289,6 +287,9 @@ class DataFrameMixin:
             return tuple(getattr(x, name) for name in x.__dict__)
 
         return self.map(inner)
+    
+    def as_str(self):
+        return self._factory(map(str, self._iterable))
 
     def replace(self, **kws):
         """
@@ -318,7 +319,7 @@ class DataFrameMixin:
 
         return self._factory(map(inner, self._iterable))
 
-    def dropna(self, na: Set[str] = {'', None}) -> Union[bool, 'DataFrame']:  # pylint: disable=dangerous-default-value
+    def dropna(self, na: Set[str] = {"", None}) -> Union[bool, "DataFrame"]:  # pylint: disable=dangerous-default-value
         """
         Drop entities that contain some specific values.
 
@@ -379,8 +380,8 @@ class DataFrameMixin:
     def df(self):
         # pylint: disable=import-outside-toplevel
         import pandas as pd
+
         if isinstance(self._iterable, pd.DataFrame):
             return self._iterable
         else:
-            raise TypeError(
-                'data collection is not created from pandas DataFrame.')
+            raise TypeError("data collection is not created from pandas DataFrame.")

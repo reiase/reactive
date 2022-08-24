@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .entity import EntityView
+
 # pylint: disable=import-outside-toplevel
 
 
@@ -19,6 +20,7 @@ class WritableTable:
     """
     A wrapper that make arrow table writable.
     """
+
     def __init__(self, table):
         self._table = table
         self._buffer = {}
@@ -39,7 +41,7 @@ class WritableTable:
         self._buffer[name].append(value)
 
     def prepare(self):
-        if not hasattr(self, '_sealed'):
+        if not hasattr(self, "_sealed"):
             self._sealed = WritableTable(None)
         return self._sealed
 
@@ -86,6 +88,7 @@ class ChunkedTable:
     """
     Chunked arrow table
     """
+
     def __init__(self, chunks=None, chunksize=128, stream=False) -> None:
         """
         A chunked pyarrow table.
@@ -170,7 +173,6 @@ class ChunkedTable:
 
         if len(chunk) != 0:
             yield WritableTable(self._create_table(chunk, head))
-
 
     def feed(self, data):
         if not self._is_stream:

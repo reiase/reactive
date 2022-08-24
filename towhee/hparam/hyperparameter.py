@@ -18,6 +18,7 @@ import threading
 
 from typing import Any, Dict, Set
 from typing import Callable
+
 # pylint: disable=pointless-string-statement
 """
 Trackers that record all hyperparameter accesses.
@@ -127,26 +128,25 @@ class _Accessor(dict):
 
     def __getattr__(self, name: str) -> Any:
         # _path and _root are not allowed as keys for user.
-        if name in ['_path', '_root']:
+        if name in ["_path", "_root"]:
             return self[name]
 
         if self._path:
-            name = '{}.{}'.format(self._path, name)
+            name = "{}.{}".format(self._path, name)
         return _Accessor(self._root, name)
 
     def __setattr__(self, name: str, value: Any):
         # _path and _root are not allowed as keys for user.
-        if name in ['_path', '_root']:
+        if name in ["_path", "_root"]:
             return self.__setitem__(name, value)
-        full_name = '{}.{}'.format(self._path,
-                                   name) if self._path is not None else name
+        full_name = "{}.{}".format(self._path, name) if self._path is not None else name
         _write_tracker.add(full_name)
         root = self._root
         root.put(full_name, value)
         return value
 
     def __str__(self):
-        return ''
+        return ""
 
     def __bool__(self):
         return False
@@ -201,7 +201,7 @@ class DynamicDispatch:
 
     def __getattr__(self, name: str) -> Any:
         if self._name is not None:
-            name = '{}.{}'.format(self._name, name)
+            name = "{}.{}".format(self._name, name)
         return dynamic_dispatch(self._func, name, self._index)
 
     def __getitem__(self, index):
@@ -209,12 +209,15 @@ class DynamicDispatch:
 
 
 def dynamic_dispatch(func, name=None, index=None):
-    """Wraps function with a class to allow __getitem__ and __getattr__ on a function.
-    """
-    new_class = type(func.__name__, (
-        DynamicDispatch,
-        object,
-    ), dict(__doc__=func.__doc__))
+    """Wraps function with a class to allow __getitem__ and __getattr__ on a function."""
+    new_class = type(
+        func.__name__,
+        (
+            DynamicDispatch,
+            object,
+        ),
+        dict(__doc__=func.__doc__),
+    )
     return new_class(func, name, index)
 
 
@@ -288,7 +291,7 @@ class HyperParameter(dict):
         >>> cfg.obj1.propA
         'A'
         """
-        path = name.split('.')
+        path = name.split(".")
         obj = self
         for p in path[:-1]:
             if p not in obj or (not isinstance(obj[p], dict)):
@@ -313,7 +316,7 @@ class HyperParameter(dict):
         >>> cfg.get('b.c')
         2
         """
-        path = name.split('.')
+        path = name.split(".")
         obj = self
         for p in path[:-1]:
             if p not in obj:
@@ -371,7 +374,7 @@ class HyperParameter(dict):
         1
         """
         self.put(name, value)
-        #self[name] = value
+        # self[name] = value
 
     def __call__(self) -> Any:
         """
@@ -463,21 +466,21 @@ class param_scope(HyperParameter):  # pylint: disable=invalid-name
     2
     3
     """
+
     tls = threading.local()
 
     def __init__(self, *args, **kws):
         # Check if nested param_scope, if so, update current scope to include previous.
-        if hasattr(param_scope.tls,
-                   'history') and len(param_scope.tls.history) > 0:
+        if hasattr(param_scope.tls, "history") and len(param_scope.tls.history) > 0:
             self.update(param_scope.tls.history[-1])
         self.update(kws)
         for line in args:
-            if '=' in line:
-                k, v = line.split('=', 1)
+            if "=" in line:
+                k, v = line.split("=", 1)
                 self.put(k, v)
 
     def __enter__(self):
-        if not hasattr(param_scope.tls, 'history'):
+        if not hasattr(param_scope.tls, "history"):
             param_scope.tls.history = []
         param_scope.tls.history.append(self)
         return param_scope.tls.history[-1]
@@ -490,7 +493,7 @@ class param_scope(HyperParameter):  # pylint: disable=invalid-name
         """
         init param_scope for a new thread.
         """
-        if not hasattr(param_scope.tls, 'history'):
+        if not hasattr(param_scope.tls, "history"):
             param_scope.tls.history = []
             param_scope.tls.history.append(params)
 
@@ -502,8 +505,7 @@ _callback: Callable = None
 
 
 def set_auto_param_callback(func: Callable[[Dict[str, Any]], None]):
-    """ report hyperparameter value to a tracker, for example, `mlflow.tracking`
-    """
+    """report hyperparameter value to a tracker, for example, `mlflow.tracking`"""
     global _callback
     _callback = func
 
@@ -563,12 +565,12 @@ def auto_param(name_or_func):
         if name_or_func is None:
             namespace = func.__name__
         else:
-            namespace = name_or_func + '.' + func.__name__
+            namespace = name_or_func + "." + func.__name__
 
         signature = inspect.signature(func)
         for k, v in signature.parameters.items():
             if v.default != v.empty:
-                name = '{}.{}'.format(namespace, k)
+                name = "{}.{}".format(namespace, k)
                 predef_kws[k] = name
                 _read_tracker.add(name)
                 predef_val[name] = v.default
@@ -577,9 +579,7 @@ def auto_param(name_or_func):
             with param_scope() as hp:
                 local_params = {}
                 for k, v in predef_kws.items():
-                    if getattr(
-                            hp(),
-                            v).get_or_else(None) is not None and k not in kws:
+                    if getattr(hp(), v).get_or_else(None) is not None and k not in kws:
                         kws[k] = hp.get(v)
                         local_params[v] = hp.get(v)
                     else:

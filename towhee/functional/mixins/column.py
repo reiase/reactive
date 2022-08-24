@@ -34,7 +34,7 @@ class ColumnMixin:
         super().__init__()
         with param_scope() as hp:
             parent = hp().data_collection.parent(None)
-        if parent is not None and hasattr(parent, '_chunksize'):
+        if parent is not None and hasattr(parent, "_chunksize"):
             self._chunksize = parent._chunksize
 
     def set_chunksize(self, chunksize):
@@ -49,34 +49,24 @@ class ColumnMixin:
         >>> dc_2 = dc_1.runas_op['a', 'b'](func=lambda x: x+1)
         >>> dc_1.get_chunksize(), dc_2.get_chunksize()
         (10, 10)
-        >>> dc_2._iterable.chunks()
-        [pyarrow.Table
+        >>> for chunk in dc_2._iterable.chunks(): print(chunk)
+        pyarrow.Table
         a: int64
         b: int64
-        ----
-        a: [[0,1,2,3,4,5,6,7,8,9]]
-        b: [[1,2,3,4,5,6,7,8,9,10]], pyarrow.Table
+        pyarrow.Table
         a: int64
         b: int64
-        ----
-        a: [[10,11,12,13,14,15,16,17,18,19]]
-        b: [[11,12,13,14,15,16,17,18,19,20]]]
 
         >>> dc_3 = towhee.dc['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
         >>> dc_4 = dc_3.runas_op['a', 'b'](func=lambda x: x+1)
-        >>> dc_4._iterable.chunks()
-        [pyarrow.Table
+        >>> for chunk in dc_4._iterable.chunks(): print(chunk)
+        pyarrow.Table
         a: int64
         b: int64
-        ----
-        a: [[0,1,2,3,4,5,6,7,8,9]]
-        b: [[1,2,3,4,5,6,7,8,9,10]], pyarrow.Table
+        pyarrow.Table
         a: int64
         b: int64
-        ----
-        a: [[10,11,12,13,14,15,16,17,18,19]]
-        b: [[11,12,13,14,15,16,17,18,19,20]]]
         """
 
         self._chunksize = chunksize
@@ -101,17 +91,11 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
-        ----
-        a: [["abc","def","ghi"]]
-        b: [[1,2,3]]
 
         >>> df.stream()._create_col_table()
         pyarrow.Table
         a: string
         b: int64
-        ----
-        a: [["abc","def","ghi"]]
-        b: [[1,2,3]]
         """
         from towhee.utils.thirdparty.pyarrow import pa
         from towhee.types.tensor_array import TensorArray
@@ -166,9 +150,6 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
-        ----
-        a: [["abc","def","ghi"]]
-        b: [[1,2,3]]
         """
 
         # pylint: disable=protected-access
@@ -212,15 +193,14 @@ class ColumnMixin:
                     tables = [WritableTable(self.__table_apply__(chunk, unary_op)) for chunk in self._iterable.chunks()]
                 else:
                     tables = (WritableTable(self.__table_apply__(chunk, unary_op)) for chunk in self._iterable.chunks())
-                return self._factory(ChunkedTable(chunks = tables))
+                return self._factory(ChunkedTable(chunks=tables))
             return self._factory(self.__table_apply__(self._iterable, unary_op))
         else:
             return self.pmap(unary_op)
 
     def __table_apply__(self, table, unary_op):
         # pylint: disable=protected-access
-        return table.write_many(unary_op._index[1],
-                                self.__col_apply__(table, unary_op))
+        return table.write_many(unary_op._index[1], self.__col_apply__(table, unary_op))
 
     def __col_apply__(self, cols, unary_op):
         # pylint: disable=protected-access
@@ -228,6 +208,7 @@ class ColumnMixin:
         from towhee.types.tensor_array import TensorArray
 
         import numpy as np
+
         args = []
         # Multi inputs.
         if isinstance(unary_op._index[0], tuple):
@@ -241,15 +222,18 @@ class ColumnMixin:
                 dtype = data.type
                 if isinstance(data, TensorArray):
                     dtype = dtype.storage_type.value_type
-                elif hasattr(data.type, 'value_type'):
-                    while hasattr(dtype, 'value_type'):
+                elif hasattr(data.type, "value_type"):
+                    while hasattr(dtype, "value_type"):
                         dtype = dtype.value_type
                 dtype = dtype.to_pandas_dtype()
-                shape = [-1, *data.type.shape] if isinstance(data, TensorArray)\
-                    else [len(data), -1] if isinstance(data, pa.lib.ListArray)\
+                shape = (
+                    [-1, *data.type.shape]
+                    if isinstance(data, TensorArray)
+                    else [len(data), -1]
+                    if isinstance(data, pa.lib.ListArray)
                     else [len(data)]
-                args.append(
-                    np.frombuffer(buffer=buffer, dtype=dtype).reshape(shape))
+                )
+                args.append(np.frombuffer(buffer=buffer, dtype=dtype).reshape(shape))
                 # args.append(data.to_numpy(zero_copy_only=False).reshape(shape))
 
         # Single input.
@@ -263,15 +247,18 @@ class ColumnMixin:
             dtype = data.type
             if isinstance(data, TensorArray):
                 dtype = dtype.storage_type.value_type
-            elif hasattr(data.type, 'value_type'):
-                while hasattr(dtype, 'value_type'):
+            elif hasattr(data.type, "value_type"):
+                while hasattr(dtype, "value_type"):
                     dtype = dtype.value_type
             dtype = dtype.to_pandas_dtype()
-            shape = [-1, *data.type.shape] if isinstance(data, TensorArray)\
-                else [len(data), -1] if isinstance(data, pa.lib.ListArray)\
+            shape = (
+                [-1, *data.type.shape]
+                if isinstance(data, TensorArray)
+                else [len(data), -1]
+                if isinstance(data, pa.lib.ListArray)
                 else [len(data)]
-            args.append(
-                np.frombuffer(buffer=buffer, dtype=dtype).reshape(shape))
+            )
+            args.append(np.frombuffer(buffer=buffer, dtype=dtype).reshape(shape))
             # args.append(data.to_numpy(zero_copy_only=False).reshape(shape))
 
         return unary_op.__vcall__(*args)

@@ -23,6 +23,8 @@ from towhee.functional.mixins import DCMixins
 from towhee.functional.mixins.dataframe import DataFrameMixin
 from towhee.functional.mixins.column import ColumnMixin
 
+from .builtin import runas_op
+
 
 class DataCollection(Iterable, DCMixins):
     """A pythonic computation and processing framework.
@@ -81,11 +83,11 @@ class DataCollection(Iterable, DCMixins):
         Returns:
             iter : iterator for the data.
         """
-        if hasattr(self._iterable, 'iterrows'):
+        if hasattr(self._iterable, "iterrows"):
             return (x[1] for x in self._iterable.iterrows())
         return iter(self._iterable)
 
-    def __getattr__(self, name) -> 'DataCollection':
+    def __getattr__(self, name) -> "DataCollection":
         """Unknown method dispatcher.
 
         When an unknown method is invoked on a `DataCollection` object, the function call
@@ -103,10 +105,10 @@ class DataCollection(Iterable, DCMixins):
         Examples:
             >>> from towhee import register
             >>> dc = DataCollection([1,2,3,4])
-            >>> @register(name='test/add1')
+            >>> @register(name='add1')
             ... def add1(x):
             ...     return x+1
-            >>> dc.test.add1().to_list()
+            >>> dc.add1().to_list()
             [2, 3, 4, 5]
 
             >>> def add2(x):
@@ -114,13 +116,13 @@ class DataCollection(Iterable, DCMixins):
             >>> DataCollection([1,2,3,4]).add2().to_list()
             [3, 4, 5, 6]
         """
-        if name.startswith('_'):
+        if name.startswith("_"):
             return super().__getattribute__(name)
 
         stacks = inspect.stack()[1][0]
 
         def drop_self(kv):
-            return {k: v for k, v in kv.items() if k != 'self'}
+            return {k: v for k, v in kv.items() if k != "self"}
 
         @dynamic_dispatch
         def wrapper(*arg, **kws):
@@ -128,13 +130,12 @@ class DataCollection(Iterable, DCMixins):
                 # pylint: disable=protected-access
                 path = hp._name
                 index = hp._index
-            if self.get_backend() == 'ray':
+            if self.get_backend() == "ray":
                 return self.ray_resolve({}, path, index, *arg, **kws)
             if self._jit is not None:
                 op = self.jit_resolve(path, index, *arg, **kws)
             else:
-                with param_scope(locals=drop_self(stacks.f_locals),
-                                 globals=drop_self(stacks.f_globals)):
+                with param_scope(locals=drop_self(stacks.f_locals), globals=drop_self(stacks.f_globals)):
                     op = self.resolve(path, index, *arg, **kws)
             return self.map(op)
 
@@ -169,10 +170,8 @@ class DataCollection(Iterable, DCMixins):
                 TypeError: indexing is only supported for DataCollection created from list
                     or pandas DataFrame.
         """
-        if not hasattr(self._iterable, '__getitem__'):
-            raise TypeError(
-                'indexing is only supported for '
-                'DataCollection created from list or pandas DataFrame.')
+        if not hasattr(self._iterable, "__getitem__"):
+            raise TypeError("indexing is only supported for " "DataCollection created from list or pandas DataFrame.")
         if isinstance(index, int):
             return self._iterable[index]
         return DataCollection(self._iterable[index])
@@ -205,14 +204,12 @@ class DataCollection(Iterable, DCMixins):
                 TypeError: indexing is only supported for DataCollection created from list
                     or pandas DataFrame.
         """
-        if not hasattr(self._iterable, '__setitem__'):
-            raise TypeError(
-                'indexing is only supported for '
-                'DataCollection created from list or pandas DataFrame.')
+        if not hasattr(self._iterable, "__setitem__"):
+            raise TypeError("indexing is only supported for " "DataCollection created from list or pandas DataFrame.")
         self._iterable[index] = value
 
     @register_dag
-    def __add__(self, other) -> 'DataCollection':
+    def __add__(self, other) -> "DataCollection":
         """Concat two DataCollections.
 
         Args:
@@ -259,12 +256,12 @@ class DataCollection(Iterable, DCMixins):
         """
         if isinstance(self._iterable, list):
             return reprlib.repr(self._iterable)
-        if hasattr(self._iterable, '__repr__'):
+        if hasattr(self._iterable, "__repr__"):
             return repr(self._iterable)
         return super().__repr__()
 
     # Generation Related Function
-    def _factory(self, iterable, parent_stream=True) -> 'DataCollection':
+    def _factory(self, iterable, parent_stream=True) -> "DataCollection":
         """Factory method for Creating new DataCollections.
 
         This factory method has been wrapped into a `param_scope()` which contains the
@@ -292,7 +289,7 @@ class DataCollection(Iterable, DCMixins):
 
     @staticmethod
     @register_dag
-    def range(*arg, **kws) -> 'DataCollection':
+    def range(*arg, **kws) -> "DataCollection":
         """Generate DataCollection with range of values.
 
         Generate DataCollection with a range of numbers as the data. Functions in same
@@ -318,11 +315,10 @@ class DataCollection(Iterable, DCMixins):
             >>> DataCollection.range(5).to_list()
             [0, 1, 2, 3, 4]
         """
-        return self._iterable if isinstance(self._iterable, list) else list(
-            self._iterable)
+        return self._iterable if isinstance(self._iterable, list) else list(self._iterable)
 
     @register_dag
-    def map(self, *arg) -> 'DataCollection':
+    def map(self, *arg) -> "DataCollection":
         """Apply a function across all values in a DataCollection.
 
         Can apply multiple functions to the DataCollection. If multiple functions
@@ -354,18 +350,17 @@ class DataCollection(Iterable, DCMixins):
         unary_op = arg[0]
 
         # smap map for stateful operator
-        if hasattr(unary_op, 'is_stateful') and unary_op.is_stateful:
+        if hasattr(unary_op, "is_stateful") and unary_op.is_stateful:
             return self.smap(unary_op)
 
         # pmap
         if self.get_executor() is not None:
             return self.pmap(unary_op)
 
-        if hasattr(self._iterable, 'map'):
+        if hasattr(self._iterable, "map"):
             return self._factory(self._iterable.map(unary_op))
 
-        if hasattr(self._iterable, 'apply') and hasattr(
-                unary_op, '__dataframe_apply__'):
+        if hasattr(self._iterable, "apply") and hasattr(unary_op, "__dataframe_apply__"):
             return self._factory(unary_op.__dataframe_apply__(self._iterable))
 
         # map
@@ -379,7 +374,7 @@ class DataCollection(Iterable, DCMixins):
         return self._factory(result)
 
     @register_dag
-    def filter(self, unary_op: Callable, drop_empty=False) -> 'DataCollection':
+    def filter(self, unary_op: Callable, drop_empty=False) -> "DataCollection":
         """Filter the DataCollection data based on function.
 
         Filters the DataCollection based on the function provided. If data is stored
@@ -401,11 +396,10 @@ class DataCollection(Iterable, DCMixins):
                 return not drop_empty
             return unary_op(x)
 
-        if hasattr(self._iterable, 'filter'):
+        if hasattr(self._iterable, "filter"):
             return self._factory(self._iterable.filter(unary_op))
 
-        if hasattr(self._iterable, 'apply') and hasattr(
-                unary_op, '__dataframe_filter__'):
+        if hasattr(self._iterable, "apply") and hasattr(unary_op, "__dataframe_filter__"):
             return DataCollection(unary_op.__dataframe_apply__(self._iterable))
 
         return self._factory(filter(inner, self._iterable))
@@ -419,7 +413,7 @@ class DataCollection(Iterable, DCMixins):
         for _ in self._iterable:
             pass
 
-    def to_df(self) -> 'DataFrame':
+    def to_df(self) -> "DataFrame":
         """Turn a DataCollection into a DataFrame.
 
         Returns:
@@ -461,7 +455,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             super().__init__(DataFrame.from_arrow_talbe(**kws))
             self._mode = self.ModeFlag.COLBASEDFLAG
 
-    def _factory(self, iterable, parent_stream=True, mode=None) -> 'DataFrame':
+    def _factory(self, iterable, parent_stream=True, mode=None) -> "DataFrame":
         """Factory method for Creating new DataFrames.
 
         This factory method has been wrapped into a `param_scope()` which contains the
@@ -492,7 +486,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             df._mode = self._mode if mode is None else mode
             return df
 
-    def to_dc(self) -> 'DataCollection':
+    def to_dc(self) -> "DataCollection":
         """Turn a DataFrame into a DataCollection.
 
         Returns:
@@ -560,17 +554,16 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
                 >>> df.to_list()[0]
                 <EntityView dict_keys(['a', 'b'])>
         """
-        if hasattr(self._iterable, 'iterrows'):
+        if hasattr(self._iterable, "iterrows"):
             return (x[1] for x in self._iterable.iterrows())
         if self._mode == self.ModeFlag.ROWBASEDFLAG:
             return iter(self._iterable)
         if self._mode == self.ModeFlag.COLBASEDFLAG:
-            return (EntityView(i, self._iterable)
-                    for i in range(len((self._iterable))))
+            return (EntityView(i, self._iterable) for i in range(len((self._iterable))))
         if self._mode == self.ModeFlag.CHUNKBASEDFLAG:
             return (ev for wtable in self._iterable.chunks() for ev in wtable)
 
-    def map(self, *arg) -> 'DataFrame':
+    def map(self, *arg) -> "DataFrame":
         """Apply a function across all values in a DataFrame.
 
         Args:
@@ -579,7 +572,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
         Returns:
             DataFrame: New DataFrame containing computation results.
         """
-        if hasattr(arg[0], '__check_init__'):
+        if hasattr(arg[0], "__check_init__"):
             arg[0].__check_init__()
         if self._mode == self.ModeFlag.COLBASEDFLAG or self._mode == self.ModeFlag.CHUNKBASEDFLAG:
             return self.cmap(arg[0])

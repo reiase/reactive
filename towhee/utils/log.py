@@ -15,9 +15,7 @@
 
 import logging
 
-FORMAT = '%(asctime)s - %(thread)d - %(filename)s-%(module)s:%(lineno)s - %(levelname)s: %(message)s'
+FORMAT = "%(asctime)s - %(thread)d - %(filename)s-%(module)s:%(lineno)s - %(levelname)s: %(message)s"
 logging.basicConfig(format=FORMAT)
 
-engine_log = logging.getLogger('towhee.engine')
-trainer_log = logging.getLogger('towhee.trainer')
-models_log = logging.getLogger('towhee.models')
+engine_log = logging.getLogger("towhee.engine")

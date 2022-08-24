@@ -22,6 +22,7 @@ class SafeMixin:
     """
     Mixin for exception safety.
     """
+
     @register_dag
     def exception_safe(self):
         """
@@ -58,7 +59,7 @@ class SafeMixin:
         return self.exception_safe()
 
     @register_dag
-    def fill_empty(self, default: Any = None) -> 'DataCollection':
+    def fill_empty(self, default: Any = None) -> "DataCollection":
         """
         Unbox `Option` values and fill `Empty` with default values.
 
@@ -79,7 +80,7 @@ class SafeMixin:
         return self._factory(result)
 
     @register_dag
-    def drop_empty(self, callback: Callable = None) -> 'DataCollection':
+    def drop_empty(self, callback: Callable = None) -> "DataCollection":
         """
         Unbox `Option` values and drop `Empty`.
 
@@ -122,4 +123,3 @@ class SafeMixin:
 
             result = inner(self._iterable)
         return self._factory(result)
-

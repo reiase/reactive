@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class RemoteMixin:
-    '''
+    """
     Mixin for triton
 
     Parameters:
@@ -31,24 +32,26 @@ class RemoteMixin:
             Communication protocol between triton server and client.
             The default value is 'grpc'.
 
-    '''
-    def remote(self, url, mode='infer', model_name='pipeline', protocol='grpc'):
-        #pylint: disable=import-outside-toplevel
+    """
+
+    def remote(self, url, mode="infer", model_name="pipeline", protocol="grpc"):
+        # pylint: disable=import-outside-toplevel
         from towhee.serve.triton.client import Client
         from towhee.utils.tritonclient_utils import InferenceServerException
+
         self.triton_client = Client.init(url, model_name=model_name)
         try:
-            if protocol == 'grpc' and (mode in ('infer', 'async_infer')):
+            if protocol == "grpc" and (mode in ("infer", "async_infer")):
                 self.triton_client = Client.init(url, model_name=model_name, stream=False)
-                if mode == 'infer':
+                if mode == "infer":
                     res, err = self.triton_client.infer(list(self))
                 else:
                     res, err = self.triton_client.async_infer(list(self))
-            elif protocol == 'grpc' and mode == 'stream':
+            elif protocol == "grpc" and mode == "stream":
                 self.triton_client = Client.init(url, model_name=model_name, stream=True, protocol=protocol)
                 res, err = self.triton_client.stream(iter(self))
                 self.triton_client.stop_stream()
-            elif protocol == 'http' and mode == 'infer':
+            elif protocol == "http" and mode == "infer":
                 self.triton_client = Client.init(url, model_name=model_name, stream=False, protocol=protocol)
                 res, err = self.triton_client.infer(list(self))
             else:

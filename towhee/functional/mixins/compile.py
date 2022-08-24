@@ -25,16 +25,15 @@ class NumbaCompiler:
 
     def __init__(self, name, index, *arg, **kws):
         from towhee.utils.numba_utils import njit  # pylint: disable=import-outside-toplevel
-        name_func = [name + '_func', name.replace('_', '-') + '_func']
+
+        name_func = [name + "_func", name.replace("_", "-") + "_func"]
         for n in name_func:
             func = OperatorRegistry.resolve(n)
             if func is not None:
                 break
         if func is None:
-            engine_log.warning(
-                'The Operator: %s is not of types.FunctionType.', name)
-            raise RuntimeError(
-                f'The Operator: {name} is not of types.FunctionType.')
+            engine_log.warning("The Operator: %s is not of types.FunctionType.", name)
+            raise RuntimeError(f"The Operator: {name} is not of types.FunctionType.")
         self._func = njit(func, nogil=True)
         self._op = getattr(ops, name)[index](*arg, **kws)
         self._name = name
@@ -53,20 +52,15 @@ class NumbaCompiler:
 
     def jit_call(self, *arg, **kws):
         if bool(kws):
-            engine_log.warning(
-                'The compiled function in Numba does not support kwargs.')
-            raise KeyError(
-                'The compiled function in Numba does not support kwargs.')
+            engine_log.warning("The compiled function in Numba does not support kwargs.")
+            raise KeyError("The compiled function in Numba does not support kwargs.")
         if bool(self._index):
             res = self.__apply__(*arg)
 
             # Multi outputs.
             if isinstance(res, tuple):
-                if not isinstance(self._index[1],
-                                  tuple) or len(self._index[1]) != len(res):
-                    raise IndexError(
-                        f'Op has {len(res)} outputs, but {len(self._index[1])} indices are given.'
-                    )
+                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(res):
+                    raise IndexError(f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given.")
                 for i, j in zip(self._index[1], res):
                     setattr(arg[0], i, j)
             # Single output.
@@ -86,8 +80,10 @@ class NumbaCompiler:
             except Exception as e:  # pylint: disable=broad-except
                 self._success = False
                 engine_log.warning(
-                    'Failed to speed up your function:%s with error:%s in JIT mode, will back to Python interpreter.',
-                    self._name, e)
+                    "Failed to speed up your function:%s with error:%s in JIT mode, will back to Python interpreter.",
+                    self._name,
+                    e,
+                )
                 return self._op.__call__(*arg, **kws)
         elif self._success:
             return self.jit_call(*arg, **kws)
@@ -95,20 +91,21 @@ class NumbaCompiler:
             return self._op.__call__(*arg, **kws)
 
 
-class TowheeCompiler: # pragma: no cover
+class TowheeCompiler:  # pragma: no cover
     """
     Towhee's just-in-time compiler
     """
 
     def __init__(self, name, index, *arg, **kws):
         from towhee.compiler import jit_compile  # pylint: disable=import-outside-toplevel
+
         # self._op = getattr(ops, name)[index](*arg, **kws)
         self._name = name
         self._index = index
         self._compiler = jit_compile()
-        op_name = self._name.replace('.', '/').replace('_', '-')
+        op_name = self._name.replace(".", "/").replace("_", "-")
         with param_scope(index=self._index):
-            self._op = op(op_name, 'main', arg, kws)
+            self._op = op(op_name, "main", arg, kws)
 
     def set_compiler(self, compiler):
         self._compiler = compiler
@@ -129,11 +126,8 @@ class TowheeCompiler: # pragma: no cover
 
             # Multi outputs.
             if isinstance(res, tuple):
-                if not isinstance(self._index[1],
-                                  tuple) or len(self._index[1]) != len(res):
-                    raise IndexError(
-                        f'Op has {len(res)} outputs, but {len(self._index[1])} indices are given.'
-                    )
+                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(res):
+                    raise IndexError(f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given.")
                 for i, j in zip(self._index[1], res):
                     setattr(arg[0], i, j)
             # Single output.
@@ -190,27 +184,23 @@ class CompileMixin:
         super().__init__()
         with param_scope() as hp:
             parent = hp().data_collection.parent(None)
-        if parent is not None and hasattr(parent, '_jit'):
+        if parent is not None and hasattr(parent, "_jit"):
             self._jit = parent._jit
 
     def set_jit(self, compiler, **kws):  # pylint: disable=unused-argument
-        if compiler in ['numba', 'towhee']:
+        if compiler in ["numba", "towhee"]:
             self._jit = compiler
         else:
-            engine_log.error(
-                'Error when setting jit, please make sure the configuration about jit in [\'numba\'].'
-            )
-            raise KeyError(
-                'Error when setting jit, please make sure the configuration about jit in [\'numba\'].'
-            )
+            engine_log.error("Error when setting jit, please make sure the configuration about jit in ['numba'].")
+            raise KeyError("Error when setting jit, please make sure the configuration about jit in ['numba'].")
         return self
 
     def jit_resolve(self, name, index, *arg, **kws):
         try:
             if isinstance(self._jit, str):
-                if self._jit == 'numba':
+                if self._jit == "numba":
                     return NumbaCompiler(name, index, *arg, **kws)
-                if self._jit == 'towhee':
+                if self._jit == "towhee":
                     return TowheeCompiler(name, index, *arg, **kws)
             else:
                 retval = TowheeCompiler(name, index, *arg, **kws)

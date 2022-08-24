@@ -14,9 +14,9 @@
 from typing import Callable, Generic
 from typing import Any, TypeVar
 
-A = TypeVar('A', covariant=True)
-B = TypeVar('B')
-T = TypeVar('T')
+A = TypeVar("A", covariant=True)
+B = TypeVar("B")
+T = TypeVar("T")
 
 
 class _Reason:
@@ -80,7 +80,7 @@ class Option(Generic[A]):
         """
         return Empty()
 
-    def flat_map(self, f: Callable[[A], 'Option[B]']) -> 'Option[B]':
+    def flat_map(self, f: Callable[[A], "Option[B]"]) -> "Option[B]":
         """Apply boxed version of callable
 
         Args:
@@ -102,7 +102,7 @@ class Option(Generic[A]):
         else:
             return self
 
-    def map(self, f: Callable[[A], 'B']) -> 'Option[B]':
+    def map(self, f: Callable[[A], "B"]) -> "Option[B]":
         """Apply function to value
 
         Args:
@@ -121,13 +121,11 @@ class Option(Generic[A]):
         return self.flat_map(wrapper)
 
     def is_empty(self):
-        """Return True if the value is empty.
-        """
+        """Return True if the value is empty."""
         return isinstance(self, Empty)
 
     def is_some(self):
-        """Return True if the value is boxed value.
-        """
+        """Return True if the value is boxed value."""
         return isinstance(self, Some)
 
     def get_or_else(self, default):
@@ -155,14 +153,13 @@ class Some(Option[A]):
         self._value = x
 
     def __repr__(self) -> str:
-        return 'Some({})'.format(self._value)
+        return "Some({})".format(self._value)
 
-    def flat_map(self, f: Callable[[A], 'Option[B]']) -> 'Option[B]':
+    def flat_map(self, f: Callable[[A], "Option[B]"]) -> "Option[B]":
         return f(self._value)
 
     def get(self):
-        """Return unboxed value
-        """
+        """Return unboxed value"""
         return self._value
 
 
@@ -175,14 +172,13 @@ class Empty(Option[A]):
         self._reason = _Reason(x, e)
 
     def __repr__(self) -> str:
-        return 'Empty()'
+        return "Empty()"
 
-    def flat_map(self, f: Callable[[A], 'Option[B]']) -> 'Option[B]':
+    def flat_map(self, f: Callable[[A], "Option[B]"]) -> "Option[B]":
         return self
 
     def get(self):
-        """Return the reason of the empty value.
-        """
+        """Return the reason of the empty value."""
         return self._reason
 
 

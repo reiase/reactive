@@ -49,7 +49,7 @@ class StateMixin:
         Returns:
             State: the state storage
         """
-        if hasattr(self, '_state') and isinstance(self._state, HyperParameter):
+        if hasattr(self, "_state") and isinstance(self._state, HyperParameter):
             return self._state
         return None
 
@@ -80,7 +80,7 @@ class StateMixin:
             self._state = state
         if self.get_state() is None:
             self._state = HyperParameter()
-        self._state.__mode__ = 'training'
+        self._state.__mode__ = "training"
         return self
 
     def set_evaluating(self, state=None):
@@ -97,12 +97,12 @@ class StateMixin:
             self._state = state
         if self.get_state() is None:
             self._state = HyperParameter()
-        self._state.__mode__ = 'evaluating'
+        self._state.__mode__ = "evaluating"
         return self
 
     def smap(self, op):
         op.set_state(self._state)
-        if self._state().__mode__('evaluating') == 'training':
+        if self._state().__mode__("evaluating") == "training":
             op.set_training(True)
             with param_scope() as hp:
                 hp().towhee.data_collection.training = True
@@ -110,7 +110,7 @@ class StateMixin:
                     op(x)
             op.set_training(False)
             op.fit()
-        if hasattr(self._iterable, 'apply') and hasattr(op, '__dataframe_apply__'):
+        if hasattr(self._iterable, "apply") and hasattr(op, "__dataframe_apply__"):
             return self._factory(op.__dataframe_apply__(self._iterable))
 
         return self._factory(map(op, self._iterable))

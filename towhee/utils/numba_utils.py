@@ -18,11 +18,13 @@ try:
 except (ModuleNotFoundError, ImportError) as e:
     try:
         from towhee.utils.dependency_control import prompt_install
-        prompt_install('numba')
+
+        prompt_install("numba")
         # pylint: disable=unused-import,ungrouped-imports
         import numba
         from numba import njit
     except:
         from towhee.utils.log import engine_log
-        engine_log.error('numba not found, you can install via `pip install numba`.')
-        raise ModuleNotFoundError('numba not found, you can install via `pip install numba`.') from e
+
+        engine_log.error("numba not found, you can install via `pip install numba`.")
+        raise ModuleNotFoundError("numba not found, you can install via `pip install numba`.") from e

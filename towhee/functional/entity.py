@@ -10,17 +10,18 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-from typing import  Dict, Any
+from typing import Dict, Any
+
 
 class Entity:
-    """ Entity is the basic data type in DataCollection.
+    """Entity is the basic data type in DataCollection.
 
     Users can create an Entity with free schema, which means there is no limit on
     attribute name and type.
     """
+
     def __init__(self, **kwargs):
-        """Create an Entity with given attributes.
-        """
+        """Create an Entity with given attributes."""
         for k, v in kwargs.items():
             self.__setattr__(k, v)
 
@@ -37,7 +38,7 @@ class Entity:
             <Entity dict_keys(['a', 'b'])>
         """
         content = repr(self.__dict__.keys())
-        return f'<{self.__class__.__name__} {content.strip()}>'
+        return f"<{self.__class__.__name__} {content.strip()}>"
 
     def __str__(self) -> str:
         """Return the str representation of an Entity.
@@ -121,7 +122,7 @@ class EntityView:
             name (str): The entity name.
             value (any): The entity value to be set.
         """
-        if name in ('_table', '_offset'):
+        if name in ("_table", "_offset"):
             self.__dict__[name] = value
             return
         self._table.write(name, self._offset, value)
@@ -150,5 +151,4 @@ class EntityView:
             >>> df.to_list()[0]
             <EntityView dict_keys(['a', 'b'])>
         """
-        return f'<{self.__class__.__name__} dict_keys({self._table.column_names})>'
-
+        return f"<{self.__class__.__name__} dict_keys({self._table.column_names})>"

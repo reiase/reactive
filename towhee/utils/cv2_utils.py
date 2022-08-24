@@ -17,10 +17,12 @@ try:
 except ModuleNotFoundError as moduleNotFound:
     try:
         from towhee.utils.dependency_control import prompt_install
-        prompt_install('opencv-python')
+
+        prompt_install("opencv-python")
         # pylint: disable=unused-import,ungrouped-imports
         import cv2
     except:
         from towhee.utils.log import engine_log
-        engine_log.error('cv2 not found, you can install via `pip install opencv-python`.')
-        raise ModuleNotFoundError('cv2 not found, you can install via `pip install opencv-python`.') from moduleNotFound
+
+        engine_log.error("cv2 not found, you can install via `pip install opencv-python`.")
+        raise ModuleNotFoundError("cv2 not found, you can install via `pip install opencv-python`.") from moduleNotFound

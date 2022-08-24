@@ -28,7 +28,7 @@ class StatefulExecution:
     @property
     def is_stateful(self):
         self.__check_init__()
-        return hasattr(self._op, 'fit')
+        return hasattr(self._op, "fit")
 
     def set_state(self, state):
         self.__check_init__()

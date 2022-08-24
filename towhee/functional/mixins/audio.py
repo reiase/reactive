@@ -16,12 +16,13 @@
 from towhee.types.audio_frame import AudioFrame
 
 
-class AudioMixin():
+class AudioMixin:
     """
     Mixin for audio processing.
     """
+
     @classmethod
-    def read_audio(cls, path): # pragma: no cover
+    def read_audio(cls, path):  # pragma: no cover
         from towhee.utils.thirdparty.av_utils import av
 
         def inner():

@@ -16,7 +16,6 @@ from .dataset import DatasetMixin
 from .dispatcher import DispatcherMixin
 from .parallel import ParallelMixin
 from .computer_vision import ComputerVisionMixin
-from .display import DisplayMixin
 from .state import StateMixin
 from .metric import MetricMixin
 from .ray import RayMixin
@@ -35,11 +34,27 @@ from .format_priority import FormatPriorityMixin
 from .audio import AudioMixin
 
 
-class DCMixins(DatasetMixin, DispatcherMixin, DisplayMixin, ParallelMixin,
-               ComputerVisionMixin, StateMixin, MetricMixin, RayMixin,
-               ServeMixin, MilvusMixin, DagMixin, FaissMixin, ConfigMixin,
-               CompileMixin, RemoteMixin, ListMixin, DataProcessingMixin,
-               SafeMixin, StreamMixin, FormatPriorityMixin, AudioMixin):
-
+class DCMixins(
+    DatasetMixin,
+    DispatcherMixin,
+    ParallelMixin,
+    ComputerVisionMixin,
+    StateMixin,
+    MetricMixin,
+    RayMixin,
+    ServeMixin,
+    MilvusMixin,
+    DagMixin,
+    FaissMixin,
+    ConfigMixin,
+    CompileMixin,
+    RemoteMixin,
+    ListMixin,
+    DataProcessingMixin,
+    SafeMixin,
+    StreamMixin,
+    FormatPriorityMixin,
+    AudioMixin,
+):
     def __init__(self) -> None:  # pylint: disable=useless-super-delegation
         super().__init__()

@@ -28,15 +28,30 @@ class RepoNormalize:
 
     def __init__(self, uri: str):
         self._uri = uri
-        self._scheme = 'https'
-        self._netloc = 'towhee.io'
-        self._author = 'towhee'
-        self._ref = 'main'
+        self._scheme = "https"
+        self._netloc = "towhee.io"
+        self._author = "towhee"
+        self._ref = "main"
         self._has_ns = True
 
-    def parse_uri(self) -> NamedTuple('ParseResult', [('full_uri', str), ('author', str), ('repo', str), ('ref', str), ('repo_type', str),
-                                                      ('norm_repo', str), ('module_name', str), ('class_name', str), ('scheme', str), ('netloc', str),
-                                                      ('query', dict)]):
+    def parse_uri(
+        self,
+    ) -> NamedTuple(
+        "ParseResult",
+        [
+            ("full_uri", str),
+            ("author", str),
+            ("repo", str),
+            ("ref", str),
+            ("repo_type", str),
+            ("norm_repo", str),
+            ("module_name", str),
+            ("class_name", str),
+            ("scheme", str),
+            ("netloc", str),
+            ("query", dict),
+        ],
+    ):
         """
         Parse the uri.
 
@@ -47,15 +62,41 @@ class RepoNormalize:
         """
         full_uri = self.get_full_uri()
         result = urlparse(full_uri)
-        author, repo = result.path.split('/')[1:]
+        author, repo = result.path.split("/")[1:]
         query = dict(parse_qsl(result.query))
-        ref = query.pop('ref')
+        ref = query.pop("ref")
         norm_repo, module_name, class_name = self.get_name(repo)
-        ParseResult = NamedTuple('ParseResult', [('full_uri', str), ('author', str), ('repo', str), ('ref', str), ('repo_type', str),
-                                                 ('norm_repo', str), ('module_name', str), ('class_name', str), ('scheme', str), ('netloc', str),
-                                                 ('query', dict), ('has_ns', bool)])
-        return ParseResult(full_uri, author, repo, ref, result.fragment, norm_repo, module_name, class_name,
-                           result.scheme, result.netloc, query, self.has_ns)
+        ParseResult = NamedTuple(
+            "ParseResult",
+            [
+                ("full_uri", str),
+                ("author", str),
+                ("repo", str),
+                ("ref", str),
+                ("repo_type", str),
+                ("norm_repo", str),
+                ("module_name", str),
+                ("class_name", str),
+                ("scheme", str),
+                ("netloc", str),
+                ("query", dict),
+                ("has_ns", bool),
+            ],
+        )
+        return ParseResult(
+            full_uri,
+            author,
+            repo,
+            ref,
+            result.fragment,
+            norm_repo,
+            module_name,
+            class_name,
+            result.scheme,
+            result.netloc,
+            query,
+            self.has_ns,
+        )
 
     def get_full_uri(self) -> str:
         """
@@ -72,15 +113,15 @@ class RepoNormalize:
             result = result._replace(scheme=self._scheme)
         if not result.netloc:
             result = result._replace(netloc=self._netloc)
-        if 'ref' not in query:
-            result = result._replace(query=f'{result.query}&ref={self._ref}')
-        if path.endswith(']'):
+        if "ref" not in query:
+            result = result._replace(query=f"{result.query}&ref={self._ref}")
+        if path.endswith("]"):
             path = self.mapping(path)
-        if '/' not in path:
+        if "/" not in path:
             self._has_ns = False
-            result = result._replace(path=f'/{self._author}/{path}')
-        elif len(path.split('/')) == 2:
-            result = result._replace(path=f'/{path}')
+            result = result._replace(path=f"/{self._author}/{path}")
+        elif len(path.split("/")) == 2:
+            result = result._replace(path=f"/{path}")
 
         full_uri = result.geturl()
         return full_uri
@@ -98,12 +139,12 @@ class RepoNormalize:
                 Raise error when false.
         """
         result = urlparse(self._uri)
-        path = result.path.split('/')
+        path = result.path.split("/")
         if len(path) == 1:
             repo = path[0]
         elif len(path) == 2:
             repo = path[1]
-        elif len(path) == 3 and path[0] == '':
+        elif len(path) == 3 and path[0] == "":
             repo = path[2]
         else:
             return False
@@ -111,12 +152,14 @@ class RepoNormalize:
 
     def url_valid(self) -> bool:
         regex = re.compile(
-            r'^(?:http|ftp)s?://'  # http:// or https://
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-            r'localhost|'  # localhost...
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-            r'(?::\d+)?'  # optional port
-            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+            r"^(?:http|ftp)s?://"  # http:// or https://
+            r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain...
+            r"localhost|"  # localhost...
+            r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"  # ...or ip
+            r"(?::\d+)?"  # optional port
+            r"(?:/?|[/?]\S+)$",
+            re.IGNORECASE,
+        )
 
         if re.match(regex, self._uri) is not None:
             return True
@@ -144,13 +187,13 @@ class RepoNormalize:
                 Raise error when the path does not match the format.
         """
         try:
-            if not path.endswith(']'):
+            if not path.endswith("]"):
                 raise ValueError
-            repo, framework = path.strip(']').split('[')
-            path = f'{repo}-{framework}'
+            repo, framework = path.strip("]").split("[")
+            path = f"{repo}-{framework}"
             return path
         except ValueError:
-            raise ValueError(f'{path} does not match the \'[/author/]repo-name[framework]\' format!') from ValueError
+            raise ValueError(f"{path} does not match the '[/author/]repo-name[framework]' format!") from ValueError
 
     @staticmethod
     def check_repo(repo: str) -> bool:
@@ -169,14 +212,16 @@ class RepoNormalize:
             (`ValueError`)
                 Raise error if false.
         """
-        repo_list = repo.strip(']').split('[')
-        if '_' not in repo and (repo.endswith(']') and len(repo_list) == 2 or len(repo_list) == 1 and not repo.endswith(']')):
+        repo_list = repo.strip("]").split("[")
+        if "_" not in repo and (
+            repo.endswith("]") and len(repo_list) == 2 or len(repo_list) == 1 and not repo.endswith("]")
+        ):
             return True
         else:
-            raise ValueError(f'repo: {repo} does not match the \'repo-name[framework]\' format!')
+            raise ValueError(f"repo: {repo} does not match the 'repo-name[framework]' format!")
 
     @staticmethod
-    def get_name(repo: str) -> NamedTuple('OpResult', [('repo_name', str), ('module_name', str), ('class_name', str)]):
+    def get_name(repo: str) -> NamedTuple("OpResult", [("repo_name", str), ("module_name", str), ("class_name", str)]):
         """
         Get the name for repo: normalized repo name, module name, and class name.
 
@@ -188,14 +233,16 @@ class RepoNormalize:
             (`NamedTuple[str, str, str]`)
                 Return the name for repo: `repo_name`, `module_name`, `class_name`.
         """
-        repo_name = repo.replace('_', '-')
-        module_name = repo_name.replace('-', '_')
-        class_name = ''.join(x.capitalize() or '_' for x in repo_name.split('-'))
-        OpResult = NamedTuple('OpResult', [('repo_name', str), ('module_name', str), ('class_name', str)])
+        repo_name = repo.replace("_", "-")
+        module_name = repo_name.replace("-", "_")
+        class_name = "".join(x.capitalize() or "_" for x in repo_name.split("-"))
+        OpResult = NamedTuple("OpResult", [("repo_name", str), ("module_name", str), ("class_name", str)])
         return OpResult(repo_name, module_name, class_name)
 
     @staticmethod
-    def get_op(repo: str) -> NamedTuple('OpResult', [('repo', str), ('py_file', str), ('yaml_file', str), ('class_name', str)]):
+    def get_op(
+        repo: str,
+    ) -> NamedTuple("OpResult", [("repo", str), ("py_file", str), ("yaml_file", str), ("class_name", str)]):
         """
         Get the required name for operator: normalized repo name, python file name, yaml file name and class name.
 
@@ -207,14 +254,14 @@ class RepoNormalize:
             (`NamedTuple[str, str, str, str]`)
                 Return the required name for operator: `repo`, `py_file`, `yaml_file`, `class_name`.
         """
-        repo_name = repo.replace('_', '-')
-        file_name = repo_name.replace('-', '_')
-        class_name = ''.join(x.capitalize() or '_' for x in repo_name.split('-'))
-        OpResult = NamedTuple('OpResult', [('repo', str), ('py_file', str), ('yaml_file', str), ('class_name', str)])
-        return OpResult(repo_name, f'{file_name}.py', f'{file_name}.yaml', class_name)
+        repo_name = repo.replace("_", "-")
+        file_name = repo_name.replace("-", "_")
+        class_name = "".join(x.capitalize() or "_" for x in repo_name.split("-"))
+        OpResult = NamedTuple("OpResult", [("repo", str), ("py_file", str), ("yaml_file", str), ("class_name", str)])
+        return OpResult(repo_name, f"{file_name}.py", f"{file_name}.yaml", class_name)
 
     @staticmethod
-    def get_pipeline(repo: str) -> NamedTuple('PipelineResult', [('repo', str), ('yaml_file', str)]):
+    def get_pipeline(repo: str) -> NamedTuple("PipelineResult", [("repo", str), ("yaml_file", str)]):
         """
         Get the required name for pipeline: normalized repo name and yaml file name.
 
@@ -226,7 +273,7 @@ class RepoNormalize:
             (`NamedTuple[str, str]`)
                 Return the required name for operator: `repo`, `yaml_file`.
         """
-        repo_name = repo.replace('_', '-')
-        file_name = repo_name.replace('-', '_')
-        PipelineResult = NamedTuple('PipelineResult', [('repo', str), ('yaml_file', str)])
-        return PipelineResult(repo_name, f'{file_name}.yaml')
+        repo_name = repo.replace("_", "-")
+        file_name = repo_name.replace("-", "_")
+        PipelineResult = NamedTuple("PipelineResult", [("repo", str), ("yaml_file", str)])
+        return PipelineResult(repo_name, f"{file_name}.yaml")

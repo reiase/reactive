@@ -18,9 +18,11 @@ try:
 except ModuleNotFoundError as moduleNotFound:
     try:
         from towhee.utils.dependency_control import prompt_install
-        prompt_install('pandas')
-        import pandas # pylint: disable=ungrouped-imports
+
+        prompt_install("pandas")
+        import pandas  # pylint: disable=ungrouped-imports
     except:
         from towhee.utils.log import engine_log
-        engine_log.error('pandas not found, you can install via `pip install pandas`.')
-        raise ModuleNotFoundError('pandas not found, you can install via `pip install pandas`.') from moduleNotFound
+
+        engine_log.error("pandas not found, you can install via `pip install pandas`.")
+        raise ModuleNotFoundError("pandas not found, you can install via `pip install pandas`.") from moduleNotFound

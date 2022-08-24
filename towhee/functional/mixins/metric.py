@@ -24,10 +24,7 @@ class Collector:
     """
 
     # pylint: disable=dangerous-default-value
-    def __init__(self,
-                 metrics: list = None,
-                 labels: dict = None,
-                 scores: dict = None):
+    def __init__(self, metrics: list = None, labels: dict = None, scores: dict = None):
         self.metrics = metrics if metrics is not None else []
         self.scores = scores if scores is not None else {}
         self.labels = labels if labels is not None else {}
@@ -45,18 +42,19 @@ def encode_fig_img(mat, size=300):
     from towhee.utils.matplotlib_utils import matplotlib as mpl
     import base64
     import io
-    mpl.use('Agg')  # Prevent showing stuff
-    cm = mat.astype('float') / mat.sum(axis=1)[:, np.newaxis]  # normalize
+
+    mpl.use("Agg")  # Prevent showing stuff
+    cm = mat.astype("float") / mat.sum(axis=1)[:, np.newaxis]  # normalize
     fig = ConfusionMatrixDisplay(cm)
-    fig.plot(cmap='GnBu')
+    fig.plot(cmap="GnBu")
     buf = io.BytesIO()
-    fig.figure_.savefig(buf, format='jpg')
+    fig.figure_.savefig(buf, format="jpg")
     buf.seek(0)
     buf = buf.read()
     src = 'src="data:image/jpeg;base64,' + base64.b64encode(buf).decode() + '" '
     w = 'width = "' + str(size) + 'px" '
     h = 'height = "' + str(size) + 'px" '
-    return '<img ' + src + w + h + '>'
+    return "<img " + src + w + h + ">"
 
 
 def get_scores_dict(collector: Collector):
@@ -68,6 +66,7 @@ def get_scores_dict(collector: Collector):
 
     return scores_dict
 
+
 def mean_hit_ratio(actual, predicted):
     ratios = []
     for act, pre in zip(actual, predicted):
@@ -75,6 +74,7 @@ def mean_hit_ratio(actual, predicted):
         ratios.append(hit_num / len(act))
 
     return sum(ratios) / len(ratios)
+
 
 def mean_average_precision(actual, predicted):
     aps = []
@@ -84,7 +84,7 @@ def mean_average_precision(actual, predicted):
         for i, p in enumerate(pre):
             if p in act:
                 cnt += 1
-                precision_sum += cnt/(i+1)
+                precision_sum += cnt / (i + 1)
             ap = precision_sum / cnt if cnt else 0
         aps.append(ap)
 
@@ -92,21 +92,16 @@ def mean_average_precision(actual, predicted):
 
 
 def _evaluate_callback(self):
-
     def wrapper(_: str, index: Tuple[str], *arg, **kws):
         # pylint: disable=import-outside-toplevel
         # pylint: disable=unused-argument
         actual, predicted = index
         name = None
-        if 'name' in kws:
-            name = kws['name']
+        if "name" in kws:
+            name = kws["name"]
         elif arg:
-            name, = arg
-        self.collector.add_labels(
-            {name: {
-                'actual': actual,
-                'predicted': predicted
-            }})
+            (name,) = arg
+        self.collector.add_labels({name: {"actual": actual, "predicted": predicted}})
         score = {name: {}}
         actual_list = []
         predicted_list = []
@@ -115,22 +110,18 @@ def _evaluate_callback(self):
             predicted_list.append(getattr(x, predicted))
 
         from towhee.utils import sklearn_utils
+
         for metric_type in self.collector.metrics:
-            if metric_type == 'accuracy':
+            if metric_type == "accuracy":
                 re = sklearn_utils.accuracy_score(actual_list, predicted_list)
-            elif metric_type == 'recall':
-                re = sklearn_utils.recall_score(actual_list,
-                                                predicted_list,
-                                                average='weighted')
-            elif metric_type == 'confusion_matrix':
-                re = sklearn_utils.confusion_matrix(actual_list,
-                                                    predicted_list)
-            elif metric_type == 'mean_hit_ratio':
-                re = mean_hit_ratio(actual_list,
-                               predicted_list)
-            elif metric_type == 'mean_average_precision':
-                re = mean_average_precision(actual_list,
-                                            predicted_list)
+            elif metric_type == "recall":
+                re = sklearn_utils.recall_score(actual_list, predicted_list, average="weighted")
+            elif metric_type == "confusion_matrix":
+                re = sklearn_utils.confusion_matrix(actual_list, predicted_list)
+            elif metric_type == "mean_hit_ratio":
+                re = mean_hit_ratio(actual_list, predicted_list)
+            elif metric_type == "mean_average_precision":
+                re = mean_average_precision(actual_list, predicted_list)
             score[name].update({metric_type: re})
         self.collector.add_scores(score)
         return self
@@ -180,11 +171,12 @@ class MetricMixin:
         """
         from towhee.utils.ipython_utils import HTML, display
         from towhee.utils.pandas_utils import pandas as pd
+
         scores_dict = get_scores_dict(self.collector)
         df = pd.DataFrame(data=scores_dict, index=list(self.collector.scores.keys()))
 
-        if 'confusion_matrix' in self.collector.metrics:
-            display(HTML(df.to_html(formatters={'confusion_matrix': encode_fig_img}, escape=False)))
+        if "confusion_matrix" in self.collector.metrics:
+            display(HTML(df.to_html(formatters={"confusion_matrix": encode_fig_img}, escape=False)))
         else:
             display(df)
         return self.collector.scores

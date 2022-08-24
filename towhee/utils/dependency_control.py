@@ -16,24 +16,25 @@ import sys
 import os
 
 
-def prompt_install(package): # pragma: no cover
+def prompt_install(package):  # pragma: no cover
     """
     Function used to prompt user to install a package. If TOWHEE_WORKER env variable is set
     to True then the package will be automatically installed.
     """
-    if os.getenv('TOWHEE_WORKER', 'False') == 'True' or get_yes_no(f'Do you want to install {package}?'):
+    if os.getenv("TOWHEE_WORKER", "False") == "True" or get_yes_no(f"Do you want to install {package}?"):
         try:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
-            print(f'{package} installed successfully!')
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+            print(f"{package} installed successfully!")
         except subprocess.CalledProcessError:
-            print(f'Ran into error installing {package}.')
+            print(f"Ran into error installing {package}.")
 
-def get_yes_no(question): # pragma: no cover
+
+def get_yes_no(question):  # pragma: no cover
     while True:
-        answer = input(question + ' [y/n]: ').lower()
-        if 'yes'.startswith(answer.lower()):
+        answer = input(question + " [y/n]: ").lower()
+        if "yes".startswith(answer.lower()):
             return True
-        elif 'no'.startswith(answer.lower()):
+        elif "no".startswith(answer.lower()):
             return False
         else:
-            print('Not a valid answer.')
+            print("Not a valid answer.")

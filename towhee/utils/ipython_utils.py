@@ -17,10 +17,12 @@ try:
 except ModuleNotFoundError as moduleNotFound:
     try:
         from towhee.utils.dependency_control import prompt_install
-        prompt_install('ipython')
+
+        prompt_install("ipython")
         # pylint: disable=unused-import,ungrouped-imports
         from IPython.display import display, HTML
     except:
         from towhee.utils.log import engine_log
-        engine_log.error('IPython not found, you can install via `pip install ipython`.')
-        raise ModuleNotFoundError('IPython not found, you can install via `pip install ipython`.') from moduleNotFound
+
+        engine_log.error("IPython not found, you can install via `pip install ipython`.")
+        raise ModuleNotFoundError("IPython not found, you can install via `pip install ipython`.") from moduleNotFound

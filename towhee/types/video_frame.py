@@ -39,16 +39,16 @@ class VideoFrame(np.ndarray):
         # i.e. those of a standard ndarray.
         if obj is None:
             return
-        self._mode = getattr(obj, '_mode', None)
-        self._timestamp = getattr(obj, '_timestamp', None)
-        self._key_frame = getattr(obj, '_key_frame', 0)
+        self._mode = getattr(obj, "_mode", None)
+        self._timestamp = getattr(obj, "_timestamp", None)
+        self._key_frame = getattr(obj, "_key_frame", 0)
 
     def __str__(self):
-        return f'VideoFrame shape: {self.shape}, mode: {self.mode}, timestamp: {self.timestamp}, key_frame: {self.key_frame}'
+        return f"VideoFrame shape: {self.shape}, mode: {self.mode}, timestamp: {self.timestamp}, key_frame: {self.key_frame}"
 
     def __reduce__(self):
         # Get numpy pickle
-        pickled_state = super(VideoFrame, self).__reduce__() #pylint: disable=super-with-arguments
+        pickled_state = super(VideoFrame, self).__reduce__()  # pylint: disable=super-with-arguments
         # Attach the attributes to the numpy pickle
         new_state = pickled_state[2] + (self.__dict__,)
         return (pickled_state[0], pickled_state[1], new_state)
@@ -57,7 +57,7 @@ class VideoFrame(np.ndarray):
         # Set attributes from the pickle
         self.__dict__.update(state[-1])
         # Call the parent's __setstate__ with the other tuple elements.
-        super(VideoFrame, self).__setstate__(state[0:-1]) #pylint: disable=super-with-arguments
+        super(VideoFrame, self).__setstate__(state[0:-1])  # pylint: disable=super-with-arguments
 
     @property
     def mode(self):

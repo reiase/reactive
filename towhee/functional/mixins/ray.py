@@ -2,7 +2,6 @@ from queue import Queue
 import asyncio
 import threading
 import uuid
-from towhee.hub.file_manager import FileManagerConfig
 
 from towhee.utils.log import engine_log
 from towhee.functional.option import Option, Empty, _Reason
@@ -10,7 +9,6 @@ from towhee.functional.mixins.parallel import EOS
 
 
 def _map_task_ray(unary_op):  # pragma: no cover
-
     def map_wrapper(x):
         try:
             if isinstance(x, Option):
@@ -18,23 +16,21 @@ def _map_task_ray(unary_op):  # pragma: no cover
             else:
                 return unary_op(x)
         except Exception as e:  # pylint: disable=broad-except
-            engine_log.warning(f'{e}, please check {x} with op {unary_op}. Continue...')  # pylint: disable=logging-fstring-interpolation
+            engine_log.warning(
+                f"{e}, please check {x} with op {unary_op}. Continue..."
+            )  # pylint: disable=logging-fstring-interpolation
             return Empty(_Reason(x, e))
 
     return map_wrapper
 
 
 class RayMixin:  # pragma: no cover
-    #pylint: disable=import-outside-toplevel
+    # pylint: disable=import-outside-toplevel
     """
     Mixin for parallel ray execution.
     """
 
-    def ray_start(self,
-                  address=None,
-                  local_packages: list = None,
-                  pip_packages: list = None,
-                  silence=True):
+    def ray_start(self, address=None, local_packages: list = None, pip_packages: list = None, silence=True):
         """
         Start the ray service. When using a remote cluster, all dependencies for custom functions
         and operators defined locally will need to be sent to the ray cluster. If using ray locally,
@@ -58,23 +54,20 @@ class RayMixin:  # pragma: no cover
         local_packages = [] if local_packages is None else local_packages
         pip_packages = [] if pip_packages is None else pip_packages
 
-        if ('towhee' not in pip_packages and 'towhee'
-                not in [str(x.__name__)
-                        for x in local_packages]) and (address is not None):
-            pip_packages.append('towhee')
-        runtime_env = {'py_modules': local_packages, 'pip': pip_packages}
+        if ("towhee" not in pip_packages and "towhee" not in [str(x.__name__) for x in local_packages]) and (
+            address is not None
+        ):
+            pip_packages.append("towhee")
+        runtime_env = {"py_modules": local_packages, "pip": pip_packages}
 
-        ray.init(address=address,
-                 runtime_env=runtime_env,
-                 ignore_reinit_error=True,
-                 log_to_driver=silence)
+        ray.init(address=address, runtime_env=runtime_env, ignore_reinit_error=True, log_to_driver=silence)
         self._backend_started = True
         return self
 
     def ray_resolve(self, call_mapping, path, index, *arg, **kws):
         import ray
 
-        #TODO: Make local functions work with ray
+        # TODO: Make local functions work with ray
         if path in call_mapping:
             return self.map(call_mapping[path](*arg, **kws))
 
@@ -83,17 +76,9 @@ class RayMixin:  # pragma: no cover
             """Ray actor that runs hub operators."""
 
             def __init__(self, path1, index1, uid, *arg1, **kws1):
-                from towhee import engine
                 from towhee.engine.factory import _OperatorLazyWrapper
-                from pathlib import Path
-                engine.DEFAULT_LOCAL_CACHE_ROOT = Path.home() / (
-                    '.towhee/ray_actor_cache_' + uid)
-                engine.LOCAL_PIPELINE_CACHE = engine.DEFAULT_LOCAL_CACHE_ROOT / 'pipelines'
-                engine.LOCAL_OPERATOR_CACHE = engine.DEFAULT_LOCAL_CACHE_ROOT / 'operators'
-                x = FileManagerConfig()
-                x.update_default_cache(engine.DEFAULT_LOCAL_CACHE_ROOT)
-                self.op = _OperatorLazyWrapper.callback(
-                    path1, index1, *arg1, **kws1)
+
+                self.op = _OperatorLazyWrapper.callback(path1, index1, *arg1, **kws1)
 
             def __call__(self, *arg1, **kwargs1):
                 return self.op(*arg1, **kwargs1)
@@ -101,15 +86,15 @@ class RayMixin:  # pragma: no cover
             def cleanup(self):
                 from shutil import rmtree
                 from towhee import engine
+
                 try:
                     rmtree(engine.DEFAULT_LOCAL_CACHE_ROOT)
                 except FileNotFoundError:
                     pass
 
         actors = [
-            OperatorActor.remote(path, index,
-                                 str(uuid.uuid4().hex[:12].upper()), *arg,
-                                 **kws) for _ in range(self._num_worker)
+            OperatorActor.remote(path, index, str(uuid.uuid4().hex[:12].upper()), *arg, **kws)
+            for _ in range(self._num_worker)
         ]
         pool = ray.util.ActorPool(actors)
         queue = Queue(self._num_worker)
@@ -168,8 +153,7 @@ class RayMixin:  # pragma: no cover
             for x in self:
                 if len(buff) == num_worker:
                     queue.put(await buff.pop(0))
-                buff.append(
-                    asyncio.wrap_future(remote_runner.remote(x).future()))
+                buff.append(asyncio.wrap_future(remote_runner.remote(x).future()))
             while len(buff) > 0:
                 queue.put(await buff.pop(0))
             queue.put(EOS())

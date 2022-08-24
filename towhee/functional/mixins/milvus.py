@@ -19,9 +19,10 @@ from towhee.utils.log import engine_log
 from ..entity import Entity
 
 
-def _milvus_insert(iterable: Iterable, index: Tuple[str], collection, batch_size: int): # pragma: no cover
+def _milvus_insert(iterable: Iterable, index: Tuple[str], collection, batch_size: int):  # pragma: no cover
     # pylint: disable=import-outside-toplevel
     from towhee.utils.thirdparty.milvus_utils import Collection, MutationResult
+
     if isinstance(collection, str):
         collection = Collection(collection)
     primary_keys = []
@@ -43,29 +44,31 @@ def _milvus_insert(iterable: Iterable, index: Tuple[str], collection, batch_size
                 data = [[] for _ in range(len(index))]
                 primary_keys += mr.primary_keys
                 insert_count += mr.insert_count
-                engine_log.info('Successfully inserted %d row data.', mr.insert_count)
+                engine_log.info("Successfully inserted %d row data.", mr.insert_count)
 
         if len(data[0]) > 0:
             mr = collection.insert(data)
             primary_keys += mr.primary_keys
             insert_count += mr.insert_count
-            engine_log.info('Successfully inserted %d row data.', mr.insert_count)
+            engine_log.info("Successfully inserted %d row data.", mr.insert_count)
 
-        e = Entity(insert_count=insert_count,
-                   primary_keys=primary_keys,
-                   delete_count=mr.delete_count,
-                   upsert_count=mr.upsert_count,
-                   timestamp=mr.timestamp)
+        e = Entity(
+            insert_count=insert_count,
+            primary_keys=primary_keys,
+            delete_count=mr.delete_count,
+            upsert_count=mr.upsert_count,
+            timestamp=mr.timestamp,
+        )
         milvus_mr = MutationResult(e)
     except Exception as e:  # pylint: disable=broad-except
-        engine_log.error('Error when insert data to milvus with %s.', e)
+        engine_log.error("Error when insert data to milvus with %s.", e)
         raise e
     finally:
         collection.load()
     return milvus_mr
 
 
-def _to_milvus_callback(self): # pragma: no cover
+def _to_milvus_callback(self):  # pragma: no cover
     # pylint: disable=consider-using-get
     def wrapper(_: str, index, *arg, **kws):
         batch_size = 1
@@ -73,25 +76,26 @@ def _to_milvus_callback(self): # pragma: no cover
             index = (index,)
 
         if arg is not None and len(arg) == 1:
-            collection, = arg
+            (collection,) = arg
         elif arg is not None and len(arg) == 2:
             collection, batch_size = arg
 
-        if 'collection' in kws:
-            collection = kws['collection']
-        if 'batch' in kws:
-            batch_size = int(kws['batch'])
+        if "collection" in kws:
+            collection = kws["collection"]
+        if "batch" in kws:
+            batch_size = int(kws["batch"])
 
         dc_data = self
-        if 'stream' in kws and not kws['stream']:
+        if "stream" in kws and not kws["stream"]:
             dc_data = self.unstream()
 
         _ = _milvus_insert(dc_data, index, collection, batch_size)
         return dc_data
+
     return wrapper
 
 
-class MilvusMixin: # pragma: no cover
+class MilvusMixin:  # pragma: no cover
     """
     Mixins for Milvus, such as loading data into Milvus collections. Note that the Milvus collection is created before loading the data.
     Refer to https://milvus.io/docs/v2.0.x/create_collection.md.
@@ -122,6 +126,7 @@ class MilvusMixin: # pragma: no cover
     ...           .to_milvus['vec'](collection='test', batch=1000)
     ... )
     """
+
     def __init__(self):
         super().__init__()
         self.to_milvus = param_scope().dispatch(_to_milvus_callback(self))

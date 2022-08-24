@@ -17,6 +17,7 @@ from towhee.functional.entity import Entity
 from towhee.functional.option import Option, Some, Empty
 from towhee.hparam import HyperParameter as State
 from towhee.hparam import param_scope, dynamic_dispatch
+
 # pylint: disable=protected-access
 # pylint: disable=redefined-builtin
 

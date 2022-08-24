@@ -17,6 +17,7 @@ class BaseExecution:
     """
     Execute an operator
     """
+
     def __apply__(self, *arg, **kws):
         # Multi inputs.
         if isinstance(self._index[0], tuple):
@@ -33,11 +34,8 @@ class BaseExecution:
 
             # Multi outputs.
             if isinstance(res, tuple):
-                if not isinstance(self._index[1],
-                                  tuple) or len(self._index[1]) != len(res):
-                    raise IndexError(
-                        f'Op has {len(res)} outputs, but {len(self._index[1])} indices are given.'
-                    )
+                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(res):
+                    raise IndexError(f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given.")
                 for i, j in zip(self._index[1], res):
                     setattr(arg[0], i, j)
             # Single output.

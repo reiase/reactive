@@ -21,22 +21,23 @@ def to_image_color(img: Image, target_mode: str):
     """
     # pylint: disable=import-outside-toplevel
     from towhee.utils.cv2_utils import cv2
-    if not hasattr(img, 'mode'):
+
+    if not hasattr(img, "mode"):
         return img
     if img.mode == target_mode:
         return img
 
-    flag_name = 'COLOR_' + img.mode.upper() + '2' + target_mode.upper()
+    flag_name = "COLOR_" + img.mode.upper() + "2" + target_mode.upper()
     flag = getattr(cv2, flag_name, None)
 
     if flag is None:
-        raise ValueError('Can not convert image from %s to %s.' % (img.mode, target_mode))
+        raise ValueError("Can not convert image from %s to %s." % (img.mode, target_mode))
 
     return Image(cv2.cvtColor(img, flag), target_mode.upper())
 
 
 def from_pil(pil_img):
-    '''
+    """
     Convert a PIL.Image.Image into towhee.types.Image.
 
     Args:
@@ -46,7 +47,7 @@ def from_pil(pil_img):
     Returns:
         (`towhee.types.Image`)
             The image wrapepd as towhee Image.
-    '''
+    """
     # pylint: disable=import-outside-toplevel
     import numpy as np
 

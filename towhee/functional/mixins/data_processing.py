@@ -18,10 +18,12 @@ from towhee.functional.entity import Entity
 from towhee.functional.mixins.dag import register_dag
 from towhee.hparam.hyperparameter import dynamic_dispatch, param_scope
 
+
 class DataProcessingMixin:
     """
     Mixin for processing data.
     """
+
     @register_dag
     def select_from(self, other):
         """
@@ -49,7 +51,7 @@ class DataProcessingMixin:
         return self._factory(result)
 
     @register_dag
-    def zip(self, *others) -> 'DataCollection':
+    def zip(self, *others) -> "DataCollection":
         """
         Combine two data collections.
 
@@ -90,6 +92,7 @@ class DataProcessingMixin:
         >>> DataCollection.range(10).head(3).to_list()
         [0, 1, 2]
         """
+
         def inner():
             for i, x in enumerate(self._iterable):
                 if i >= n:
@@ -99,7 +102,7 @@ class DataProcessingMixin:
         return self._factory(inner())
 
     @register_dag
-    def sample(self, ratio=1.0) -> 'DataCollection':
+    def sample(self, ratio=1.0) -> "DataCollection":
         """
         Sample the data collection.
 
@@ -155,6 +158,7 @@ class DataProcessingMixin:
         >>> dc.batch(2)
         [[<Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>], [<Entity dict_keys(['a', 'b'])>]]
         """
+
         def inner():
             buff = []
             count = 0
@@ -173,7 +177,7 @@ class DataProcessingMixin:
         return self._factory(inner())
 
     @register_dag
-    def rolling(self, size: int, step: int=1, drop_head=True, drop_tail=True):
+    def rolling(self, size: int, step: int = 1, drop_head=True, drop_tail=True):
         """
         Create rolling windows from data collections.
 
@@ -213,6 +217,7 @@ class DataProcessingMixin:
         >>> dc.rolling(2, 4, drop_head=False, drop_tail=False)
         [[0], [0, 1], [4]]
         """
+
         def inner():
             buff = []
             gap = 0
@@ -240,7 +245,7 @@ class DataProcessingMixin:
 
     @property
     # @register_dag
-    def flatten(self) -> 'DataCollection':
+    def flatten(self) -> "DataCollection":
         """
         Flatten nested data collections.
 
@@ -265,17 +270,17 @@ class DataProcessingMixin:
         >>> [str(i) for i in dc]
         ["{'a': 1, 'b': 2, 'c': 0}", "{'a': 1, 'b': 2, 'c': 1}", "{'a': 1, 'b': 2, 'c': 2}"]
         """
+
         @dynamic_dispatch
         def flattener():
-
             def inner():
                 for ele in self._iterable:
-                    #pylint: disable=protected-access
+                    # pylint: disable=protected-access
                     index = param_scope()._index
                     # With schema
                     if isinstance(ele, Entity):
                         if not index:
-                            raise IndexError('Please specify the column to flatten.')
+                            raise IndexError("Please specify the column to flatten.")
                         else:
                             new_ele = ele.__dict__.copy()
                             for nested_ele in getattr(ele, index):
@@ -293,7 +298,7 @@ class DataProcessingMixin:
         return flattener
 
     @register_dag
-    def shuffle(self) -> 'DataCollection':
+    def shuffle(self) -> "DataCollection":
         """
         Shuffle an unstreamed data collection in place.
 
@@ -318,6 +323,6 @@ class DataProcessingMixin:
         TypeError: shuffle is not supported for streamed data collection.
         """
         if self.is_stream:
-            raise TypeError('shuffle is not supported for streamed data collection.')
+            raise TypeError("shuffle is not supported for streamed data collection.")
         iterable = random.sample(self._iterable, len(self._iterable))
         return self._factory(iterable)

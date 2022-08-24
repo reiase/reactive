@@ -22,6 +22,7 @@ class DatasetMixin:
     """
     Mixin for dealing with dataset
     """
+
     @classmethod
     def from_df(cls, dataframe, as_stream=False):
         if as_stream:
@@ -35,15 +36,16 @@ class DatasetMixin:
         generate a file list with `pattern`
         """
         from glob import glob
+
         files = []
         for path in args:
             files.extend(glob(path))
         if len(files) == 0:
-            raise FileNotFoundError(f'There is no files with {args}.')
+            raise FileNotFoundError(f"There is no files with {args}.")
         return cls(files)
 
     @classmethod
-    def read_zip(cls, url, pattern, mode='r'):  # pragma: no cover
+    def read_zip(cls, url, pattern, mode="r"):  # pragma: no cover
         """load files from url/path.
 
         Args:
@@ -70,7 +72,7 @@ class DatasetMixin:
                     zip_path = BytesIO(zip_file.read())
             else:
                 zip_path = str(Path(url).resolve())
-            with ZipFile(zip_path, 'r') as zfile:
+            with ZipFile(zip_path, "r") as zfile:
                 file_list = zfile.namelist()
                 path_list = fnmatch.filter(file_list, pattern)
                 for path in path_list:
@@ -80,11 +82,11 @@ class DatasetMixin:
         return cls(inner())
 
     @classmethod
-    def read_json(cls, json_path: Union[str, Path], encoding: str = 'utf-8'):
+    def read_json(cls, json_path: Union[str, Path], encoding: str = "utf-8"):
         import json
 
         def inner():
-            with open(json_path, 'r', encoding=encoding) as f:
+            with open(json_path, "r", encoding=encoding) as f:
                 string = f.readline()
                 while string:
                     data = json.loads(string)
@@ -94,18 +96,18 @@ class DatasetMixin:
         return cls(inner())
 
     @classmethod
-    def read_csv(cls, csv_path: Union[str, Path], encoding: str = 'utf-8-sig'):
+    def read_csv(cls, csv_path: Union[str, Path], encoding: str = "utf-8-sig"):
         import csv
 
         def inner():
-            with open(csv_path, 'r', encoding=encoding) as f:
+            with open(csv_path, "r", encoding=encoding) as f:
                 data = csv.DictReader(f)
                 for line in data:
                     yield Entity(**line)
 
         return cls(inner())
 
-    def to_csv(self, csv_path: Union[str, Path], encoding: str = 'utf-8-sig'):
+    def to_csv(self, csv_path: Union[str, Path], encoding: str = "utf-8-sig"):
         """
         Save dc as a csv file.
 
@@ -121,7 +123,7 @@ class DatasetMixin:
         if isinstance(self._iterable, pd.DataFrame):
             self._iterable.to_csv(csv_path, index=False)
         else:
-            with open(csv_path, 'w', encoding=encoding) as f:
+            with open(csv_path, "w", encoding=encoding) as f:
                 header = None
                 writer = None
 
@@ -169,10 +171,8 @@ class DatasetMixin:
         [9]
         """
         from towhee.utils import sklearn_utils
+
         train_size = size[0]
         test_size = size[1]
-        train, test = sklearn_utils.train_test_split(self._iterable,
-                                                     train_size=train_size,
-                                                     test_size=test_size,
-                                                     **kws)
+        train, test = sklearn_utils.train_test_split(self._iterable, train_size=train_size, test_size=test_size, **kws)
         return self._factory(train), self._factory(test)

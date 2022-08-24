@@ -17,7 +17,8 @@ class ListMixin:
     """
     Mixin to make dc an extension of python list.
     """
-    def append(self, *args) -> 'DataCollection':
+
+    def append(self, *args) -> "DataCollection":
         """
         Append item to data collection.
 
@@ -34,12 +35,12 @@ class ListMixin:
         >>> dc.append(3).append(4)
         [0, 1, 2, 3, 4]
         """
-        if hasattr(self._iterable, 'append'):
+        if hasattr(self._iterable, "append"):
             self._iterable.append(*args)
             return self
-        raise TypeError('append() is only supported for data collection created from list.')
+        raise TypeError("append() is only supported for data collection created from list.")
 
-    def clear(self, *args) -> 'DataCollection':
+    def clear(self, *args) -> "DataCollection":
         """
         Clear a DataCollection.
 
@@ -50,12 +51,12 @@ class ListMixin:
         >>> dc.clear()
         []
         """
-        if hasattr(self._iterable, 'clear'):
+        if hasattr(self._iterable, "clear"):
             self._iterable.clear(*args)
             return self
-        raise TypeError('clear() is only supported for data collection created from list.')
+        raise TypeError("clear() is only supported for data collection created from list.")
 
-    def copy(self, *args) -> 'DataCollection':
+    def copy(self, *args) -> "DataCollection":
         """
         Copy a DataCollection.
 
@@ -68,9 +69,9 @@ class ListMixin:
         >>> dc, dc_1
         ([1, 2, 3], [1, 2, 3, 4])
         """
-        if hasattr(self._iterable, 'copy'):
+        if hasattr(self._iterable, "copy"):
             return self._factory(self._iterable.copy(*args))
-        raise TypeError('copy() is only supported for data collection created from list.')
+        raise TypeError("copy() is only supported for data collection created from list.")
 
     def count(self, *args) -> int:
         """
@@ -83,11 +84,11 @@ class ListMixin:
         >>> dc.count(1)
         1
         """
-        if hasattr(self._iterable, 'count'):
+        if hasattr(self._iterable, "count"):
             return self._iterable.count(*args)
-        raise TypeError('count() is only supported for data collection created from list.')
+        raise TypeError("count() is only supported for data collection created from list.")
 
-    def extend(self, *args) -> 'DataCollection':
+    def extend(self, *args) -> "DataCollection":
         """
         Extend a DataCollection.
 
@@ -98,12 +99,12 @@ class ListMixin:
         >>> dc.extend([4, 5])
         [1, 2, 3, 4, 5]
         """
-        if hasattr(self._iterable, 'extend'):
+        if hasattr(self._iterable, "extend"):
             self._iterable.extend(*args)
             return self
-        raise TypeError('extend() is only supported for data collection created from list.')
+        raise TypeError("extend() is only supported for data collection created from list.")
 
-    def insert(self, *args) -> 'DataCollection':
+    def insert(self, *args) -> "DataCollection":
         """
         Insert data into a DataCollection.
 
@@ -114,12 +115,12 @@ class ListMixin:
         >>> dc.insert(0, 0)
         [0, 1, 2, 3]
         """
-        if hasattr(self._iterable, 'insert'):
+        if hasattr(self._iterable, "insert"):
             self._iterable.insert(*args)
             return self
-        raise TypeError('insert() is only supported for data collection created from list.')
+        raise TypeError("insert() is only supported for data collection created from list.")
 
-    def pop(self, *args) -> 'DataCollection':
+    def pop(self, *args) -> "DataCollection":
         """
         Extend a DataCollection.
 
@@ -130,12 +131,12 @@ class ListMixin:
         >>> dc.pop()
         [1, 2]
         """
-        if hasattr(self._iterable, 'pop'):
+        if hasattr(self._iterable, "pop"):
             self._iterable.pop(*args)
             return self
-        raise TypeError('pop() is only supported for data collection created from list.')
+        raise TypeError("pop() is only supported for data collection created from list.")
 
-    def remove(self, *args) -> 'DataCollection':
+    def remove(self, *args) -> "DataCollection":
         """
         Remove element from DataCollection.
 
@@ -146,12 +147,12 @@ class ListMixin:
         >>> dc.remove(1)
         [2, 3]
         """
-        if hasattr(self._iterable, 'remove'):
+        if hasattr(self._iterable, "remove"):
             self._iterable.remove(*args)
             return self
-        raise TypeError('remove() is only supported for data collection created from list.')
+        raise TypeError("remove() is only supported for data collection created from list.")
 
-    def reverse(self, *args) -> 'DataCollection':
+    def reverse(self, *args) -> "DataCollection":
         """
         Reverse a DataCollection.
 
@@ -162,12 +163,12 @@ class ListMixin:
         >>> dc.reverse()
         [3, 2, 1]
         """
-        if hasattr(self._iterable, 'reverse'):
+        if hasattr(self._iterable, "reverse"):
             self._iterable.reverse(*args)
             return self
-        raise TypeError('reverse() is only supported for data collection created from list.')
+        raise TypeError("reverse() is only supported for data collection created from list.")
 
-    def sort(self, *args) -> 'DataCollection':
+    def sort(self, *args) -> "DataCollection":
         """
         Sort a DataCollection.
 
@@ -178,10 +179,10 @@ class ListMixin:
         >>> dc.sort()
         [1, 3, 4]
         """
-        if hasattr(self._iterable, 'sort'):
+        if hasattr(self._iterable, "sort"):
             self._iterable.sort(*args)
             return self
-        raise TypeError('sort() is only supported for data collection created from list.')
+        raise TypeError("sort() is only supported for data collection created from list.")
 
     # def __len__(self):
     #     """

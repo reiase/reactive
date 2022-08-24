@@ -17,6 +17,7 @@ import threading
 import concurrent.futures
 from towhee.functional.entity import Entity
 from towhee.functional.option import Some
+
 # pylint: disable=import-outside-toplevel
 
 
@@ -26,6 +27,7 @@ class _APIWrapper:
     Works by creating a local queue where values are added. At the same time this queue
     is consumed by a DataCollection which is created when entering the API.
     """
+
     tls = threading.local()
 
     def __init__(self, index=None, cls=None) -> None:
@@ -42,7 +44,7 @@ class _APIWrapper:
             entity = x
         else:
             if len(self._index) == 1:
-                x = (x, )
+                x = (x,)
             data = dict(zip(self._index, x))
             entity = Entity(**data)
         entity = Some(entity)
@@ -57,7 +59,7 @@ class _APIWrapper:
         return self._cls(self).stream()
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if hasattr(_APIWrapper.tls, 'place_holder'):
+        if hasattr(_APIWrapper.tls, "place_holder"):
             _APIWrapper.tls.place_holder = None
 
 
@@ -90,12 +92,13 @@ class _PipeWrapper:
 
 async def _decode_content(req):
     from multipart.multipart import parse_options_header
-    content_type_header = req.headers.get('Content-Type')
+
+    content_type_header = req.headers.get("Content-Type")
     content_type, _ = parse_options_header(content_type_header)
 
-    if content_type in {b'multipart/form-data'}:
+    if content_type in {b"multipart/form-data"}:
         return await req.form()
-    if content_type.startswith(b'image/'):
+    if content_type.startswith(b"image/"):
         return await req.body()
     return (await req.body()).decode()
 
@@ -105,7 +108,7 @@ class ServeMixin:
     Mixin for API serve
     """
 
-    def serve(self, path='/', app=None):
+    def serve(self, path="/", app=None):
         """
         Serve the DataFrame as a RESTful API
 
@@ -157,6 +160,7 @@ class ServeMixin:
         """
         if app is None:
             from fastapi import FastAPI, Request
+
             app = FastAPI()
         else:
             from fastapi import Request

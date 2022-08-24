@@ -20,6 +20,7 @@ class StreamMixin:
     """
     Stream related mixins.
     """
+
     @register_dag
     def stream(self):
         """

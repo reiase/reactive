@@ -19,8 +19,7 @@ from towhee.utils.thirdparty.pyarrow import pa
 
 
 class _TensorArrayType(pa.PyExtensionType):
-    """Tensor array type
-    """
+    """Tensor array type"""
 
     def __init__(self, shape: Tuple[int, ...], dtype: pa.DataType):
         self._shape = shape
@@ -70,27 +69,22 @@ class TensorArray(pa.ExtensionArray):
                 return pa.array(data)
             data = np.stack(data, axis=0)
         if not isinstance(data, np.ndarray):
-            raise ValueError('only support ndarray or list/tuple of ndarrays.')
+            raise ValueError("only support ndarray or list/tuple of ndarrays.")
 
         if not data.flags.c_contiguous:
             data = np.ascontiguousarray(data)
         element_shape = data.shape[1:]
         num_items_per_element = np.prod(element_shape) if element_shape else 1
 
-        data_array = pa.Array.from_buffers(pa.from_numpy_dtype(data.dtype),
-                                           data.size,
-                                           [None, pa.py_buffer(data)])
-        offset_buffer = pa.py_buffer(
-            np.int32(
-                [i * num_items_per_element for i in range(data.shape[0] + 1)]))
+        data_array = pa.Array.from_buffers(pa.from_numpy_dtype(data.dtype), data.size, [None, pa.py_buffer(data)])
+        offset_buffer = pa.py_buffer(np.int32([i * num_items_per_element for i in range(data.shape[0] + 1)]))
         storage = pa.Array.from_buffers(
             pa.list_(pa.from_numpy_dtype(data.dtype)),
             data.shape[0],
             [None, offset_buffer],
             children=[data_array],
         )
-        type_ = _TensorArrayType(element_shape,
-                                 pa.from_numpy_dtype(data.dtype))
+        type_ = _TensorArrayType(element_shape, pa.from_numpy_dtype(data.dtype))
         return pa.ExtensionArray.from_storage(type_, storage)
 
     def __getitem__(self, index):
@@ -108,7 +102,7 @@ class TensorArray(pa.ExtensionArray):
     def chunks(self, chunk_size=None):
         view = self.to_numpy()
         for i in range(0, len(self), chunk_size):
-            yield view[i:i + chunk_size]
+            yield view[i : i + chunk_size]
 
     def __iter__(self):
         return (self[i] for i in range(len(self)))

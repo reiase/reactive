@@ -29,11 +29,12 @@ class FormatPriorityMixin:
     >>> dc.get_formate_priority()
     ['tensorrt', 'onnx']
     """
+
     def __init__(self) -> None:
         super().__init__()
         with param_scope() as hp:
             parent = hp().data_collection.parent(None)
-        if parent is not None and hasattr(parent, '_format_priority'):
+        if parent is not None and hasattr(parent, "_format_priority"):
             self._format_priority = parent._format_priority
 
     def set_format_priority(self, format_priority: List[str]):
