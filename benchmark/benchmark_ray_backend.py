@@ -5,8 +5,8 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 os.environ["OMP_NUM_THREADS"] = "1"
 
 import numpy
-import towhee
-from towhee.functional import DataCollection
+import datacollection
+from datacollection.functional import DataCollection
 import time
 import ray
 
