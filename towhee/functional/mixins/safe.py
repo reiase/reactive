@@ -14,7 +14,6 @@
 from typing import Any, Callable
 
 from towhee.functional.option import Empty
-from towhee.functional.mixins.dag import register_dag
 from towhee.functional.option import Option, Some
 
 
@@ -23,7 +22,6 @@ class SafeMixin:
     Mixin for exception safety.
     """
 
-    @register_dag
     def exception_safe(self):
         """
         Making the data collection exception-safe by warp elements with `Option`.
@@ -58,7 +56,6 @@ class SafeMixin:
         """
         return self.exception_safe()
 
-    @register_dag
     def fill_empty(self, default: Any = None) -> "DataCollection":
         """
         Unbox `Option` values and fill `Empty` with default values.
@@ -79,7 +76,6 @@ class SafeMixin:
         result = map(lambda x: x.get() if isinstance(x, Some) else default, self._iterable)
         return self._factory(result)
 
-    @register_dag
     def drop_empty(self, callback: Callable = None) -> "DataCollection":
         """
         Unbox `Option` values and drop `Empty`.

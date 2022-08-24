@@ -97,7 +97,7 @@ class ComputerVisionMixin:
             audio_src:
                 The audio to encode with the video.
         """
-        from towhee.utils.thirdparty.av_utils import av
+        import av
         import itertools
 
         output_container = av.open(output_path, "w")

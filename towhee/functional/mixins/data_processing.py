@@ -15,7 +15,6 @@ import random
 from typing import Iterable
 
 from towhee.functional.entity import Entity
-from towhee.functional.mixins.dag import register_dag
 from towhee.hparam.hyperparameter import dynamic_dispatch, param_scope
 
 
@@ -24,7 +23,6 @@ class DataProcessingMixin:
     Mixin for processing data.
     """
 
-    @register_dag
     def select_from(self, other):
         """
         Select data from dc with list(self).
@@ -50,7 +48,6 @@ class DataProcessingMixin:
         result = map(inner, self._iterable)
         return self._factory(result)
 
-    @register_dag
     def zip(self, *others) -> "DataCollection":
         """
         Combine two data collections.
@@ -77,7 +74,6 @@ class DataProcessingMixin:
 
         return self._factory(zip(self, *others))
 
-    @register_dag
     def head(self, n: int = 5):
         """
         Get the first n lines of a DataCollection.
@@ -101,7 +97,6 @@ class DataProcessingMixin:
 
         return self._factory(inner())
 
-    @register_dag
     def sample(self, ratio=1.0) -> "DataCollection":
         """
         Sample the data collection.
@@ -123,7 +118,6 @@ class DataProcessingMixin:
         """
         return self._factory(filter(lambda _: random.random() < ratio, self))
 
-    @register_dag
     def batch(self, size, drop_tail=False):
         """
         Create small batches from data collections.
@@ -176,7 +170,6 @@ class DataProcessingMixin:
 
         return self._factory(inner())
 
-    @register_dag
     def rolling(self, size: int, step: int = 1, drop_head=True, drop_tail=True):
         """
         Create rolling windows from data collections.
@@ -244,7 +237,6 @@ class DataProcessingMixin:
         return self._factory(inner())
 
     @property
-    # @register_dag
     def flatten(self) -> "DataCollection":
         """
         Flatten nested data collections.
@@ -297,7 +289,6 @@ class DataProcessingMixin:
 
         return flattener
 
-    @register_dag
     def shuffle(self) -> "DataCollection":
         """
         Shuffle an unstreamed data collection in place.

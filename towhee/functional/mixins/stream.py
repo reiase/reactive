@@ -13,15 +13,12 @@
 # limitations under the License.
 from typing import Iterator
 
-from towhee.functional.mixins.dag import register_dag
-
 
 class StreamMixin:
     """
     Stream related mixins.
     """
 
-    @register_dag
     def stream(self):
         """
         Create a stream data collection.
@@ -42,7 +39,6 @@ class StreamMixin:
         iterable = iter(self._iterable) if not self.is_stream else self._iterable
         return self._factory(iterable, parent_stream=False)
 
-    @register_dag
     def unstream(self):
         """
         Create a unstream data collection.

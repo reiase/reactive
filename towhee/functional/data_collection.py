@@ -15,7 +15,6 @@ from typing import Iterable, Iterator, Callable
 import reprlib
 import inspect
 
-from towhee.functional.mixins.dag import register_dag
 from towhee.hparam import param_scope, dynamic_dispatch
 from towhee.functional.option import Option, Some
 from towhee.functional.entity import EntityView
@@ -208,7 +207,6 @@ class DataCollection(Iterable, DCMixins):
             raise TypeError("indexing is only supported for " "DataCollection created from list or pandas DataFrame.")
         self._iterable[index] = value
 
-    @register_dag
     def __add__(self, other) -> "DataCollection":
         """Concat two DataCollections.
 
@@ -288,7 +286,6 @@ class DataCollection(Iterable, DCMixins):
             return DataCollection(iterable)
 
     @staticmethod
-    @register_dag
     def range(*arg, **kws) -> "DataCollection":
         """Generate DataCollection with range of values.
 
@@ -317,7 +314,6 @@ class DataCollection(Iterable, DCMixins):
         """
         return self._iterable if isinstance(self._iterable, list) else list(self._iterable)
 
-    @register_dag
     def map(self, *arg) -> "DataCollection":
         """Apply a function across all values in a DataCollection.
 
@@ -373,7 +369,6 @@ class DataCollection(Iterable, DCMixins):
         result = map(inner, self._iterable)
         return self._factory(result)
 
-    @register_dag
     def filter(self, unary_op: Callable, drop_empty=False) -> "DataCollection":
         """Filter the DataCollection data based on function.
 
