@@ -15,7 +15,7 @@
 from ..utils.log import engine_log
 from ..hparam import param_scope
 from ..execution.factory import ops, op
-from ..execution.operator_registry import OperatorRegistry
+from ..execution.registry import register, resolve
 
 
 class NumbaCompiler:
@@ -28,7 +28,7 @@ class NumbaCompiler:
 
         name_func = [name + "_func", name.replace("_", "-") + "_func"]
         for n in name_func:
-            func = OperatorRegistry.resolve(n)
+            func = resolve(n)
             if func is not None:
                 break
         if func is None:

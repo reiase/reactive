@@ -19,13 +19,13 @@ import os
 import threading
 from typing import Any, Dict, List, Tuple
 
-from datacollection.engine.operator_loader import OperatorLoader
+from .operator_loader import OperatorLoader
 from datacollection.hparam.hyperparameter import dynamic_dispatch, param_scope
 
-from .execution.base_execution import BaseExecution
-from .execution.pandas_execution import PandasExecution
-from .execution.stateful_execution import StatefulExecution
-from .execution.vectorized_execution import VectorizedExecution
+from .base_execution import BaseExecution
+from .pandas_execution import PandasExecution
+from .stateful_execution import StatefulExecution
+from .vectorized_execution import VectorizedExecution
 
 
 def op(

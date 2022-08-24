@@ -20,7 +20,7 @@ from datacollection.functional import (api, dc, dummy_input, from_df, glob,
                                        read_video, read_zip)
 
 from .datacollection import DataCollection, DataFrame
-from .engine import register
+from .execution.registry import register
 from .hparam import HyperParameter as Document
 from .hparam import param_scope
 from .types import Entity

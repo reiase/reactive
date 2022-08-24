@@ -1,8 +1,8 @@
 from typing import Callable
-from datacollection.engine.operator_registry import OperatorRegistry
+from .execution.registry import register
 
 
-@OperatorRegistry.register
+@register
 class runas_op:
     """
     Convert a user-defined function as an operator and execute.

@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Dict
+from typing import Any, Callable, Dict, List
 
-from datacollection.operator import Operator
 from datacollection.hparam import param_scope
 
-from .operator_registry import OperatorRegistry
+from .registry import resolve
 
 
 class OperatorLoader:
@@ -33,35 +32,12 @@ class OperatorLoader:
     def __init__(self, cache_path: str = None):
         pass
 
-    def load_operator_from_registry(
+    def load_operator(
         self, function: str, arg: List[Any], kws: Dict[str, Any], tag: str
-    ) -> Operator:  # pylint: disable=unused-argument
-        op = OperatorRegistry.resolve(function)
+    ) -> Callable:  # pylint: disable=unused-argument
+        op = resolve(function)
         return self.instance_operator(op, arg, kws) if op is not None else None
 
-    def load_operator(self, function: str, arg: List[Any], kws: Dict[str, Any], tag: str) -> Operator:
-        """Attempts to load an operator from cache. If it does not exist, looks up the
-        operator in a remote location and downloads it to cache instead. By standard
-        convention, the operator must be called `Operator` and all associated data must
-        be contained within a single directory.
-
-        Args:
-            function: (`str`)
-                Origin and method/class name of the operator. Used to look up the proper
-                operator in cache.
-        Raises:
-            FileExistsError
-                Cannot find operator.
-        """
-
-        for factory in [
-            self.load_operator_from_registry,
-        ]:
-            op = factory(function, arg, kws, tag)
-            if op is not None:
-                return op
-        return None
-
-    def instance_operator(self, op, arg: List[Any], kws: Dict[str, Any]) -> Operator:
+    def instance_operator(self, op, arg: List[Any], kws: Dict[str, Any]) -> Callable:
         with param_scope() as hp:
             return op(*arg, **kws) if kws is not None else op()
