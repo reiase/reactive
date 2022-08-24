@@ -13,8 +13,8 @@
 # limitations under the License.
 from typing import Any, Callable
 
-from datacollection.functional.option import Empty
-from datacollection.functional.option import Option, Some
+from datacollection.types.option import Empty
+from datacollection.types.option import Option, Some
 
 
 class SafeMixin:

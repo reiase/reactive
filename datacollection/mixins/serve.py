@@ -15,8 +15,8 @@
 import queue
 import threading
 import concurrent.futures
-from datacollection.functional.entity import Entity
-from datacollection.functional.option import Some
+from datacollection.types.entity import Entity
+from datacollection.types.option import Some
 
 # pylint: disable=import-outside-toplevel
 

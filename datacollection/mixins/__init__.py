@@ -12,22 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .audio import AudioMixin
+from .column import ColumnMixin
+from .compile import CompileMixin
+from .computer_vision import ComputerVisionMixin
+from .config import ConfigMixin
+from .data_processing import DataProcessingMixin
+from .dataframe import DataFrameMixin
 from .dataset import DatasetMixin
 from .dispatcher import DispatcherMixin
-from .parallel import ParallelMixin
-from .computer_vision import ComputerVisionMixin
-from .state import StateMixin
-from .metric import MetricMixin
-from .ray import RayMixin
-from .serve import ServeMixin
-from .config import ConfigMixin
-from .compile import CompileMixin
-from .list import ListMixin
-from .data_processing import DataProcessingMixin
-from .stream import StreamMixin
-from .safe import SafeMixin
 from .format_priority import FormatPriorityMixin
-from .audio import AudioMixin
+from .list import ListMixin
+from .metric import MetricMixin
+from .parallel import ParallelMixin
+from .ray import RayMixin
+from .safe import SafeMixin
+from .serve import ServeMixin
+from .state import StateMixin
+from .stream import StreamMixin
 
 
 class DCMixins(

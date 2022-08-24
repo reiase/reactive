@@ -4,7 +4,7 @@ import threading
 import uuid
 
 from datacollection.utils.log import engine_log
-from datacollection.functional.option import Option, Empty, _Reason
+from datacollection.types.option import Option, Empty, _Reason
 from datacollection.functional.mixins.parallel import EOS
 
 

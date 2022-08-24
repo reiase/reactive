@@ -11,18 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Iterable, Iterator, Callable
-import reprlib
 import inspect
-
-from datacollection.hparam import param_scope, dynamic_dispatch
-from datacollection.functional.option import Option, Some
-from datacollection.functional.entity import EntityView
-from datacollection.functional.mixins import DCMixins
-from datacollection.functional.mixins.dataframe import DataFrameMixin
-from datacollection.functional.mixins.column import ColumnMixin
+import reprlib
+from typing import Callable, Iterable, Iterator
 
 from .builtin import runas_op
+from .hparam import dynamic_dispatch, param_scope
+from .mixins import ColumnMixin, DataFrameMixin, DCMixins
+from .types import EntityView, Option, Some
 
 
 class DataCollection(Iterable, DCMixins):

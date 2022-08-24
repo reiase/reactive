@@ -12,15 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datacollection.types.audio_frame import AudioFrame
-from datacollection.types.video_frame import VideoFrame
+from .audio_frame import AudioFrame
+from .video_frame import VideoFrame
 
-__all__ = ["AudioFrame", "arg", "to_image_color", "VideoFrame"]
+from .option import Empty, Some, Option
+from .entity import Entity, EntityView
 
-equivalents = {
-    "towhee.types.image.Image": "towhee.types.Image",
-    "towhee.types.audio_frame.AudioFrame": "towhee.types.AudioFrame",
-    "towhee.types.video_frame.VideoFrame": "towhee.types.VideoFrame",
-    "towhee.types.arg.arg": "towhee.types.arg",
-    "towhee.types.arg.to_image_color": "towhee.types.to_image_color",
-}
+__all__ = [
+    "AudioFrame",
+    "VideoFrame",
+    "Empty",
+    "Some",
+    "Option",
+    "Entity",
+    "EntityView",
+]

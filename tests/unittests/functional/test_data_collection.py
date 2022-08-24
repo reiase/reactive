@@ -16,8 +16,8 @@ import unittest
 from pathlib import Path
 from collections import namedtuple
 
-import datacollection.functional.data_collection
-import datacollection.functional.option
+import datacollection.datacollection
+import datacollection.types.option
 
 from datacollection import register
 from datacollection import DataCollection
@@ -145,8 +145,8 @@ class TestDataCollection(unittest.TestCase):
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(datacollection.functional.data_collection))
-    tests.addTests(doctest.DocTestSuite(datacollection.functional.option))
+    tests.addTests(doctest.DocTestSuite(datacollection.datacollection))
+    tests.addTests(doctest.DocTestSuite(datacollection.types.option))
     return tests
 
 

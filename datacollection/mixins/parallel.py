@@ -23,7 +23,7 @@ except:  # pylint: disable=bare-except
     pass
 
 from datacollection.utils.log import engine_log
-from datacollection.functional.option import Option, Empty, _Reason
+from datacollection.types.option import Option, Empty, _Reason
 from datacollection.hparam.hyperparameter import param_scope
 from datacollection.functional.storages import WritableTable, ChunkedTable
 

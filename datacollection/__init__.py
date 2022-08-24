@@ -43,6 +43,7 @@ __all__ = [
     "param_scope",
     "Document",
     "DataCollection",
+    "DataFrame",
     "State",
     "Entity",
     "range",

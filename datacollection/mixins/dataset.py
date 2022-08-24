@@ -15,7 +15,7 @@
 from typing import Union
 from pathlib import Path
 
-from datacollection.functional.entity import Entity
+from datacollection.types.entity import Entity
 
 
 class DatasetMixin:

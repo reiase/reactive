@@ -14,7 +14,7 @@
 import random
 from typing import Iterable
 
-from datacollection.functional.entity import Entity
+from datacollection.types.entity import Entity
 from datacollection.hparam.hyperparameter import dynamic_dispatch, param_scope
 
 

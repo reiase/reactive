@@ -16,7 +16,7 @@ import json
 
 from typing import Dict, Any, Optional, Set, Union, List
 
-from datacollection.functional.entity import Entity
+from datacollection.types.entity import Entity
 from datacollection.hparam import dynamic_dispatch, param_scope
 
 # pylint: disable=protected-access

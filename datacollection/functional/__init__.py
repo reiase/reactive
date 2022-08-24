@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datacollection.functional.data_collection import DataCollection, DataFrame
-from datacollection.functional.entity import Entity
-from datacollection.functional.option import Option, Some, Empty
+from datacollection.datacollection import DataCollection, DataFrame
+from datacollection.types.entity import Entity
+from datacollection.types.option import Option, Some, Empty
 from datacollection.hparam import HyperParameter as State
 from datacollection.hparam import param_scope, dynamic_dispatch
 
