@@ -19,7 +19,7 @@ import os
 import threading
 from typing import Any, Dict, List, Tuple
 
-from .operator_loader import OperatorLoader
+from .registry import resolve
 from datacollection.hparam.hyperparameter import dynamic_dispatch, param_scope
 
 from .base_execution import BaseExecution
@@ -29,8 +29,7 @@ from .vectorized_execution import VectorizedExecution
 
 
 def op(
-    operator_src: str,
-    tag: str = "main",
+    name: str,
     arg: List[Any] = [],
     kwargs: Dict[str, Any] = {},
 ):
@@ -46,15 +45,7 @@ def op(
         (`typing.Any`)
             The `Operator` output.
     """
-    if isinstance(operator_src, type):
-        class_op = type("operator", (operator_src,), kwargs)
-        return class_op.__new__(class_op, **kwargs)
-
-    loader = OperatorLoader()
-    if os.path.isfile(operator_src):
-        return loader.load_operator_from_path(operator_src, arg, kwargs)
-    else:
-        return loader.load_operator(operator_src, arg, kwargs, tag)
+    return resolve(name)(*arg, **kwargs)
 
 
 class _OperatorLazyWrapper(BaseExecution, PandasExecution, StatefulExecution, VectorizedExecution):  #  #  #  #
