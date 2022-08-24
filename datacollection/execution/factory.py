@@ -15,7 +15,6 @@
 # pylint: disable=unused-import
 # pylint: disable=dangerous-default-value
 
-import os
 import threading
 from typing import Any, Dict, List, Tuple
 
@@ -28,27 +27,13 @@ from .stateful_execution import StatefulExecution
 from .vectorized_execution import VectorizedExecution
 
 
-def op(
-    name: str,
-    arg: List[Any] = [],
-    kwargs: Dict[str, Any] = {},
+def op(name: str, args: List[Any] = [], kwargs: Dict[str, Any] = {}):
+    return resolve(name)(*args, **kwargs)
+
+
+class _OperatorLazyWrapper(
+    BaseExecution, PandasExecution, StatefulExecution, VectorizedExecution
 ):
-    """
-    Entry method which takes either operator tasks or paths to python files or class in notebook.
-    An `Operator` object is created with the init args(kwargs).
-    Args:
-        operator_src (`str`):
-            operator name or python file location or class in notebook.
-        tag (`str`):
-            Which tag to use for operators on hub, defaults to `main`.
-    Returns
-        (`typing.Any`)
-            The `Operator` output.
-    """
-    return resolve(name)(*arg, **kwargs)
-
-
-class _OperatorLazyWrapper(BaseExecution, PandasExecution, StatefulExecution, VectorizedExecution):  #  #  #  #
     """
     operator wrapper for lazy initialization. Inherits from different execution strategies.
     """
@@ -77,27 +62,10 @@ class _OperatorLazyWrapper(BaseExecution, PandasExecution, StatefulExecution, Ve
             if self._op is None:
                 #  Called with param scope in order to pass index in to op.
                 with param_scope(index=self._index):
-                    self._op = op(self._name, "main", arg=self._arg, kwargs=self._kws)
+                    self._op = op(self._name, args=self._arg, kwargs=self._kws)
                     if hasattr(self._op, "__vcall__"):
                         self.__has_vcall__ = True
         return self._op
-
-    def get_op(self):
-        self.__check_init__()
-        return self._op
-
-    @property
-    def op_config(self):
-        self.__check_init__()
-        return self._op_config
-
-    @property
-    def function(self):
-        return self._name
-
-    @property
-    def init_args(self):
-        return self._kws
 
     @staticmethod
     def callback(real_name: str, index: Tuple[str], *arg, **kws):

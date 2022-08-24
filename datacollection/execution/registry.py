@@ -21,7 +21,6 @@ from datacollection.hparam import param_scope
 REGISTRY: Dict[str, Any] = {}
 
 
-@staticmethod
 def resolve(name: str) -> Any:
     """
     Resolve operator by name

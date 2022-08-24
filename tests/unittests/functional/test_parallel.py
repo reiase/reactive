@@ -18,7 +18,7 @@ import numpy as np
 
 from datacollection import DataCollection
 
-import datacollection.functional.mixins.parallel
+import datacollection.mixins.parallel
 
 
 class TestParallel(unittest.TestCase):

@@ -21,12 +21,14 @@ from datacollection.functional import (api, dc, dummy_input, from_df, glob,
 
 from .datacollection import DataCollection, DataFrame
 from .execution.registry import register
+from .execution.factory import ops
 from .hparam import HyperParameter as Document
 from .hparam import param_scope
 from .types import Entity
 
 # Place all functions that are meant to be called by towhee.func() here aftering importing them.
 __all__ = [
+    "ops",
     "register",
     "param_scope",
     "Document",

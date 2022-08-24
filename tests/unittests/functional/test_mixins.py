@@ -21,18 +21,18 @@ import numpy as np
 from pathlib import Path
 
 import datacollection
-import datacollection.functional.mixins.computer_vision
-import datacollection.functional.mixins.dataset
-import datacollection.functional.mixins.dataframe
-import datacollection.functional.mixins.metric
-import datacollection.functional.mixins.parallel
-import datacollection.functional.mixins.state
-import datacollection.functional.mixins.serve
-import datacollection.functional.mixins.config
-import datacollection.functional.mixins.data_processing
-import datacollection.functional.mixins.safe
-import datacollection.functional.mixins.list
-import datacollection.functional.mixins.stream
+import datacollection.mixins.computer_vision
+import datacollection.mixins.dataset
+import datacollection.mixins.dataframe
+import datacollection.mixins.metric
+import datacollection.mixins.parallel
+import datacollection.mixins.state
+import datacollection.mixins.serve
+import datacollection.mixins.config
+import datacollection.mixins.data_processing
+import datacollection.mixins.safe
+import datacollection.mixins.list
+import datacollection.mixins.stream
 
 from datacollection import DataCollection, DataFrame, dc
 from datacollection import Entity
@@ -43,19 +43,19 @@ public_path = Path(__file__).parent.parent.resolve()
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
     for mod in [
-        datacollection.functional.mixins.computer_vision,
-        datacollection.functional.mixins.dataset,
-        datacollection.functional.mixins.dataframe,
-        datacollection.functional.mixins.metric,
-        datacollection.functional.mixins.parallel,
-        datacollection.functional.mixins.state,
-        datacollection.functional.mixins.serve,
-        datacollection.functional.mixins.column,
-        datacollection.functional.mixins.config,
-        datacollection.functional.mixins.list,
-        datacollection.functional.mixins.data_processing,
-        datacollection.functional.mixins.stream,
-        datacollection.functional.mixins.safe,
+        datacollection.mixins.computer_vision,
+        datacollection.mixins.dataset,
+        datacollection.mixins.dataframe,
+        datacollection.mixins.metric,
+        datacollection.mixins.parallel,
+        datacollection.mixins.state,
+        datacollection.mixins.serve,
+        datacollection.mixins.column,
+        datacollection.mixins.config,
+        datacollection.mixins.list,
+        datacollection.mixins.data_processing,
+        datacollection.mixins.stream,
+        datacollection.mixins.safe,
     ]:
         tests.addTests(doctest.DocTestSuite(mod))
 
@@ -76,7 +76,7 @@ class TestMetricMixin(unittest.TestCase):
         pred_2 = [[0, 1, 2, 3, 4, 5, 6, 7, 8]]
         pred_3 = [[0, 11, 12]]
 
-        mhr = datacollection.functional.mixins.metric.mean_hit_ratio
+        mhr = datacollection.mixins.metric.mean_hit_ratio
         self.assertEqual(1, mhr(true, pred_1))
         self.assertEqual(0.8, mhr(true, pred_2))
         self.assertEqual(0, mhr(true, pred_3))
@@ -90,7 +90,7 @@ class TestMetricMixin(unittest.TestCase):
         trues = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
         pred_4 = [[1, 6, 2, 7, 8, 3, 9, 10, 4, 5], [0, 1, 6, 7, 2, 8, 3, 9, 10]]
 
-        mean_ap = datacollection.functional.mixins.metric.mean_average_precision
+        mean_ap = datacollection.mixins.metric.mean_average_precision
         self.assertEqual(0.62, round(mean_ap(true, pred_1), 2))
         self.assertEqual(0.44, round(mean_ap(true, pred_2), 2))
         self.assertEqual(0, mean_ap(true, pred_3))
