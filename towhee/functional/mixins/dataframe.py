@@ -287,7 +287,7 @@ class DataFrameMixin:
             return tuple(getattr(x, name) for name in x.__dict__)
 
         return self.map(inner)
-    
+
     def as_str(self):
         return self._factory(map(str, self._iterable))
 

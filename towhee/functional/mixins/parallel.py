@@ -61,18 +61,13 @@ class ParallelMixin:
     >>> from towhee import dc
     >>> dc = dc['a'](range(1000)).set_parallel(5).set_chunksize(2)
     >>> dc = dc.runas_op['a', 'b'](lambda x: x+1)
-    >>> dc._iterable.chunks()[:2]
-    [pyarrow.Table
+    >>> for chunk in dc._iterable.chunks()[:2]: print(chunk)
+    pyarrow.Table
     a: int64
     b: int64
-    ----
-    a: [[0,1]]
-    b: [[1,2]], pyarrow.Table
+    pyarrow.Table
     a: int64
     b: int64
-    ----
-    a: [[2,3]]
-    b: [[3,4]]]
 
     >>> result = DataCollection.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
     >>> result[990:]

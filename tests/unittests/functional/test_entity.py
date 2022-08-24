@@ -17,20 +17,23 @@ import doctest
 import towhee.functional.entity
 from towhee import Entity
 
+
 def load_tests(loader, tests, ignore):
-    #pylint: disable=unused-argument
+    # pylint: disable=unused-argument
     tests.addTests(doctest.DocTestSuite(towhee.functional.entity))
     return tests
+
 
 class TestEntity(unittest.TestCase):
     """
     Unit test for Entity class.
     """
+
     def test_init(self):
-        d = {'a': 'A', 'b': 'B', 'c': 'C'}
+        d = {"a": "A", "b": "B", "c": "C"}
         e1 = Entity()
         e2 = Entity(**d)
-        e3 = Entity(a='A', b='B', c='C')
+        e3 = Entity(a="A", b="B", c="C")
         self.assertTrue(isinstance(e1, Entity))
         self.assertTrue(isinstance(e2, Entity))
         self.assertTrue(isinstance(e3, Entity))
@@ -38,5 +41,6 @@ class TestEntity(unittest.TestCase):
         self.assertEqual(e2.b, e3.b)
         self.assertEqual(e2.c, e3.c)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

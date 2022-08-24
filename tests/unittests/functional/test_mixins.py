@@ -110,21 +110,13 @@ class TestColumnComputing(unittest.TestCase):
         self.assertTrue(all(map(lambda x: x.a == x.b - 1, df)))
 
     def test_simo(self):
-        df = (
-            dc["a"](range(10))
-            .to_column()
-            .runas_op["a", ("b", "c")](func=lambda x: (x + 1, x - 1))
-        )
+        df = dc["a"](range(10)).to_column().runas_op["a", ("b", "c")](func=lambda x: (x + 1, x - 1))
 
         self.assertTrue(all(map(lambda x: x.a == x.b - 1, df)))
         self.assertTrue(all(map(lambda x: x.a == x.c + 1, df)))
 
     def test_miso(self):
-        df = (
-            dc["a", "b"]([range(10), range(10)])
-            .to_column()
-            .runas_op[("a", "b"), "c"](func=lambda x, y: x + y)
-        )
+        df = dc["a", "b"]([range(10), range(10)]).to_column().runas_op[("a", "b"), "c"](func=lambda x, y: x + y)
 
         self.assertTrue(all(map(lambda x: x.c == x.a + x.b, df)))
 
@@ -161,11 +153,7 @@ class TestCompileMixin(unittest.TestCase):
         query = np.random.random(128)
 
         t1 = time.time()
-        _ = (
-            towhee.dc["a"](data)
-            .runas_op["a", "b"](func=lambda _: query)
-            .inner_distance[("b", "a"), "c"]()
-        )
+        _ = towhee.dc["a"](data).runas_op["a", "b"](func=lambda _: query).inner_distance[("b", "a"), "c"]()
         t2 = time.time()
         _ = (
             towhee.dc["a"](data)

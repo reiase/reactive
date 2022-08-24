@@ -17,11 +17,7 @@ from setuptools import find_packages, setup
 
 def parse_requirements(file_name: str):
     with open(file_name) as f:
-        return [
-            require.strip()
-            for require in f
-            if require.strip() and not require.startswith("#")
-        ]
+        return [require.strip() for require in f if require.strip() and not require.startswith("#")]
 
 
 setup(

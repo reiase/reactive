@@ -23,48 +23,26 @@ class TestDocument(unittest.TestCase):
     """
 
     def test_init(self):
-        dc = DataCollection([
-            {
-                'a': 1,
-                'b': {
-                    'c': 2
-                }
-            },
-            {
-                'a': 2,
-                'b': {
-                    'c': 3
-                }
-            },
-        ])
-        dc = dc.runas_op(func=lambda x: Document(**x)) \
-            .runas_op['a', 'c.d'](func=lambda x: x+1) \
-            .runas_op['b.c', 'b.d'](func=lambda x: x*2)
+        dc = DataCollection(
+            [
+                {"a": 1, "b": {"c": 2}},
+                {"a": 2, "b": {"c": 3}},
+            ]
+        )
+        dc = (
+            dc.runas_op(func=lambda x: Document(**x))
+            .runas_op["a", "c.d"](func=lambda x: x + 1)
+            .runas_op["b.c", "b.d"](func=lambda x: x * 2)
+        )
         result = json.dumps(dc.to_list())
-        expected = json.dumps([
-            {
-                'a': 1,
-                'b': {
-                    'c': 2,
-                    'd': 4
-                },
-                'c': {
-                    'd': 2
-                }
-            },
-            {
-                'a': 2,
-                'b': {
-                    'c': 3,
-                    'd': 6
-                },
-                'c': {
-                    'd': 3
-                }
-            },
-        ])
+        expected = json.dumps(
+            [
+                {"a": 1, "b": {"c": 2, "d": 4}, "c": {"d": 2}},
+                {"a": 2, "b": {"c": 3, "d": 6}, "c": {"d": 3}},
+            ]
+        )
         self.assertEqual(result, expected)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

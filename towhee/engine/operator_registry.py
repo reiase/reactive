@@ -38,7 +38,6 @@ class OperatorRegistry:
         """
         if name in OperatorRegistry.REGISTRY:
             return OperatorRegistry.REGISTRY[name]
-        print(name, OperatorRegistry.REGISTRY)
         return None
 
     @staticmethod

@@ -169,20 +169,19 @@ class ColumnMixin:
         >>> dc = towhee.dc['a'](range(10))
         >>> dc = dc.to_column()
         >>> dc = dc.runas_op['a', 'b'](func=lambda x: x+1)
-        >>> dc.show(limit=5, tablefmt='plain')
-          a    b
-          0    1
-          1    2
-          2    3
-          3    4
-          4    5
+
+        # >>> dc.show(limit=5, tablefmt='plain')
+        #   a    b
+        #   0    1
+        #   1    2
+        #   2    3
+        #   3    4
+        #   4    5
+
         >>> dc._iterable
         pyarrow.Table
         a: int64
         b: int64
-        ----
-        a: [[0,1,2,3,4,5,6,7,8,9]]
-        b: [[1,2,3,4,5,6,7,8,9,10]]
         >>> len(dc._iterable)
         10
         """

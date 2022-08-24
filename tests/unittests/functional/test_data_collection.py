@@ -33,7 +33,7 @@ def add_1(x):
     return x + 1
 
 
-@register(name='add')
+@register(name="add")
 class MyAdd:
     def __init__(self, val):
         self.val = val
@@ -42,7 +42,7 @@ class MyAdd:
         return x + self.val
 
 
-@register(name='mul')
+@register(name="mul")
 class MyMul:
     def __init__(self, val):
         self.val = val
@@ -63,10 +63,7 @@ class TestDataCollection(unittest.TestCase):
 
     def test_example_for_multiple_line_statement(self):
         dc = DataCollection(range(5))
-        result = dc \
-            .add(val=1) \
-            .mul(val=2) \
-            .to_list()
+        result = dc.add(val=1).mul(val=2).to_list()
         self.assertListEqual(result, [2, 4, 6, 8, 10])
 
     def test_runas_op(self):
@@ -76,11 +73,11 @@ class TestDataCollection(unittest.TestCase):
         entities = [Entity(a=i, b=i + 1) for i in range(5)]
         dc = DataCollection(entities)
 
-        res = dc.runas_op['a', 'b'](func=lambda x: x - 1)
+        res = dc.runas_op["a", "b"](func=lambda x: x - 1)
         for i in res:
             self.assertTrue(i.a == i.b + 1)
 
-        res = dc.runas_op['a', 'b'](func=add)
+        res = dc.runas_op["a", "b"](func=add)
         for i in res:
             self.assertTrue(i.a == i.b - 1)
 
@@ -90,7 +87,7 @@ class TestDataCollection(unittest.TestCase):
 
         dc.head(1)
 
-        json_path = public_path / 'test_util' / 'test_mixins' / 'test.json'
+        json_path = public_path / "test_util" / "test_mixins" / "test.json"
         res = DataCollection.read_json(json_path)
 
         res.head(1)
@@ -129,13 +126,13 @@ class TestDataCollection(unittest.TestCase):
     #         .evaluate['target', 'dt_evaluate_predict']('dt') \
     #         .report()
 
-        # train.set_training().svc[('fea', 'target'), 'svm_train_predict'](name='svm_classifier')
+    # train.set_training().svc[('fea', 'target'), 'svm_train_predict'](name='svm_classifier')
 
-        # test.set_evaluating(train.get_state()) \
-        #     .svc[('fea', 'target'), 'svm_evaluate_predict'](name='svm_classifier') \
-        #     .with_metrics(['accuracy', 'recall']) \
-        #     .evaluate['target', 'svm_evaluate_predict']('svm') \
-        #     .report()
+    # test.set_evaluating(train.get_state()) \
+    #     .svc[('fea', 'target'), 'svm_evaluate_predict'](name='svm_classifier') \
+    #     .with_metrics(['accuracy', 'recall']) \
+    #     .evaluate['target', 'svm_evaluate_predict']('svm') \
+    #     .report()
 
     def test_run(self):
         # pylint: disable=unnecessary-lambda
@@ -153,5 +150,5 @@ def load_tests(loader, tests, ignore):
     return tests
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

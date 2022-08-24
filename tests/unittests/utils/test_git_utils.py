@@ -20,9 +20,9 @@ from pathlib import Path
 from towhee.utils.git_utils import GitUtils
 
 public_path = Path(__file__).parent.parent.resolve()
-repo_path = public_path / 'test_cache/pipelines/towhee/ci_test'
+repo_path = public_path / "test_cache/pipelines/towhee/ci_test"
 print(repo_path)
-git = GitUtils(author='towhee', repo='ci-test')
+git = GitUtils(author="towhee", repo="ci-test")
 if repo_path.is_dir():
     rmtree(repo_path)
 git.clone(local_repo_path=repo_path)
@@ -32,9 +32,10 @@ class TestGitUtils(unittest.TestCase):
     """
     Unit test for git utils.
     """
+
     def test_clone(self):
         self.assertTrue(repo_path.is_dir())
-        self.assertTrue((repo_path / 'ci_test.yaml').is_file())
+        self.assertTrue((repo_path / "ci_test.yaml").is_file())
 
     def test_add(self):
         cwd = Path.cwd()
@@ -46,7 +47,7 @@ class TestGitUtils(unittest.TestCase):
     def test_pull(self):
         cwd = Path.cwd()
         os.chdir(repo_path)
-        subprocess.check_call(['git', 'config', 'pull.rebase', 'true'])
+        subprocess.check_call(["git", "config", "pull.rebase", "true"])
         res_code = git.pull()
         self.assertEqual(res_code, 0)
         os.chdir(cwd)
@@ -55,5 +56,5 @@ class TestGitUtils(unittest.TestCase):
         cwd = Path.cwd()
         os.chdir(repo_path)
         res = git.status()
-        self.assertEqual('up-to-date', res)
+        self.assertEqual("up-to-date", res)
         os.chdir(cwd)

@@ -18,10 +18,10 @@ import towhee.operator.stateful_operator
 
 
 def load_tests(loader, tests, ignore):
-    #pylint: disable=unused-argument
+    # pylint: disable=unused-argument
     tests.addTests(doctest.DocTestSuite(towhee.operator.stateful_operator))
     return tests
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

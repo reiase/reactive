@@ -26,8 +26,7 @@ def add_global(x):
 
 
 class AddX:
-    """ Mocked add operator
-    """
+    """Mocked add operator"""
 
     def __init__(self, x) -> None:
         self._x = x
@@ -42,8 +41,8 @@ def add_register(x):
 
 
 class MockOject:
-    """ mocked object
-    """
+    """mocked object"""
+
     pass
 
 
@@ -54,11 +53,9 @@ mock_ns.path_1.path_2.path_3 = lambda x: x + 1
 
 
 class TestDispatcher(TestCase):
-    """ Test cases for missing method dispatcher
-    """
+    """Test cases for missing method dispatcher"""
 
     def test_local_function(self):
-
         def add_local(x):
             return x + 1
 
@@ -66,12 +63,11 @@ class TestDispatcher(TestCase):
         self.assertListEqual(retval, [1, 2, 3])
 
     def test_local_function_with_schema(self):
-
         def add_with_schema(x):
             return x + 1
 
-        retval = towhee.dc['a']([0, 1, 2]).add_with_schema['a', 'b']()
-        self.assertListEqual(retval.select('b').as_raw().to_list(), [1, 2, 3])
+        retval = towhee.dc["a"]([0, 1, 2]).add_with_schema["a", "b"]()
+        self.assertListEqual(retval.select("b").as_raw().to_list(), [1, 2, 3])
 
     def test_global_function(self):
         retval = towhee.range(3).add_global().to_list()

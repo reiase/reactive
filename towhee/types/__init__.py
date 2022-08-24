@@ -14,7 +14,6 @@
 
 from towhee.types.audio_frame import AudioFrame
 from towhee.types.video_frame import VideoFrame
-from towhee.types.arg import arg, to_image_color
 
 __all__ = ["AudioFrame", "arg", "to_image_color", "VideoFrame"]
 

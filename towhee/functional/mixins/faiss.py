@@ -60,7 +60,7 @@ def _faiss_insert(iterable: Iterable, column: Tuple[str], findex, string, metric
         vecs.append(vec)
         if enable_kv:
             k = getattr(it, column[0])
-            vid = abs(hash(k)) % (10 ** 8)
+            vid = abs(hash(k)) % (10**8)
             kv_storage.add(vid, k)
         else:
             vid = getattr(it, column[0])

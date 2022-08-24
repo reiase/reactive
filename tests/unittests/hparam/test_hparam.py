@@ -29,7 +29,7 @@ class TestHyperParameter(unittest.TestCase):
         self.assertEqual(param1.a, 1)
         self.assertEqual(param1.b, 2)
 
-        param2 = HyperParameter(**{'a': 1, 'b': 2})
+        param2 = HyperParameter(**{"a": 1, "b": 2})
         self.assertEqual(param2.a, 1)
         self.assertEqual(param2.b, 2)
 
@@ -38,16 +38,16 @@ class TestHyperParameter(unittest.TestCase):
         param1.a = 1
         param1.b = 2
         param1.c.b.a = 3
-        self.assertDictEqual(param1, {'a': 1, 'b': 2, 'c': {'b': {'a': 3}}})
+        self.assertDictEqual(param1, {"a": 1, "b": 2, "c": {"b": {"a": 3}}})
 
     def test_parameter_update(self):
         param1 = HyperParameter()
-        param1.put('c.b.a', 1)
-        self.assertDictEqual(param1, {'c': {'b': {'a': 1}}})
+        param1.put("c.b.a", 1)
+        self.assertDictEqual(param1, {"c": {"b": {"a": 1}}})
 
     def test_parameter_patch(self):
         param1 = HyperParameter()
-        param1.update({'a': 1, 'b': 2})
+        param1.update({"a": 1, "b": 2})
         self.assertEqual(param1.a, 1)
         self.assertEqual(param1.b, 2)
 
@@ -78,7 +78,7 @@ class TestParamScope(unittest.TestCase):
             self.assertEqual(hp.a, 1)
             self.assertEqual(hp.b, 2)
 
-        with param_scope(**{'a': 1, 'b': 2}) as hp:
+        with param_scope(**{"a": 1, "b": 2}) as hp:
             self.assertEqual(hp.a, 1)
             self.assertEqual(hp.b, 2)
 
@@ -90,7 +90,6 @@ class TestParamScope(unittest.TestCase):
                 self.assertEqual(hp2.a, 3)
 
     def test_scope_with_function_call(self):
-
         def read_a():
             with param_scope() as hp:
                 return hp.a
@@ -110,10 +109,10 @@ class TestParamScope(unittest.TestCase):
 
 
 def load_tests(loader, tests, ignore):
-    #pylint: disable=unused-argument
+    # pylint: disable=unused-argument
     tests.addTests(doctest.DocTestSuite(towhee.hparam.hyperparameter))
     return tests
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

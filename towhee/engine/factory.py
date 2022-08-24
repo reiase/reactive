@@ -57,9 +57,7 @@ def op(
         return loader.load_operator(operator_src, arg, kwargs, tag)
 
 
-class _OperatorLazyWrapper(
-    BaseExecution, PandasExecution, StatefulExecution, VectorizedExecution
-):  #  #  #  #
+class _OperatorLazyWrapper(BaseExecution, PandasExecution, StatefulExecution, VectorizedExecution):  #  #  #  #
     """
     operator wrapper for lazy initialization. Inherits from different execution strategies.
     """
