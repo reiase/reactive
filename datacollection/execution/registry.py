@@ -34,41 +34,37 @@ def register(name: str = None):
 
     Examples:
 
-    1. register a function as operator
+        1. register a function as operator
+        >>> from datacollection import register
+        >>> @register
+        ... def foo(x, y):
+        ...     return x+y
 
-    >>> from towhee import register
-    >>> @register
-    ... def foo(x, y):
-    ...     return x+y
+        2. register a class as operator
+        >>> @register
+        ... class foo_cls:
+        ...     def __init__(self, x):
+        ...         self.x = x
+        ...     def __call__(self, y):
+        ...         return self.x + y
 
-    2. register a class as operator
+        By default, function/class name is used as operator name,
+        which is used by the operator factory `towhee.ops` to invoke the operator.
+        >>> from datacollection import ops
+        >>> op = ops.foo()
+        >>> op(1, 2)
+        3
 
-    >>> @register
-    ... class foo_cls:
-    ...     def __init__(self, x):
-    ...         self.x = x
-    ...     def __call__(self, y):
-    ...         return self.x + y
+        >>> op = ops.foo_cls(x=2)
+        >>> op(3)
+        5
 
-    By default, function/class name is used as operator name,
-    which is used by the operator factory `towhee.ops` to invoke the operator.
-
-    >>> from towhee import ops
-    >>> op = ops.foo()
-    >>> op(1, 2)
-    3
-
-    >>> op = ops.foo_cls(x=2)
-    >>> op(3)
-    5
-
-    3. register operator with an alternative name:
-
-    >>> @register(name='my_foo')
-    ... def foo(x, y):
-    ...     return x+y
-    >>> ops.my_foo()(1,2)
-    3
+        3. register operator with an alternative name:
+        >>> @register(name='my_foo')
+        ... def foo(x, y):
+        ...     return x+y
+        >>> ops.my_foo()(1,2)
+        3
 
     Args:
         name (str, optional): operator name, will use the class/function name if None.

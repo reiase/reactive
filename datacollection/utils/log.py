@@ -1,21 +1,35 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
 import logging
+import logging.config
 
-FORMAT = "%(asctime)s - %(thread)d - %(filename)s-%(module)s:%(lineno)s - %(levelname)s: %(message)s"
-logging.basicConfig(format=FORMAT)
+logging.config.dictConfig(
+    dict(
+        version=1,
+        formatters={
+            "info": {
+                "format": "%(asctime)s|%(levelname)s|%(module)s:%(lineno)s| %(message)s"
+            },
+        },
+        loggers={
+            "": dict(level="INFO", handlers=["console"]),
+        },
+        handlers={
+            "console": {
+                "level": "INFO",
+                "formatter": "info",
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
+            },
+        },
+    )
+)
 
-engine_log = logging.getLogger("towhee.engine")
+
+def set_log_level(level):
+    if isinstance(level, str):
+        level = getattr(logging, level.upper())
+    for h in logging.getLogger().handlers:
+        h.setLevel(level)
+
+
+def get_logger(name):
+    return logging.getLogger(name)

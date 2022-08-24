@@ -14,28 +14,23 @@
 
 import doctest
 import unittest
-import os
-import cv2
-import faiss
-import numpy as np
 from pathlib import Path
 
 import datacollection
 import datacollection.mixins.computer_vision
-import datacollection.mixins.dataset
-import datacollection.mixins.dataframe
-import datacollection.mixins.metric
-import datacollection.mixins.parallel
-import datacollection.mixins.state
-import datacollection.mixins.serve
 import datacollection.mixins.config
 import datacollection.mixins.data_processing
-import datacollection.mixins.safe
+import datacollection.mixins.dataframe
+import datacollection.mixins.dataset
 import datacollection.mixins.list
+import datacollection.mixins.metric
+import datacollection.mixins.parallel
+import datacollection.mixins.safe
+import datacollection.mixins.serve
+import datacollection.mixins.state
 import datacollection.mixins.stream
-
-from datacollection import DataCollection, DataFrame, dc
-from datacollection import Entity
+import numpy as np
+from datacollection import dc
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -130,11 +125,12 @@ class TestColumnComputing(unittest.TestCase):
 
 class TestCompileMixin(unittest.TestCase):
     """
-    Unittest for FaissMixin.
+    Unittest for CompileMixin.
     """
 
     def test_compile(self):
         import time
+
         from datacollection import register
 
         @register(name="inner_distance")

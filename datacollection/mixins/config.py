@@ -22,28 +22,25 @@ class ConfigMixin:
 
     Examples:
 
-    >>> import towhee
-    >>> dc = towhee.dc['a'](range(20))
-    >>> dc = dc.set_chunksize(10)
-    >>> dc = dc.set_parallel(2)
-    >>> dc = dc.set_jit('numba')
-    >>> dc.get_config()
-    {'parallel': 2, 'chunksize': 10, 'jit': 'numba', 'format_priority': None}
-    >>> dc1 = towhee.dc([1,2,3]).config(jit='numba')
-    >>> dc2 = towhee.dc['a'](range(40)).config(parallel=2, chunksize=20)
+    >>> import datacollection as dc
+    >>> dc0 = dc.dc['a'](range(20))
+    >>> dc0 = dc0.set_chunksize(10)
+    >>> dc0 = dc0.set_parallel(2)
+    >>> dc0 = dc0.set_jit('numba')
+    >>> dc0.get_config()
+    {'parallel': 2, 'chunksize': 10, 'jit': 'numba'}
+    >>> dc1 = dc.dc([1,2,3]).config(jit='numba')
+    >>> dc2 = dc.dc['a'](range(40)).config(parallel=2, chunksize=20)
     >>> dc1.get_config()
-    {'parallel': None, 'chunksize': None, 'jit': 'numba', 'format_priority': None}
+    {'parallel': None, 'chunksize': None, 'jit': 'numba'}
     >>> dc2.get_config()
-    {'parallel': 2, 'chunksize': 20, 'jit': None, 'format_priority': None}
-    >>> dc3 = towhee.dc['a'](range(10)).config(format_priority=['tensorrt', 'onnx'])
-    >>> dc3.get_config()
-    {'parallel': None, 'chunksize': None, 'jit': None, 'format_priority': ['tensorrt', 'onnx']}
+    {'parallel': 2, 'chunksize': 20, 'jit': None}
 
-    >>> import towhee
-    >>> dc = towhee.dc['a'](range(20))
-    >>> dc = dc.set_chunksize(10)
-    >>> dc = dc.set_parallel(2)
-    >>> dc = dc.set_jit('numba')
+    >>> import datacollection as dc
+    >>> dc0 = dc.dc['a'](range(20))
+    >>> dc0 = dc0.set_chunksize(10)
+    >>> dc0 = dc0.set_parallel(2)
+    >>> dc0 = dc0.set_jit('numba')
     """
 
     def __init__(self) -> None:
@@ -60,15 +57,12 @@ class ConfigMixin:
             self._chunksize = None
         if parent is None or not hasattr(parent, "_jit"):
             self._jit = None
-        if parent is None or not hasattr(parent, "_format_priority"):
-            self._format_priority = None
 
     def config(
         self,
         parallel: int = None,
         chunksize: int = None,
         jit: Union[str, dict] = None,
-        format_priority: List[str] = None,
     ):
         """
         Set the parameters in DC.
@@ -81,8 +75,6 @@ class ConfigMixin:
             jit (`Union[str, dict]`):
                It can set to "numba", this mode will speed up the Operator's function, but it may also need to return to python mode due to JIT
                failure, which will take longer, so please set it carefully.
-            format_priority (`List[str]`):
-                The priority list of format.
         """
         dc = self
         if jit is not None:
@@ -91,13 +83,11 @@ class ConfigMixin:
             dc = dc.set_parallel(num_worker=parallel)
         if chunksize is not None:
             dc = dc.set_chunksize(chunksize=chunksize)
-        if format_priority is not None:
-            dc = dc.set_format_priority(format_priority=format_priority)
         return dc
 
     def get_config(self):
         """
-        Return the config in DC, such as `parallel`, `chunksize`, `jit` and `format_priority`.
+        Return the config in DC, such as `parallel`, `chunksize` and `jit`.
         """
         self._config = {}
 
@@ -107,6 +97,4 @@ class ConfigMixin:
             self._config["chunksize"] = self._chunksize
         if hasattr(self, "_jit"):
             self._config["jit"] = self._jit
-        if hasattr(self, "_format_priority"):
-            self._config["format_priority"] = self._format_priority
         return self._config

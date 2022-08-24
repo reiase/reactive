@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from ..types.entity import EntityView
+from .entity import EntityView
 
 # pylint: disable=import-outside-toplevel
 
@@ -47,7 +47,7 @@ class WritableTable:
 
     def seal(self):
         # pylint: disable=protected-access
-        from datacollection.utils.thirdparty.pyarrow import pa
+        import pyarrow as pa
         from datacollection.types.tensor_array import TensorArray
 
         names = list(self._buffer)
@@ -120,7 +120,7 @@ class ChunkedTable:
         return self._chunks
 
     def _create_table(self, chunk, head):
-        from datacollection.utils.thirdparty.pyarrow import pa
+        import pyarrow as pa
         from datacollection.types.tensor_array import TensorArray
 
         # head = []

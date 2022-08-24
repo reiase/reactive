@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 from typing import Tuple
 
+import numpy as np
 from datacollection.hparam import param_scope
 
 
@@ -38,10 +38,11 @@ class Collector:
 
 def encode_fig_img(mat, size=300):
     # pylint: disable=import-outside-toplevel
-    from datacollection.utils.sklearn_utils import ConfusionMatrixDisplay
-    from datacollection.utils.matplotlib_utils import matplotlib as mpl
     import base64
     import io
+
+    import matplotlib as mpl
+    from sklearn.metrics import ConfusionMatrixDisplay
 
     mpl.use("Agg")  # Prevent showing stuff
     cm = mat.astype("float") / mat.sum(axis=1)[:, np.newaxis]  # normalize
@@ -109,15 +110,17 @@ def _evaluate_callback(self):
             actual_list.append(getattr(x, actual))
             predicted_list.append(getattr(x, predicted))
 
-        from datacollection.utils import sklearn_utils
+        from sklearn import metrics
 
         for metric_type in self.collector.metrics:
             if metric_type == "accuracy":
-                re = sklearn_utils.accuracy_score(actual_list, predicted_list)
+                re = metrics.accuracy_score(actual_list, predicted_list)
             elif metric_type == "recall":
-                re = sklearn_utils.recall_score(actual_list, predicted_list, average="weighted")
+                re = metrics.recall_score(
+                    actual_list, predicted_list, average="weighted"
+                )
             elif metric_type == "confusion_matrix":
-                re = sklearn_utils.confusion_matrix(actual_list, predicted_list)
+                re = metrics.confusion_matrix(actual_list, predicted_list)
             elif metric_type == "mean_hit_ratio":
                 re = mean_hit_ratio(actual_list, predicted_list)
             elif metric_type == "mean_average_precision":
@@ -150,8 +153,8 @@ class MetricMixin:
 
         Examples:
 
-        >>> from towhee import DataCollection
-        >>> from towhee import Entity
+        >>> from datacollection import DataCollection
+        >>> from datacollection import Entity
         >>> dc1 = DataCollection([Entity(a=a, b=b, c=c) for a, b, c in zip([0,1,1,0,0], [0,1,1,1,0], [0,1,1,0,0])])
         >>> dc1.with_metrics(['accuracy', 'recall']).evaluate['a', 'c'](name='lr').evaluate['a', 'b'](name='rf').report()
             accuracy  recall
@@ -169,14 +172,20 @@ class MetricMixin:
         test                0.622222             1.0
         {'test': {'mean_average_precision': 0.6222222222222221, 'mean_hit_ratio': 1.0}}
         """
-        from IPython.display import display, HTML
         import pandas as pd
+        from IPython.display import HTML, display
 
         scores_dict = get_scores_dict(self.collector)
         df = pd.DataFrame(data=scores_dict, index=list(self.collector.scores.keys()))
 
         if "confusion_matrix" in self.collector.metrics:
-            display(HTML(df.to_html(formatters={"confusion_matrix": encode_fig_img}, escape=False)))
+            display(
+                HTML(
+                    df.to_html(
+                        formatters={"confusion_matrix": encode_fig_img}, escape=False
+                    )
+                )
+            )
         else:
             display(df)
         return self.collector.scores

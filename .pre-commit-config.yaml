@@ -3,9 +3,11 @@ repos:
     rev: 22.3.0
     hooks:
       - id: black
-        args: [--line-length=120]
+        args: [--line-length=88]
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+  - repo: https://github.com/john-hen/Flake8-pyproject
+    rev: 1.0.1
     hooks:
-      - id: flake8
+    -   id: Flake8-pyproject
+        additional_dependencies: [flake8-docstrings, Flake8-pyproject]
+        args: [--max-line-length=88, --exit-zero]

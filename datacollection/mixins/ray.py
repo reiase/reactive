@@ -1,11 +1,13 @@
-from queue import Queue
 import asyncio
 import threading
 import uuid
+from queue import Queue
 
-from ..utils.log import engine_log
-from ..types.option import Option, Empty, _Reason
+from ..types.option import Empty, Option, _Reason
+from ..utils.log import get_logger
 from .parallel import EOS
+
+log = get_logger(__name__)
 
 
 def _map_task_ray(unary_op):  # pragma: no cover
@@ -16,7 +18,7 @@ def _map_task_ray(unary_op):  # pragma: no cover
             else:
                 return unary_op(x)
         except Exception as e:  # pylint: disable=broad-except
-            engine_log.warning(
+            log.warning(
                 f"{e}, please check {x} with op {unary_op}. Continue..."
             )  # pylint: disable=logging-fstring-interpolation
             return Empty(_Reason(x, e))
@@ -30,7 +32,13 @@ class RayMixin:  # pragma: no cover
     Mixin for parallel ray execution.
     """
 
-    def ray_start(self, address=None, local_packages: list = None, pip_packages: list = None, silence=True):
+    def ray_start(
+        self,
+        address=None,
+        local_packages: list = None,
+        pip_packages: list = None,
+        silence=True,
+    ):
         """
         Start the ray service. When using a remote cluster, all dependencies for custom functions
         and operators defined locally will need to be sent to the ray cluster. If using ray locally,
@@ -54,13 +62,19 @@ class RayMixin:  # pragma: no cover
         local_packages = [] if local_packages is None else local_packages
         pip_packages = [] if pip_packages is None else pip_packages
 
-        if ("towhee" not in pip_packages and "towhee" not in [str(x.__name__) for x in local_packages]) and (
-            address is not None
-        ):
+        if (
+            "towhee" not in pip_packages
+            and "towhee" not in [str(x.__name__) for x in local_packages]
+        ) and (address is not None):
             pip_packages.append("towhee")
         runtime_env = {"py_modules": local_packages, "pip": pip_packages}
 
-        ray.init(address=address, runtime_env=runtime_env, ignore_reinit_error=True, log_to_driver=silence)
+        ray.init(
+            address=address,
+            runtime_env=runtime_env,
+            ignore_reinit_error=True,
+            log_to_driver=silence,
+        )
         self._backend_started = True
         return self
 
@@ -85,6 +99,7 @@ class RayMixin:  # pragma: no cover
 
             def cleanup(self):
                 from shutil import rmtree
+
                 from datacollection import engine
 
                 try:
@@ -93,7 +108,9 @@ class RayMixin:  # pragma: no cover
                     pass
 
         actors = [
-            OperatorActor.remote(path, index, str(uuid.uuid4().hex[:12].upper()), *arg, **kws)
+            OperatorActor.remote(
+                path, index, str(uuid.uuid4().hex[:12].upper()), *arg, **kws
+            )
             for _ in range(self._num_worker)
         ]
         pool = ray.util.ActorPool(actors)

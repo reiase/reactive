@@ -30,8 +30,8 @@ class DataFrameMixin:
 
     1. define an operator with `register` decorator
 
-    >>> from towhee import register
-    >>> from towhee import DataFrame
+    >>> from datacollection import register
+    >>> from datacollection import DataFrame
     >>> @register
     ... def add_1(x):
     ...     return x+1
@@ -53,8 +53,8 @@ class DataFrameMixin:
 
     1. Select the entity on one specified field:
 
-    >>> from towhee import Entity
-    >>> from towhee import DataFrame
+    >>> from datacollection import Entity
+    >>> from datacollection import DataFrame
     >>> df = DataFrame([Entity(a=i, b=i, c=i) for i in range(2)])
     >>> df.select['a']().to_list()
     [<Entity dict_keys(['a'])>, <Entity dict_keys(['a'])>]
@@ -91,7 +91,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
         >>> entities = [Entity(a=i, b=i, c=i) for i in range(3)]
         >>> dc = DataFrame(entities)
         >>> dc.select('a')
@@ -116,7 +116,12 @@ class DataFrameMixin:
         return selector
 
     # pylint: disable=invalid-name
-    def fill_entity(self, _DefaultKVs: Optional[Dict[str, Any]] = None, _ReplaceNoneValue: bool = False, **kws):
+    def fill_entity(
+        self,
+        _DefaultKVs: Optional[Dict[str, Any]] = None,
+        _ReplaceNoneValue: bool = False,
+        **kws
+    ):
         """
         When DataFrame's iterable exists of Entities and some indexes missing, fill default value for those indexes.
 
@@ -128,7 +133,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
         >>> entities = [Entity(num=i) for i in range(3)]
         >>> df = DataFrame(entities)
         >>> df
@@ -166,7 +171,7 @@ class DataFrameMixin:
         Examples:
         1. convert dicts into entities:
 
-        >>> from towhee import DataFrame
+        >>> from datacollection import DataFrame
         >>> (
         ...     DataFrame([dict(a=1, b=2), dict(a=2, b=3)])
         ...         .as_entity()
@@ -177,7 +182,7 @@ class DataFrameMixin:
 
         2. convert tuples into entities:
 
-        >>> from towhee import DataFrame
+        >>> from datacollection import DataFrame
         >>> (
         ...     DataFrame([(1, 2), (2, 3)])
         ...         .as_entity(schema=['a', 'b'])
@@ -188,7 +193,7 @@ class DataFrameMixin:
 
         3. convert single value into entities:
 
-        >>> from towhee import DataFrame
+        >>> from datacollection import DataFrame
         >>> (
         ...     DataFrame([1, 2])
         ...         .as_entity(schema=['a'])
@@ -219,7 +224,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import DataFrame
+        >>> from datacollection import DataFrame
         >>> df = (
         ...     DataFrame(['{"x": 1}'])
         ...         .parse_json()
@@ -240,7 +245,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import DataFrame, Entity
+        >>> from datacollection import DataFrame, Entity
         >>> (
         ...     DataFrame([Entity(x=1)])
         ...         .as_json()
@@ -261,7 +266,7 @@ class DataFrameMixin:
 
         1. unpack multiple values from entities:
 
-        >>> from towhee import DataFrame
+        >>> from datacollection import DataFrame
         >>> (
         ...     DataFrame([(1, 2), (2, 3)])
         ...         .as_entity(schema=['a', 'b'])
@@ -288,6 +293,12 @@ class DataFrameMixin:
 
         return self.map(inner)
 
+    def as_dict(self):
+        def inner(x):
+            return x.__dict__
+
+        return self.map(inner)
+
     def as_str(self):
         return self._factory(map(str, self._iterable))
 
@@ -297,7 +308,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
 
         >>> entities = [Entity(num=i) for i in range(5)]
         >>> df = DataFrame(entities)
@@ -319,7 +330,9 @@ class DataFrameMixin:
 
         return self._factory(map(inner, self._iterable))
 
-    def dropna(self, na: Set[str] = {"", None}) -> Union[bool, "DataFrame"]:  # pylint: disable=dangerous-default-value
+    def dropna(
+        self, na: Set[str] = {"", None}
+    ) -> Union[bool, "DataFrame"]:  # pylint: disable=dangerous-default-value
         """
         Drop entities that contain some specific values.
 
@@ -329,7 +342,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
         >>> entities = [Entity(a=i, b=i + 1) for i in range(3)]
         >>> entities.append(Entity(a=3, b=''))
         >>> df = DataFrame(entities)
@@ -359,7 +372,7 @@ class DataFrameMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
         >>> entities = [Entity(a=i, b=i + 1) for i in range(3)]
         >>> df = DataFrame(entities)
         >>> df

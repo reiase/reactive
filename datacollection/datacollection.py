@@ -35,12 +35,10 @@ class DataCollection(Iterable, DCMixins):
 
     Examples:
         1. Create a DataCollection from list or iterator::
-
         >>> dc = DataCollection([0, 1, 2, 3, 4])
         >>> dc = DataCollection(iter([0, 1, 2, 3, 4]))
 
         2. Chaining function invocations makes your code clean and fluent::
-
         >>> (
         ...    dc.map(lambda x: x+1)
         ...      .map(lambda x: x*2)
@@ -48,7 +46,6 @@ class DataCollection(Iterable, DCMixins):
         [2, 4, 6, 8, 10]
 
         3. Multi-line closures are also supported via decorator syntax::
-
         >>> dc = DataCollection([1,2,3,4])
         >>> @dc.map
         ... def add1(x):
@@ -98,7 +95,7 @@ class DataCollection(Iterable, DCMixins):
                 call.
 
         Examples:
-            >>> from towhee import register
+            >>> from datacollection import register
             >>> dc = DataCollection([1,2,3,4])
             >>> @register(name='add1')
             ... def add1(x):
@@ -139,18 +136,16 @@ class DataCollection(Iterable, DCMixins):
             any: The object at index.
 
         Examples:
-            1. Usage with non-streamed::
+            1. Usage with non-streamed:
+            >>> dc = DataCollection([0, 1, 2, 3, 4])
+            >>> dc[2]
+            2
 
-                >>> dc = DataCollection([0, 1, 2, 3, 4])
-                >>> dc[2]
-                2
-
-            2. Usage with streamed::
-
-                >>> dc.stream()[1] # doctest: +NORMALIZE_WHITESPACE
-                Traceback (most recent call last):
-                TypeError: indexing is only supported for DataCollection created from list
-                    or pandas DataFrame.
+            2. Usage with streamed:
+            >>> dc.stream()[1] # doctest: +NORMALIZE_WHITESPACE
+            Traceback (most recent call last):
+            TypeError: indexing is only supported for DataCollection created from list
+                or pandas DataFrame.
         """
         if not hasattr(self._iterable, "__getitem__"):
             raise TypeError(
@@ -175,19 +170,17 @@ class DataCollection(Iterable, DCMixins):
             TypeError: If function called on streamed DataCollection
 
         Examples:
-            1. Usage with non-streamed::
+            1. Usage with non-streamed:
+            >>> dc = DataCollection([0, 1, 2, 3, 4])
+            >>> dc[2] = 3
+            >>> dc.to_list()
+            [0, 1, 3, 3, 4]
 
-                >>> dc = DataCollection([0, 1, 2, 3, 4])
-                >>> dc[2] = 3
-                >>> dc.to_list()
-                [0, 1, 3, 3, 4]
-
-            2. Usage with streamed::
-
-                >>> dc.stream()[1] # doctest: +NORMALIZE_WHITESPACE
-                Traceback (most recent call last):
-                TypeError: indexing is only supported for DataCollection created from list
-                    or pandas DataFrame.
+            2. Usage with streamed:
+            >>> dc.stream()[1] # doctest: +NORMALIZE_WHITESPACE
+            Traceback (most recent call last):
+            TypeError: indexing is only supported for DataCollection created from list
+                or pandas DataFrame.
         """
         if not hasattr(self._iterable, "__setitem__"):
             raise TypeError(
@@ -230,14 +223,12 @@ class DataCollection(Iterable, DCMixins):
 
         Examples:
             1. Usage with non-streamed::
-
-                >>> DataCollection([1, 2, 3]).unstream()
-                [1, 2, 3]
+            >>> DataCollection([1, 2, 3]).unstream()
+            [1, 2, 3]
 
             2. Usage with streamed::
-
-                >>> DataCollection([1, 2, 3]).stream() #doctest: +ELLIPSIS
-                <list_iterator object at...>
+            >>> DataCollection([1, 2, 3]).stream() #doctest: +ELLIPSIS
+            <list_iterator object at...>
         """
         if isinstance(self._iterable, list):
             return reprlib.repr(self._iterable)
@@ -317,17 +308,15 @@ class DataCollection(Iterable, DCMixins):
 
         Examples:
             1. Single Function::
-
-                >>> dc = DataCollection([1,2,3,4])
-                >>> dc.map(lambda x: x+1).map(lambda x: x*2).to_list()
-                [4, 6, 8, 10]
+            >>> dc = DataCollection([1,2,3,4])
+            >>> dc.map(lambda x: x+1).map(lambda x: x*2).to_list()
+            [4, 6, 8, 10]
 
             2. Multiple Functions::
-
-                >>> dc = DataCollection([1,2,3,4])
-                >>> a, b = dc.map(lambda x: x+1, lambda x: x*2)
-                >>> (a.to_list(), b.to_list())
-                ([2, 3, 4, 5], [2, 4, 6, 8])
+            >>> dc = DataCollection([1,2,3,4])
+            >>> a, b = dc.map(lambda x: x+1, lambda x: x*2)
+            >>> (a.to_list(), b.to_list())
+            ([2, 3, 4, 5], [2, 4, 6, 8])
         """
         # mmap
         if len(arg) > 1:
@@ -364,7 +353,7 @@ class DataCollection(Iterable, DCMixins):
         """Filter the DataCollection data based on function.
 
         Filters the DataCollection based on the function provided. If data is stored
-        as an Option (see towhee.functional.option.py), drop empty will decide whether
+        as an Option (see datacollection.Option), drop empty will decide whether
         to remove the element or set it to empty.
 
         Args:
@@ -408,14 +397,14 @@ class DataCollection(Iterable, DCMixins):
             DataFrame: Resulting converted DataFrame.
 
         Examples:
-            >>> from towhee import DataCollection, Entity
+            >>> from datacollection import DataCollection, Entity
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
-            >>> dc = DataCollection(e)
-            >>> type(dc)
-            <class 'towhee.functional.data_collection.DataCollection'>
+            >>> d = DataCollection(e)
+            >>> type(d)
+            <class 'datacollection.datacollection.DataCollection'>
 
-            >>> type(dc.to_df())
-            <class 'towhee.functional.data_collection.DataFrame'>
+            >>> type(d.to_df())
+            <class 'datacollection.datacollection.DataFrame'>
         """
         return DataFrame(self._iterable)
 
@@ -424,7 +413,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
     """Entity based DataCollection.
 
     Examples:
-        >>> from towhee import Entity
+        >>> from datacollection import Entity
         >>> DataFrame([Entity(id=a) for a in [1,2,3]])
         [<Entity dict_keys(['id'])>, <Entity dict_keys(['id'])>, <Entity dict_keys(['id'])>]
     """
@@ -481,14 +470,14 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             DataCollection: Resulting DataCollection from DataFrame
 
         Examples:
-            >>> from towhee import DataFrame, Entity
+            >>> from datacollection import DataFrame, Entity
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> df = DataFrame(e)
             >>> type(df)
-            <class 'towhee.functional.data_collection.DataFrame'>
+            <class 'datacollection.datacollection.DataFrame'>
 
             >>> type(df.to_dc())
-            <class 'towhee.functional.data_collection.DataCollection'>
+            <class 'datacollection.datacollection.DataCollection'>
         """
         return DataCollection(self._iterable)
 
@@ -502,7 +491,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             ModeFlag: The storage format of the Dataframe.
 
         Examples:
-            >>> from towhee import Entity, DataFrame
+            >>> from datacollection import Entity, DataFrame
             >>> e = [Entity(a=a, b=b) for a,b in zip(range(5), range(5))]
             >>> df = DataFrame(e)
             >>> df.mode
@@ -522,25 +511,22 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
 
         Examples:
             1. Row Based::
-
-                >>> from towhee import Entity, DataFrame
-                >>> e = [Entity(a=a, b=b) for a,b in zip(range(3), range(3))]
-                >>> df = DataFrame(e)
-                >>> df.to_list()[0]
-                <Entity dict_keys(['a', 'b'])>
+            >>> from datacollection import Entity, DataFrame
+            >>> e = [Entity(a=a, b=b) for a,b in zip(range(3), range(3))]
+            >>> df = DataFrame(e)
+            >>> df.to_list()[0]
+            <Entity dict_keys(['a', 'b'])>
 
             2. Column Based::
-
-                >>> df = df.to_column()
-                >>> df.to_list()[0]
-                <EntityView dict_keys(['a', 'b'])>
+            >>> df = df.to_column()
+            >>> df.to_list()[0]
+            <EntityView dict_keys(['a', 'b'])>
 
             2. Chunk Bassed::
-
-                >>> df = DataFrame(e)
-                >>> df = df.set_chunksize(2)
-                >>> df.to_list()[0]
-                <EntityView dict_keys(['a', 'b'])>
+            >>> df = DataFrame(e)
+            >>> df = df.set_chunksize(2)
+            >>> df.to_list()[0]
+            <EntityView dict_keys(['a', 'b'])>
         """
         if hasattr(self._iterable, "iterrows"):
             return (x[1] for x in self._iterable.iterrows())

@@ -15,7 +15,7 @@ from enum import Flag, auto
 
 from datacollection.hparam.hyperparameter import param_scope
 
-from datacollection.functional.storages import ChunkedTable, WritableTable
+from datacollection.types.storages import ChunkedTable, WritableTable
 
 
 # pylint: disable=import-outside-toplevel
@@ -43,13 +43,13 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import towhee
-        >>> dc_1 = towhee.dc['a'](range(20))
-        >>> dc_1 = dc_1.set_chunksize(10)
-        >>> dc_2 = dc_1.runas_op['a', 'b'](func=lambda x: x+1)
-        >>> dc_1.get_chunksize(), dc_2.get_chunksize()
+        >>> import datacollection as dc
+        >>> d1 = dc.dc['a'](range(20))
+        >>> d1 = d1.set_chunksize(10)
+        >>> d2 = d1.runas_op['a', 'b'](func=lambda x: x+1)
+        >>> d1.get_chunksize(), d2.get_chunksize()
         (10, 10)
-        >>> for chunk in dc_2._iterable.chunks(): print(chunk)
+        >>> for chunk in d2._iterable.chunks(): print(chunk)
         pyarrow.Table
         a: int64
         b: int64
@@ -57,7 +57,7 @@ class ColumnMixin:
         a: int64
         b: int64
 
-        >>> dc_3 = towhee.dc['a'](range(20)).stream()
+        >>> dc_3 = dc.dc['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
         >>> dc_4 = dc_3.runas_op['a', 'b'](func=lambda x: x+1)
         >>> for chunk in dc_4._iterable.chunks(): print(chunk)
@@ -72,7 +72,9 @@ class ColumnMixin:
         self._chunksize = chunksize
         chunked_table = ChunkedTable(chunksize=chunksize, stream=self.is_stream)
         chunked_table.feed(self._iterable)
-        return self._factory(chunked_table, parent_stream=False, mode=self.ModeFlag.CHUNKBASEDFLAG)
+        return self._factory(
+            chunked_table, parent_stream=False, mode=self.ModeFlag.CHUNKBASEDFLAG
+        )
 
     def get_chunksize(self):
         return self._chunksize
@@ -83,7 +85,7 @@ class ColumnMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
         >>> df = DataFrame(e)
         >>> table = df._create_col_table()
@@ -97,7 +99,7 @@ class ColumnMixin:
         a: string
         b: int64
         """
-        from datacollection.utils.thirdparty.pyarrow import pa
+        import pyarrow as pa
         from datacollection.types.tensor_array import TensorArray
 
         header = None
@@ -126,7 +128,7 @@ class ColumnMixin:
 
     @classmethod
     def from_arrow_table(cls, **kws):
-        from datacollection.utils.thirdparty.pyarrow import pa
+        import pyarrow as pa
 
         arrays = []
         names = []
@@ -141,7 +143,7 @@ class ColumnMixin:
 
         Examples:
 
-        >>> from towhee import Entity, DataFrame
+        >>> from datacollection import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
         >>> df = DataFrame(e)
         >>> df
@@ -165,10 +167,10 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import towhee
-        >>> dc = towhee.dc['a'](range(10))
-        >>> dc = dc.to_column()
-        >>> dc = dc.runas_op['a', 'b'](func=lambda x: x+1)
+        >>> import datacollection as dc
+        >>> d = dc.dc['a'](range(10))
+        >>> d = d.to_column()
+        >>> d = d.runas_op['a', 'b'](func=lambda x: x+1)
 
         # >>> dc.show(limit=5, tablefmt='plain')
         #   a    b
@@ -178,20 +180,26 @@ class ColumnMixin:
         #   3    4
         #   4    5
 
-        >>> dc._iterable
+        >>> d._iterable
         pyarrow.Table
         a: int64
         b: int64
-        >>> len(dc._iterable)
+        >>> len(d._iterable)
         10
         """
         # pylint: disable=protected-access
         if self.get_executor() is None:
             if isinstance(self._iterable, ChunkedTable):
                 if not self.is_stream:
-                    tables = [WritableTable(self.__table_apply__(chunk, unary_op)) for chunk in self._iterable.chunks()]
+                    tables = [
+                        WritableTable(self.__table_apply__(chunk, unary_op))
+                        for chunk in self._iterable.chunks()
+                    ]
                 else:
-                    tables = (WritableTable(self.__table_apply__(chunk, unary_op)) for chunk in self._iterable.chunks())
+                    tables = (
+                        WritableTable(self.__table_apply__(chunk, unary_op))
+                        for chunk in self._iterable.chunks()
+                    )
                 return self._factory(ChunkedTable(chunks=tables))
             return self._factory(self.__table_apply__(self._iterable, unary_op))
         else:
@@ -203,7 +211,7 @@ class ColumnMixin:
 
     def __col_apply__(self, cols, unary_op):
         # pylint: disable=protected-access
-        from datacollection.utils.thirdparty.pyarrow import pa
+        import pyarrow as pa
         from datacollection.types.tensor_array import TensorArray
 
         import numpy as np

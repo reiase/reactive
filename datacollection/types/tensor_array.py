@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from typing import Tuple
-import numpy as np
 
-from datacollection.utils.thirdparty.pyarrow import pa
+import numpy as np
+import pyarrow as pa
 
 
 class _TensorArrayType(pa.PyExtensionType):
@@ -76,8 +76,12 @@ class TensorArray(pa.ExtensionArray):
         element_shape = data.shape[1:]
         num_items_per_element = np.prod(element_shape) if element_shape else 1
 
-        data_array = pa.Array.from_buffers(pa.from_numpy_dtype(data.dtype), data.size, [None, pa.py_buffer(data)])
-        offset_buffer = pa.py_buffer(np.int32([i * num_items_per_element for i in range(data.shape[0] + 1)]))
+        data_array = pa.Array.from_buffers(
+            pa.from_numpy_dtype(data.dtype), data.size, [None, pa.py_buffer(data)]
+        )
+        offset_buffer = pa.py_buffer(
+            np.int32([i * num_items_per_element for i in range(data.shape[0] + 1)])
+        )
         storage = pa.Array.from_buffers(
             pa.list_(pa.from_numpy_dtype(data.dtype)),
             data.shape[0],
@@ -92,12 +96,15 @@ class TensorArray(pa.ExtensionArray):
             retval = super().__getitem__(index)
             storage = retval.storage
             return storage.flatten().to_numpy().reshape(self.type.ext_shape)
-        retval = super().__getitem__(index)
-        storage = retval.value.values
-        return storage.to_numpy().reshape(self.type.shape)
+        retval = self.storage[index].values
+        return retval.to_numpy().reshape(self.type.shape)
 
     def to_numpy(self, zero_copy_only=True):
-        return self.storage.flatten().to_numpy(zero_copy_only=zero_copy_only).reshape(self.type.ext_shape)
+        return (
+            self.storage.flatten()
+            .to_numpy(zero_copy_only=zero_copy_only)
+            .reshape(self.type.ext_shape)
+        )
 
     def chunks(self, chunk_size=None):
         view = self.to_numpy()

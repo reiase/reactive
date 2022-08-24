@@ -24,7 +24,13 @@ class AudioFrame(np.ndarray):
             The audio sample rate in Hz.
     """
 
-    def __new__(cls, data: np.ndarray, sample_rate: int = None, timestamp: int = None, layout: str = None):
+    def __new__(
+        cls,
+        data: np.ndarray,
+        sample_rate: int = None,
+        timestamp: int = None,
+        layout: str = None,
+    ):
         # Cast `np.ndarray` to be `AudioFrame`.
         # See https://numpy.org/doc/stable/user/basics.subclassing.html for details.
         obj = np.asarray(data).view(cls)

@@ -87,11 +87,6 @@ class TestDataCollection(unittest.TestCase):
 
         dc.head(1)
 
-        json_path = public_path / "test_util" / "test_mixins" / "test.json"
-        res = DataCollection.read_json(json_path)
-
-        res.head(1)
-
     # def test_classifier_procedure(self):
     #     csv_path = public_path / 'test_util' / 'data.csv'
     #     out = DataCollection.read_csv(csv_path=csv_path).unstream()

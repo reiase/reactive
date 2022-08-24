@@ -21,7 +21,6 @@ from .data_processing import DataProcessingMixin
 from .dataframe import DataFrameMixin
 from .dataset import DatasetMixin
 from .dispatcher import DispatcherMixin
-from .format_priority import FormatPriorityMixin
 from .list import ListMixin
 from .metric import MetricMixin
 from .parallel import ParallelMixin
@@ -40,7 +39,6 @@ class DCMixins(
     DataProcessingMixin,
     DatasetMixin,
     DispatcherMixin,
-    FormatPriorityMixin,
     ListMixin,
     MetricMixin,
     ParallelMixin,

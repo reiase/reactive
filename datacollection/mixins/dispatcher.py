@@ -34,9 +34,9 @@ class DispatcherMixin:
     """
     Mixin for call dispatcher for data collection
 
-    >>> from towhee import register
-    >>> from towhee import ops
-    >>> from towhee import DataCollection
+    >>> from datacollection import register
+    >>> from datacollection import ops
+    >>> from datacollection import DataCollection
     >>> @register(name='add_1')
     ... def add_1(x):
     ...     return x+1

@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import concurrent.futures
 import asyncio
+import concurrent.futures
 import threading
 import time
 from queue import Queue
@@ -22,11 +22,13 @@ try:
 except:  # pylint: disable=bare-except
     pass
 
-from datacollection.utils.log import engine_log
-from datacollection.types.option import Option, Empty, _Reason
 from datacollection.hparam.hyperparameter import param_scope
-from datacollection.functional.storages import WritableTable, ChunkedTable
+from datacollection.types.option import Empty, Option, _Reason
+from datacollection.types.storages import ChunkedTable, WritableTable
 
+from ..utils.log import get_logger
+
+log = get_logger(__name__)
 stream = threading.local()
 
 
@@ -45,23 +47,23 @@ class ParallelMixin:
 
     Examples:
 
-    >>> from towhee import DataCollection
+    >>> import datacollection as dc
     >>> def add_1(x):
     ...     return x+1
-    >>> result = DataCollection.range(1000).set_parallel(2).map(add_1).to_list()
+    >>> result = dc.range(1000).set_parallel(2).map(add_1).to_list()
     >>> len(result)
     1000
 
-    >>> from towhee import dc
-    >>> dc = dc['a'](range(1000)).set_parallel(5)
-    >>> dc = dc.runas_op['a', 'b'](lambda x: x+1).to_list()
-    >>> len(dc)
+    >>> import datacollection as dc
+    >>> d = dc.dc['a'](range(1000)).set_parallel(5)
+    >>> d = d.runas_op['a', 'b'](lambda x: x+1).to_list()
+    >>> len(d)
     1000
 
-    >>> from towhee import dc
-    >>> dc = dc['a'](range(1000)).set_parallel(5).set_chunksize(2)
-    >>> dc = dc.runas_op['a', 'b'](lambda x: x+1)
-    >>> for chunk in dc._iterable.chunks()[:2]: print(chunk)
+    >>> import datacollection as dc
+    >>> d = dc.dc['a'](range(1000)).set_parallel(5).set_chunksize(2)
+    >>> d = d.runas_op['a', 'b'](lambda x: x+1)
+    >>> for chunk in d._iterable.chunks()[:2]: print(chunk)
     pyarrow.Table
     a: int64
     b: int64
@@ -69,7 +71,7 @@ class ParallelMixin:
     a: int64
     b: int64
 
-    >>> result = DataCollection.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
+    >>> result = dc.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
     >>> result[990:]
     [992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001]
     """
@@ -104,12 +106,12 @@ class ParallelMixin:
 
         Examples:
 
-        >>> from towhee import DataCollection
+        >>> import datacollection as dc
         >>> import threading
         >>> stage_1_thread_set = set()
         >>> stage_2_thread_set = set()
         >>> result = (
-        ...     DataCollection.range(1000).stream().set_parallel(4)
+        ...     dc.range(1000).stream().set_parallel(4)
         ...     .map(lambda x: stage_1_thread_set.add(threading.current_thread().ident))
         ...     .map(lambda x: stage_2_thread_set.add(threading.current_thread().ident)).to_list()
         ... )
@@ -121,7 +123,9 @@ class ParallelMixin:
         self._num_worker = num_worker
 
         if self._backend == "thread" and self._num_worker is not None:
-            self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=num_worker, initializer=initializer)
+            self._executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=num_worker, initializer=initializer
+            )
         else:  # clear executor
             self._executor = None
         return self
@@ -140,9 +144,9 @@ class ParallelMixin:
 
         1. Split:
 
-        >>> from towhee import DataCollection
-        >>> dc = DataCollection([0, 1, 2, 3, 4]).stream()
-        >>> a, b, c = dc.split(3)
+        >>> import datacollection as dc
+        >>> d = dc.dc([0, 1, 2, 3, 4]).stream()
+        >>> a, b, c = d.split(3)
         >>> a.zip(b, c).to_list()
         [(0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4)]
         """
@@ -211,7 +215,7 @@ class ParallelMixin:
                     res = unary_op(x)
                 return res
             except Exception as e:  # pylint: disable=broad-except
-                engine_log.warning(
+                log.warning(
                     f"{e}, please check {x} with op {unary_op}. Continue..."
                 )  # pylint: disable=logging-fstring-interpolation
                 return Empty(_Reason(x, e))
@@ -240,12 +244,12 @@ class ParallelMixin:
 
         Examples:
 
-        >>> from towhee import DataCollection
+        >>> import datacollection as dc
         >>> import threading
         >>> stage_1_thread_set = {threading.current_thread().ident}
         >>> stage_2_thread_set = {threading.current_thread().ident}
         >>> result = (
-        ...     DataCollection.range(1000).stream()
+        ...     dc.range(1000).stream()
         ...     .pmap(lambda x: stage_1_thread_set.add(threading.current_thread().ident), 5)
         ...     .pmap(lambda x: stage_2_thread_set.add(threading.current_thread().ident), 4).to_list()
         ... )
@@ -263,7 +267,9 @@ class ParallelMixin:
         if num_worker is None and self.get_num_worker() is None:
             num_worker = 2
         if num_worker is not None:
-            executor = concurrent.futures.ThreadPoolExecutor(max_workers=num_worker, initializer=initializer)
+            executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=num_worker, initializer=initializer
+            )
         elif self.get_executor() is not None:
             executor = self._executor
             num_worker = self._num_worker
@@ -282,7 +288,11 @@ class ParallelMixin:
 
         async def worker():
             buff = []
-            iterable = self._iterable.chunks() if isinstance(self._iterable, ChunkedTable) else self
+            iterable = (
+                self._iterable.chunks()
+                if isinstance(self._iterable, ChunkedTable)
+                else self
+            )
             for x in iterable:
                 if len(buff) == num_worker:
                     queue.put(await buff.pop(0))

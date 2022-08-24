@@ -26,11 +26,11 @@ class TestEntity(unittest.TestCase):
         import pandas as pd
 
         df = pd.DataFrame(dict(a=range(5), b=range(5)))
-        dc = datacollection.from_df(df, as_stream=True)
+        dc = datacollection.from_pandas(df, stream=True)
         self.assertEqual(len(list(dc)), 5)
 
         df = pd.DataFrame(dict(a=range(5), b=range(5)))
-        dc = datacollection.from_df(df)
+        dc = datacollection.from_pandas(df)
         self.assertListEqual(dc.df.a.to_list(), [0, 1, 2, 3, 4])
 
         dc.df.b = [0, 2, 4, 6, 8]
@@ -41,7 +41,7 @@ class TestEntity(unittest.TestCase):
         import pandas as pd
 
         df = pd.DataFrame(dict(a=range(5), b=range(5)))
-        dc = datacollection.from_df(df)
+        dc = datacollection.from_pandas(df)
         dc = dc.runas_op["a", "c"](func=lambda x: x + 1)
         self.assertListEqual(dc["c"].to_list(), [1, 2, 3, 4, 5])
 
@@ -49,7 +49,7 @@ class TestEntity(unittest.TestCase):
         import pandas as pd
 
         df = pd.DataFrame(dict(a=range(5), b=range(5)))
-        dc = datacollection.from_df(df)
+        dc = datacollection.from_pandas(df)
         dc = dc.runas_op[("a", "b"), "c"](func=lambda x, y: x + y)
         self.assertListEqual(dc["c"].to_list(), [0, 2, 4, 6, 8])
 
@@ -57,7 +57,7 @@ class TestEntity(unittest.TestCase):
         import pandas as pd
 
         df = pd.DataFrame(dict(a=range(5), b=range(5)))
-        dc = datacollection.from_df(df)
+        dc = datacollection.from_pandas(df)
         dc = dc.runas_op[("a", "b"), ("c", "d")](func=lambda x, y: (x + y, x - y))
         self.assertListEqual(dc["c"].to_list(), [0, 2, 4, 6, 8])
         self.assertListEqual(dc["d"].to_list(), [0, 0, 0, 0, 0])

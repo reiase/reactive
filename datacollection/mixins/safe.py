@@ -30,7 +30,7 @@ class SafeMixin:
 
         1. Exception breaks pipeline execution:
 
-        >>> from towhee import DataCollection
+        >>> from datacollection import DataCollection
         >>> dc = DataCollection.range(5)
         >>> dc.map(lambda x: x / (0 if x == 3 else 2)).to_list()
         Traceback (most recent call last):
@@ -47,7 +47,9 @@ class SafeMixin:
         >>> dc.exception_safe().map(lambda x: x / (0 if x == 3 else 2)).filter(lambda x: x < 1.5, drop_empty=True).to_list()
         [Some(0.0), Some(0.5), Some(1.0)]
         """
-        result = map(lambda x: Some(x) if not isinstance(x, Option) else x, self._iterable)
+        result = map(
+            lambda x: Some(x) if not isinstance(x, Option) else x, self._iterable
+        )
         return self._factory(result)
 
     def safe(self):
@@ -68,12 +70,14 @@ class SafeMixin:
 
         Examples:
 
-        >>> from towhee import DataCollection
+        >>> from datacollection import DataCollection
         >>> dc = DataCollection.range(5)
         >>> dc.safe().map(lambda x: x / (0 if x == 3 else 2)).fill_empty(-1.0).to_list()
         [0.0, 0.5, 1.0, -1.0, 2.0]
         """
-        result = map(lambda x: x.get() if isinstance(x, Some) else default, self._iterable)
+        result = map(
+            lambda x: x.get() if isinstance(x, Some) else default, self._iterable
+        )
         return self._factory(result)
 
     def drop_empty(self, callback: Callable = None) -> "DataCollection":
@@ -88,7 +92,7 @@ class SafeMixin:
 
         Examples:
 
-        >>> from towhee import DataCollection
+        >>> from datacollection import DataCollection
         >>> dc = DataCollection.range(5)
         >>> dc.safe().map(lambda x: x / (0 if x == 3 else 2)).drop_empty().to_list()
         [0.0, 0.5, 1.0, 2.0]

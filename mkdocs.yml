@@ -1,0 +1,19 @@
+site_name: Data.Collection for Python
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            docstring_options:
+              ignore_init_summary: yes
+            merge_init_into_class: yes
+            show_submodules: no
+
+nav:
+  - Data.Collection Docs: index.md
+  - reference.md

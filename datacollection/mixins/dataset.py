@@ -12,10 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Union
+import re
 from pathlib import Path
 
 from datacollection.types.entity import Entity
+
+
+def url_valid(uri) -> bool:
+    regex = re.compile(
+        r"^(?:http|ftp)s?://"  # http:// or https://
+        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain...
+        r"localhost|"  # localhost...
+        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"  # ...or ip
+        r"(?::\d+)?"  # optional port
+        r"(?:/?|[/?]\S+)$",
+        re.IGNORECASE,
+    )
+
+    if re.match(regex, uri) is not None:
+        return True
+    return False
 
 
 class DatasetMixin:
@@ -24,10 +40,38 @@ class DatasetMixin:
     """
 
     @classmethod
-    def from_df(cls, dataframe, as_stream=False):
-        if as_stream:
+    def from_pandas(cls, dataframe, stream=False):
+        """Create DataFrame from pandas
+
+        Examples:
+            >>> import pandas as pd
+            >>> import datacollection as dc
+            >>> df = pd.DataFrame({"a": range(5), "b": range(5)})
+            >>> dc.from_pandas(df).df
+               a  b
+            0  0  0
+            1  1  1
+            2  2  2
+            3  3  3
+            4  4  4
+        """
+        if stream:
             return cls(dataframe.iterrows()).map(lambda x: Entity(**x[1].to_dict()))
         return cls(dataframe)
+
+    def to_pandas(self):
+        """Create Pandas DataFrame
+
+        Examples:
+            >>> import datacollection as dc
+            >>> dc.dc([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
+               a
+            0  1
+            1  2
+        """
+        import pandas as pd
+
+        return pd.DataFrame.from_records(data=self.as_dict().to_list())
 
     # pylint: disable=import-outside-toplevel
     @classmethod
@@ -59,15 +103,13 @@ class DatasetMixin:
         Returns:
             (File): The file handler for file in the zip file.
         """
-        from datacollection.utils.repo_normalize import RepoNormalize
-        from io import BytesIO
-        from zipfile import ZipFile
         from glob import fnmatch
-
+        from io import BytesIO
         from urllib.request import urlopen
+        from zipfile import ZipFile
 
         def inner():
-            if RepoNormalize(str(url)).url_valid():
+            if url_valid(str(url)):
                 with urlopen(url) as zip_file:
                     zip_path = BytesIO(zip_file.read())
             else:
@@ -82,74 +124,116 @@ class DatasetMixin:
         return cls(inner())
 
     @classmethod
-    def read_json(cls, json_path: Union[str, Path], encoding: str = "utf-8"):
-        import json
+    def read_json(cls, *args, stream=False, **kwargs):
+        """Read JSON file
 
-        def inner():
-            with open(json_path, "r", encoding=encoding) as f:
-                string = f.readline()
-                while string:
-                    data = json.loads(string)
-                    string = f.readline()
-                    yield Entity(**data)
+        Examples:
+            >>> import pandas as pd
+            >>> import io
+            >>> df = pd.DataFrame({"a": range(10), "b": range(10)})
+            >>> buff = io.StringIO()
+            >>> df.to_json(buff, orient="records", lines=True)
+            >>> _ = buff.seek(0)
 
-        return cls(inner())
+            >>> import datacollection as dc
+            >>> dc.read_json(buff)
+               a  b
+            0  0  0
+            1  1  1
+            2  2  2
+            3  3  3
+            4  4  4
+            5  5  5
+            6  6  6
+            7  7  7
+            8  8  8
+            9  9  9
 
-    @classmethod
-    def read_csv(cls, csv_path: Union[str, Path], encoding: str = "utf-8-sig"):
-        import csv
-
-        def inner():
-            with open(csv_path, "r", encoding=encoding) as f:
-                data = csv.DictReader(f)
-                for line in data:
-                    yield Entity(**line)
-
-        return cls(inner())
-
-    def to_csv(self, csv_path: Union[str, Path], encoding: str = "utf-8-sig"):
+            >>> _ = buff.seek(0)
+            >>> dc.read_json(buff, stream=True).as_str().to_list()[0]
+            "{'a': 0, 'b': 0}"
         """
-        Save dc as a csv file.
-
-        Args:
-            csv_path (`Union[str, Path]`):
-                The path to save the dc to.
-            encoding (str):
-                The encoding to use in the output file.
-        """
-        import csv
+        kwargs["lines"] = True
+        if stream:
+            kwargs["chunksize"] = 1024
         import pandas as pd
 
-        if isinstance(self._iterable, pd.DataFrame):
-            self._iterable.to_csv(csv_path, index=False)
-        else:
-            with open(csv_path, "w", encoding=encoding) as f:
-                header = None
-                writer = None
+        reader = pd.read_json(*args, **kwargs)
+        if hasattr(reader, "get_chunk") or hasattr(reader, "chunksize"):
 
-                def inner(row):
-                    nonlocal header
-                    nonlocal writer
-                    if isinstance(row, Entity):
-                        if not header:
-                            header = row.__dict__.keys()
-                            writer = csv.DictWriter(f, fieldnames=header)
-                            writer.writeheader()
-                        writer.writerow(row.__dict__)
-                    else:
-                        writer = writer if writer else csv.writer(f)
-                        writer.writerow(row)
+            def inner():
+                for chunk in reader:
+                    for row in chunk.iterrows():
+                        yield Entity(**row[1].to_dict())
 
-                for row in self._iterable:
-                    inner(row)
+            return cls(inner())
+        return cls.from_pandas(reader, stream=stream)
 
-    def random_sample(self):
-        # core API already exists
-        pass
+    @classmethod
+    def read_csv(cls, *args, stream=False, **kwargs):
+        """Read CSV file
 
-    def filter_data(self):
-        # core API already exists
-        pass
+        Examples:
+            >>> import pandas as pd
+            >>> import io
+            >>> df = pd.DataFrame({"a": range(10), "b": range(10)})
+            >>> buff = io.StringIO()
+            >>> df.to_csv(buff, index=False)
+            >>> _ = buff.seek(0)
+
+            >>> import datacollection as dc
+            >>> dc.read_csv(buff)
+               a  b
+            0  0  0
+            1  1  1
+            2  2  2
+            3  3  3
+            4  4  4
+            5  5  5
+            6  6  6
+            7  7  7
+            8  8  8
+            9  9  9
+
+            >>> _ = buff.seek(0)
+            >>> dc.read_csv(buff, stream=True).as_str().to_list()[0]
+            "{'a': 0, 'b': 0}"
+        """
+        if stream:
+            kwargs["iterator"] = True
+            kwargs["chunksize"] = 1024
+        import pandas as pd
+
+        reader = pd.read_csv(*args, **kwargs)
+        if hasattr(reader, "get_chunk"):
+
+            def inner():
+                for chunk in reader:
+                    for row in chunk.iterrows():
+                        yield Entity(**row[1].to_dict())
+
+            return cls(inner())
+        return cls.from_pandas(reader, stream=stream)
+
+    def to_csv(self, *args, **kwargs):
+        """Save dc as a csv file.
+
+        Examples:
+            >>> import pandas as pd
+            >>> import io
+            >>> buff = io.StringIO()
+
+            >>> import datacollection as dc
+            >>> d = dc.dc([{"a":1}, {"a":2}]).to_df().as_entity()
+            >>> d.to_csv(buff)
+            >>> _ = buff.seek(0)
+            >>> print(buff.read())
+            ,a
+            0,1
+            1,2
+            <BLANKLINE>
+        """
+        self.to_pandas().to_csv(*args, **kwargs)
 
     # pylint: disable=dangerous-default-value
     def split_train_test(self, size: list = [0.9, 0.1], **kws):
@@ -162,7 +246,7 @@ class DatasetMixin:
 
         Examples:
 
-        >>> from towhee.functional import DataCollection
+        >>> from datacollection import DataCollection
         >>> dc = DataCollection.range(10)
         >>> train, test = dc.split_train_test(shuffle=False)
         >>> train.to_list()
@@ -170,9 +254,11 @@ class DatasetMixin:
         >>> test.to_list()
         [9]
         """
-        from datacollection.utils import sklearn_utils
+        from sklearn.model_selection import train_test_split
 
         train_size = size[0]
         test_size = size[1]
-        train, test = sklearn_utils.train_test_split(self._iterable, train_size=train_size, test_size=test_size, **kws)
+        train, test = train_test_split(
+            self._iterable, train_size=train_size, test_size=test_size, **kws
+        )
         return self._factory(train), self._factory(test)

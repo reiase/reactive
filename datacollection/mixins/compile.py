@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..utils.log import engine_log
+from ..execution.factory import op, ops
+from ..execution.registry import resolve
 from ..hparam import param_scope
-from ..execution.factory import ops, op
-from ..execution.registry import register, resolve
+from ..utils.log import get_logger
+
+log = get_logger(__name__)
 
 
 class NumbaCompiler:
@@ -32,7 +34,7 @@ class NumbaCompiler:
             if func is not None:
                 break
         if func is None:
-            engine_log.warning("The Operator: %s is not of types.FunctionType.", name)
+            log.warning("The Operator: %s is not of types.FunctionType.", name)
             raise RuntimeError(f"The Operator: {name} is not of types.FunctionType.")
         self._func = njit(func, nogil=True)
         self._op = getattr(ops, name)[index](*arg, **kws)
@@ -52,9 +54,7 @@ class NumbaCompiler:
 
     def jit_call(self, *arg, **kws):
         if bool(kws):
-            engine_log.warning(
-                "The compiled function in Numba does not support kwargs."
-            )
+            log.warning("The compiled function in Numba does not support kwargs.")
             raise KeyError("The compiled function in Numba does not support kwargs.")
         if bool(self._index):
             res = self.__apply__(*arg)
@@ -85,7 +85,7 @@ class NumbaCompiler:
                 return self.jit_call(*arg, **kws)
             except Exception as e:  # pylint: disable=broad-except
                 self._success = False
-                engine_log.warning(
+                log.warning(
                     "Failed to speed up your function:%s with error:%s in JIT mode, will back to Python interpreter.",
                     self._name,
                     e,
@@ -160,9 +160,9 @@ class CompileMixin:
     Examples:
 
     >>> import numpy
-    >>> import towhee
+    >>> import datacollection as dc
     >>> import time
-    >>> from towhee import register
+    >>> from datacollection import register
     >>> @register(name='inner_distance')
     ... def inner_distance(query, data):
     ...     dists = []
@@ -177,13 +177,13 @@ class CompileMixin:
 
     >>> t1 = time.time()
     >>> dc1 = (
-    ...     towhee.dc['a'](data)
+    ...     dc.dc['a'](data)
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
     ... )
     >>> t2 = time.time()
     >>> dc2 = (
-    ...     towhee.dc['a'](data)
+    ...     dc.dc['a'](data)
     ...     .config(jit='numba')
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
@@ -203,7 +203,7 @@ class CompileMixin:
         if compiler in ["numba", "towhee"]:
             self._jit = compiler
         else:
-            engine_log.error(
+            log.error(
                 "Error when setting jit, please make sure the configuration about jit in ['numba']."
             )
             raise KeyError(

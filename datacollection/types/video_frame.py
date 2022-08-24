@@ -24,7 +24,13 @@ class VideoFrame(np.ndarray):
             The mode of the image(i.e. 'RGB', 'BGR', 'RGBA', 'HSV', etc.).
     """
 
-    def __new__(cls, data: np.ndarray, mode: str = None, timestamp: int = None, key_frame: int = 0):
+    def __new__(
+        cls,
+        data: np.ndarray,
+        mode: str = None,
+        timestamp: int = None,
+        key_frame: int = 0,
+    ):
         # Cast `np.ndarray` to be `Image`.
         # See https://numpy.org/doc/stable/user/basics.subclassing.html for details.
         obj = np.asarray(data).view(cls)
@@ -48,7 +54,9 @@ class VideoFrame(np.ndarray):
 
     def __reduce__(self):
         # Get numpy pickle
-        pickled_state = super(VideoFrame, self).__reduce__()  # pylint: disable=super-with-arguments
+        pickled_state = super(
+            VideoFrame, self
+        ).__reduce__()  # pylint: disable=super-with-arguments
         # Attach the attributes to the numpy pickle
         new_state = pickled_state[2] + (self.__dict__,)
         return (pickled_state[0], pickled_state[1], new_state)
@@ -57,7 +65,9 @@ class VideoFrame(np.ndarray):
         # Set attributes from the pickle
         self.__dict__.update(state[-1])
         # Call the parent's __setstate__ with the other tuple elements.
-        super(VideoFrame, self).__setstate__(state[0:-1])  # pylint: disable=super-with-arguments
+        super(VideoFrame, self).__setstate__(
+            state[0:-1]
+        )  # pylint: disable=super-with-arguments
 
     @property
     def mode(self):
