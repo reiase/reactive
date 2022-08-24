@@ -14,13 +14,13 @@
 import unittest
 import doctest
 
-import towhee.functional.entity
-from towhee import Entity
+import datacollection.functional.entity
+from datacollection import Entity
 
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(towhee.functional.entity))
+    tests.addTests(doctest.DocTestSuite(datacollection.functional.entity))
     return tests
 
 

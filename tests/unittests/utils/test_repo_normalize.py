@@ -14,7 +14,7 @@
 
 import unittest
 
-from towhee.utils.repo_normalize import RepoNormalize
+from datacollection.utils.repo_normalize import RepoNormalize
 
 rn1 = RepoNormalize("resnet-image-embedding?ref=my-tag&model=resnet50#operator")
 rn2 = RepoNormalize("test/resnet_image_embedding[pytorch]")

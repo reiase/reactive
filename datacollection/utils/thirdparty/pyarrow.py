@@ -11,17 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import doctest
-import unittest
-
-import datacollection.operator.stateful_operator
 
 
-def load_tests(loader, tests, ignore):
-    # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(datacollection.operator.stateful_operator))
-    return tests
+try:
+    # pylint: disable=unused-import
+    import pyarrow as pa
+except ModuleNotFoundError as e:  # pragma: no cover
+    from datacollection.utils.dependency_control import prompt_install
 
-
-if __name__ == "__main__":
-    unittest.main()
+    prompt_install("pyarrow")
+    import pyarrow as pa  # pylint: disable=ungrouped-imports

@@ -20,22 +20,22 @@ import faiss
 import numpy as np
 from pathlib import Path
 
-import towhee
-import towhee.functional.mixins.computer_vision
-import towhee.functional.mixins.dataset
-import towhee.functional.mixins.dataframe
-import towhee.functional.mixins.metric
-import towhee.functional.mixins.parallel
-import towhee.functional.mixins.state
-import towhee.functional.mixins.serve
-import towhee.functional.mixins.config
-import towhee.functional.mixins.data_processing
-import towhee.functional.mixins.safe
-import towhee.functional.mixins.list
-import towhee.functional.mixins.stream
+import datacollection
+import datacollection.functional.mixins.computer_vision
+import datacollection.functional.mixins.dataset
+import datacollection.functional.mixins.dataframe
+import datacollection.functional.mixins.metric
+import datacollection.functional.mixins.parallel
+import datacollection.functional.mixins.state
+import datacollection.functional.mixins.serve
+import datacollection.functional.mixins.config
+import datacollection.functional.mixins.data_processing
+import datacollection.functional.mixins.safe
+import datacollection.functional.mixins.list
+import datacollection.functional.mixins.stream
 
-from towhee import DataCollection, DataFrame, dc
-from towhee import Entity
+from datacollection import DataCollection, DataFrame, dc
+from datacollection import Entity
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -43,19 +43,19 @@ public_path = Path(__file__).parent.parent.resolve()
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
     for mod in [
-        towhee.functional.mixins.computer_vision,
-        towhee.functional.mixins.dataset,
-        towhee.functional.mixins.dataframe,
-        towhee.functional.mixins.metric,
-        towhee.functional.mixins.parallel,
-        towhee.functional.mixins.state,
-        towhee.functional.mixins.serve,
-        towhee.functional.mixins.column,
-        towhee.functional.mixins.config,
-        towhee.functional.mixins.list,
-        towhee.functional.mixins.data_processing,
-        towhee.functional.mixins.stream,
-        towhee.functional.mixins.safe,
+        datacollection.functional.mixins.computer_vision,
+        datacollection.functional.mixins.dataset,
+        datacollection.functional.mixins.dataframe,
+        datacollection.functional.mixins.metric,
+        datacollection.functional.mixins.parallel,
+        datacollection.functional.mixins.state,
+        datacollection.functional.mixins.serve,
+        datacollection.functional.mixins.column,
+        datacollection.functional.mixins.config,
+        datacollection.functional.mixins.list,
+        datacollection.functional.mixins.data_processing,
+        datacollection.functional.mixins.stream,
+        datacollection.functional.mixins.safe,
     ]:
         tests.addTests(doctest.DocTestSuite(mod))
 
@@ -76,7 +76,7 @@ class TestMetricMixin(unittest.TestCase):
         pred_2 = [[0, 1, 2, 3, 4, 5, 6, 7, 8]]
         pred_3 = [[0, 11, 12]]
 
-        mhr = towhee.functional.mixins.metric.mean_hit_ratio
+        mhr = datacollection.functional.mixins.metric.mean_hit_ratio
         self.assertEqual(1, mhr(true, pred_1))
         self.assertEqual(0.8, mhr(true, pred_2))
         self.assertEqual(0, mhr(true, pred_3))
@@ -90,7 +90,7 @@ class TestMetricMixin(unittest.TestCase):
         trues = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
         pred_4 = [[1, 6, 2, 7, 8, 3, 9, 10, 4, 5], [0, 1, 6, 7, 2, 8, 3, 9, 10]]
 
-        mean_ap = towhee.functional.mixins.metric.mean_average_precision
+        mean_ap = datacollection.functional.mixins.metric.mean_average_precision
         self.assertEqual(0.62, round(mean_ap(true, pred_1), 2))
         self.assertEqual(0.44, round(mean_ap(true, pred_2), 2))
         self.assertEqual(0, mean_ap(true, pred_3))
@@ -135,7 +135,7 @@ class TestCompileMixin(unittest.TestCase):
 
     def test_compile(self):
         import time
-        from towhee import register
+        from datacollection import register
 
         @register(name="inner_distance")
         def inner_distance(query, data):
@@ -151,10 +151,10 @@ class TestCompileMixin(unittest.TestCase):
         query = np.random.random(128)
 
         t1 = time.time()
-        _ = towhee.dc["a"](data).runas_op["a", "b"](func=lambda _: query).inner_distance[("b", "a"), "c"]()
+        _ = datacollection.dc["a"](data).runas_op["a", "b"](func=lambda _: query).inner_distance[("b", "a"), "c"]()
         t2 = time.time()
         _ = (
-            towhee.dc["a"](data)
+            datacollection.dc["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
@@ -163,7 +163,7 @@ class TestCompileMixin(unittest.TestCase):
         self.assertTrue(t3 - t2 < t2 - t1)
 
     def test_failed_compile(self):
-        from towhee import register
+        from datacollection import register
 
         @register(name="inner_distance1")
         def inner_distance1(query, data):
@@ -182,7 +182,7 @@ class TestCompileMixin(unittest.TestCase):
 
         with self.assertLogs():
             _ = (
-                towhee.dc["a"](data)
+                datacollection.dc["a"](data)
                 .config(jit="numba")
                 .runas_op["a", "b"](func=lambda _: query)
                 .inner_distance1[("b", "a"), "c"]()

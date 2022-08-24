@@ -16,14 +16,14 @@ import unittest
 from pathlib import Path
 from collections import namedtuple
 
-import towhee.functional.data_collection
-import towhee.functional.option
+import datacollection.functional.data_collection
+import datacollection.functional.option
 
-from towhee import register
-from towhee import DataCollection
-from towhee import Entity
+from datacollection import register
+from datacollection import DataCollection
+from datacollection import Entity
 
-import towhee
+import datacollection
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -57,7 +57,7 @@ class TestDataCollection(unittest.TestCase):
     """
 
     def test_example_for_basic_api(self):
-        dc = towhee.dc(range(10))
+        dc = datacollection.dc(range(10))
         result = dc.map(lambda x: x + 1).filter(lambda x: x < 3)
         self.assertListEqual(list(result), [1, 2])
 
@@ -137,7 +137,7 @@ class TestDataCollection(unittest.TestCase):
     def test_run(self):
         # pylint: disable=unnecessary-lambda
         x = []
-        dc = towhee.range(2).stream().runas_op(func=lambda a: x.append(a))
+        dc = datacollection.range(2).stream().runas_op(func=lambda a: x.append(a))
         self.assertEqual(x, [])
         dc.run()
         self.assertEqual(x, [0, 1])
@@ -145,8 +145,8 @@ class TestDataCollection(unittest.TestCase):
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(towhee.functional.data_collection))
-    tests.addTests(doctest.DocTestSuite(towhee.functional.option))
+    tests.addTests(doctest.DocTestSuite(datacollection.functional.data_collection))
+    tests.addTests(doctest.DocTestSuite(datacollection.functional.option))
     return tests
 
 

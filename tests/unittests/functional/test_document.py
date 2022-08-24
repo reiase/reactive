@@ -13,8 +13,8 @@
 # limitations under the License.
 import unittest
 import json
-from towhee import Document
-from towhee import DataCollection
+from datacollection import Document
+from datacollection import DataCollection
 
 
 class TestDocument(unittest.TestCase):
