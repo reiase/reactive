@@ -22,7 +22,6 @@ from .ray import RayMixin
 from .serve import ServeMixin
 from .config import ConfigMixin
 from .compile import CompileMixin
-from .remote import RemoteMixin
 from .list import ListMixin
 from .data_processing import DataProcessingMixin
 from .stream import StreamMixin
@@ -44,7 +43,6 @@ class DCMixins(
     MetricMixin,
     ParallelMixin,
     RayMixin,
-    RemoteMixin,
     SafeMixin,
     ServeMixin,
     StateMixin,

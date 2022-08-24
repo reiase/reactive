@@ -22,7 +22,7 @@ class ComputerVisionMixin:
     """
 
     def image_imshow(self, title="image"):  # pragma: no cover
-        from towhee.utils.cv2_utils import cv2
+        import cv2
 
         for im in self:
             cv2.imshow(title, im)
@@ -33,7 +33,7 @@ class ComputerVisionMixin:
         """
         read images from a camera.
         """
-        from towhee.utils.cv2_utils import cv2
+        import cv2
 
         cnt = limit
 
