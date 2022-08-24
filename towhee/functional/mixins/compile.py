@@ -24,7 +24,7 @@ class NumbaCompiler:
     """
 
     def __init__(self, name, index, *arg, **kws):
-        from towhee.utils.numba_utils import njit  # pylint: disable=import-outside-toplevel
+        from numba import njit  # pylint: disable=import-outside-toplevel
 
         name_func = [name + "_func", name.replace("_", "-") + "_func"]
         for n in name_func:
@@ -52,15 +52,21 @@ class NumbaCompiler:
 
     def jit_call(self, *arg, **kws):
         if bool(kws):
-            engine_log.warning("The compiled function in Numba does not support kwargs.")
+            engine_log.warning(
+                "The compiled function in Numba does not support kwargs."
+            )
             raise KeyError("The compiled function in Numba does not support kwargs.")
         if bool(self._index):
             res = self.__apply__(*arg)
 
             # Multi outputs.
             if isinstance(res, tuple):
-                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(res):
-                    raise IndexError(f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given.")
+                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(
+                    res
+                ):
+                    raise IndexError(
+                        f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given."
+                    )
                 for i, j in zip(self._index[1], res):
                     setattr(arg[0], i, j)
             # Single output.
@@ -97,7 +103,9 @@ class TowheeCompiler:  # pragma: no cover
     """
 
     def __init__(self, name, index, *arg, **kws):
-        from towhee.compiler import jit_compile  # pylint: disable=import-outside-toplevel
+        from towhee.compiler import (
+            jit_compile,
+        )  # pylint: disable=import-outside-toplevel
 
         # self._op = getattr(ops, name)[index](*arg, **kws)
         self._name = name
@@ -126,8 +134,12 @@ class TowheeCompiler:  # pragma: no cover
 
             # Multi outputs.
             if isinstance(res, tuple):
-                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(res):
-                    raise IndexError(f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given.")
+                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(
+                    res
+                ):
+                    raise IndexError(
+                        f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given."
+                    )
                 for i, j in zip(self._index[1], res):
                     setattr(arg[0], i, j)
             # Single output.
@@ -191,8 +203,12 @@ class CompileMixin:
         if compiler in ["numba", "towhee"]:
             self._jit = compiler
         else:
-            engine_log.error("Error when setting jit, please make sure the configuration about jit in ['numba'].")
-            raise KeyError("Error when setting jit, please make sure the configuration about jit in ['numba'].")
+            engine_log.error(
+                "Error when setting jit, please make sure the configuration about jit in ['numba']."
+            )
+            raise KeyError(
+                "Error when setting jit, please make sure the configuration about jit in ['numba']."
+            )
         return self
 
     def jit_resolve(self, name, index, *arg, **kws):
@@ -207,4 +223,4 @@ class CompileMixin:
                 retval.set_compiler(self._jit)
                 return retval
         except:  # pylint: disable=bare-except
-            return self.resolve(name, index, *arg, **kws)
+            return None

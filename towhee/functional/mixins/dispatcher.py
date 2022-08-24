@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from types import FrameType
 from towhee.engine.factory import create_op, ops
 from towhee.hparam import param_scope
 
@@ -44,32 +45,31 @@ class DispatcherMixin:
     <map object at ...>
     """
 
-    def resolve(self, path, index, *arg, **kws):
-        with param_scope() as hp:
-            locals_ = hp.locals
-            globals_ = hp.globals
-            op = None
-            if "." not in path:
-                if path in locals_:
-                    op = locals_[path]
-                elif path in globals_:
-                    op = globals_[path]
+    def resolve(self, stack: FrameType = None, *arg, **kws):
+        locals_ = stack.f_locals if isinstance(stack, FrameType) else {}
+        globals_ = stack.f_globals if isinstance(stack, FrameType) else {}
+        with param_scope() as ps:
+            if self._jit is not None:
+                op = self.jit_resolve(ps._name, ps._index, *arg, **kws)
+                if op is not None:
+                    return op
+            if "." in ps._name:
+                mod_name, attr_name = ps._name.split(".", 1)
             else:
-                mod_name, attr_name = path.split(".", 1)
-                mod = None
-                if mod_name in locals_:
-                    mod = locals_[mod_name]
-                elif mod_name in globals_:
-                    mod = globals_[mod_name]
-                if mod is ops:
-                    return getattr(ops, attr_name)[index](*arg, **kws)
-                if mod is not None:
-                    op = getattr_nested(mod, attr_name)
+                mod_name, attr_name = ps._name, None
+            mod = globals_.get(mod_name, None)
+            mod = locals_.get(mod_name, mod)
 
+            if mod is ops:
+                return getattr(ops, attr_name)[ps._index](*arg, **kws)
+            if mod is not None:
+                op = getattr_nested(mod, attr_name) if attr_name is not None else mod
+            else:
+                op = None
             if op is not None and callable(op):
                 if isinstance(op, type):
                     instance = op(*arg, **kws)
                 else:
                     instance = op
-                return create_op(instance, path, index, arg, kws)
-            return getattr(ops, path)[index](*arg, **kws)
+                return create_op(instance, ps._name, ps._index, arg, kws)
+            return getattr(ops, ps._name)[ps._index](*arg, **kws)

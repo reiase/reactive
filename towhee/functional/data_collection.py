@@ -120,22 +120,9 @@ class DataCollection(Iterable, DCMixins):
 
         stacks = inspect.stack()[1][0]
 
-        def drop_self(kv):
-            return {k: v for k, v in kv.items() if k != "self"}
-
         @dynamic_dispatch
         def wrapper(*arg, **kws):
-            with param_scope() as hp:
-                # pylint: disable=protected-access
-                path = hp._name
-                index = hp._index
-            if self.get_backend() == "ray":
-                return self.ray_resolve({}, path, index, *arg, **kws)
-            if self._jit is not None:
-                op = self.jit_resolve(path, index, *arg, **kws)
-            else:
-                with param_scope(locals=drop_self(stacks.f_locals), globals=drop_self(stacks.f_globals)):
-                    op = self.resolve(path, index, *arg, **kws)
+            op = self.resolve(stacks, *arg, **kws)
             return self.map(op)
 
         return getattr(wrapper, name)
@@ -170,7 +157,10 @@ class DataCollection(Iterable, DCMixins):
                     or pandas DataFrame.
         """
         if not hasattr(self._iterable, "__getitem__"):
-            raise TypeError("indexing is only supported for " "DataCollection created from list or pandas DataFrame.")
+            raise TypeError(
+                "indexing is only supported for "
+                "DataCollection created from list or pandas DataFrame."
+            )
         if isinstance(index, int):
             return self._iterable[index]
         return DataCollection(self._iterable[index])
@@ -204,7 +194,10 @@ class DataCollection(Iterable, DCMixins):
                     or pandas DataFrame.
         """
         if not hasattr(self._iterable, "__setitem__"):
-            raise TypeError("indexing is only supported for " "DataCollection created from list or pandas DataFrame.")
+            raise TypeError(
+                "indexing is only supported for "
+                "DataCollection created from list or pandas DataFrame."
+            )
         self._iterable[index] = value
 
     def __add__(self, other) -> "DataCollection":
@@ -310,7 +303,9 @@ class DataCollection(Iterable, DCMixins):
             >>> DataCollection.range(5).to_list()
             [0, 1, 2, 3, 4]
         """
-        return self._iterable if isinstance(self._iterable, list) else list(self._iterable)
+        return (
+            self._iterable if isinstance(self._iterable, list) else list(self._iterable)
+        )
 
     def map(self, *arg) -> "DataCollection":
         """Apply a function across all values in a DataCollection.
@@ -354,7 +349,9 @@ class DataCollection(Iterable, DCMixins):
         if hasattr(self._iterable, "map"):
             return self._factory(self._iterable.map(unary_op))
 
-        if hasattr(self._iterable, "apply") and hasattr(unary_op, "__dataframe_apply__"):
+        if hasattr(self._iterable, "apply") and hasattr(
+            unary_op, "__dataframe_apply__"
+        ):
             return self._factory(unary_op.__dataframe_apply__(self._iterable))
 
         # map
@@ -392,7 +389,9 @@ class DataCollection(Iterable, DCMixins):
         if hasattr(self._iterable, "filter"):
             return self._factory(self._iterable.filter(unary_op))
 
-        if hasattr(self._iterable, "apply") and hasattr(unary_op, "__dataframe_filter__"):
+        if hasattr(self._iterable, "apply") and hasattr(
+            unary_op, "__dataframe_filter__"
+        ):
             return DataCollection(unary_op.__dataframe_apply__(self._iterable))
 
         return self._factory(filter(inner, self._iterable))
@@ -567,7 +566,10 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
         """
         if hasattr(arg[0], "__check_init__"):
             arg[0].__check_init__()
-        if self._mode == self.ModeFlag.COLBASEDFLAG or self._mode == self.ModeFlag.CHUNKBASEDFLAG:
+        if (
+            self._mode == self.ModeFlag.COLBASEDFLAG
+            or self._mode == self.ModeFlag.CHUNKBASEDFLAG
+        ):
             return self.cmap(arg[0])
         else:
             return super().map(*arg)
