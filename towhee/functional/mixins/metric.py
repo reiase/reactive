@@ -169,8 +169,8 @@ class MetricMixin:
         test                0.622222             1.0
         {'test': {'mean_average_precision': 0.6222222222222221, 'mean_hit_ratio': 1.0}}
         """
-        from towhee.utils.ipython_utils import HTML, display
-        from towhee.utils.pandas_utils import pandas as pd
+        from IPython.display import display, HTML
+        import pandas as pd
 
         scores_dict = get_scores_dict(self.collector)
         df = pd.DataFrame(data=scores_dict, index=list(self.collector.scores.keys()))
