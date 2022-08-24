@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datacollection.utils.log import engine_log
-from datacollection.hparam import param_scope
-from datacollection.engine.factory import ops, op
-from datacollection.engine.operator_registry import OperatorRegistry
+from ..utils.log import engine_log
+from ..hparam import param_scope
+from ..execution.factory import ops, op
+from ..execution.operator_registry import OperatorRegistry
 
 
 class NumbaCompiler:

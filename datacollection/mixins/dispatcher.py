@@ -13,8 +13,9 @@
 # limitations under the License.
 
 from types import FrameType
-from datacollection.engine.factory import create_op, ops
-from datacollection.hparam import param_scope
+
+from ..execution.factory import create_op, ops
+from ..hparam import param_scope
 
 
 def getattr_nested(mod, path):

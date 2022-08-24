@@ -3,9 +3,9 @@ import asyncio
 import threading
 import uuid
 
-from datacollection.utils.log import engine_log
-from datacollection.types.option import Option, Empty, _Reason
-from datacollection.functional.mixins.parallel import EOS
+from ..utils.log import engine_log
+from ..types.option import Option, Empty, _Reason
+from .parallel import EOS
 
 
 def _map_task_ray(unary_op):  # pragma: no cover
@@ -76,7 +76,7 @@ class RayMixin:  # pragma: no cover
             """Ray actor that runs hub operators."""
 
             def __init__(self, path1, index1, uid, *arg1, **kws1):
-                from datacollection.engine.factory import _OperatorLazyWrapper
+                from datacollection.execution.factory import _OperatorLazyWrapper
 
                 self.op = _OperatorLazyWrapper.callback(path1, index1, *arg1, **kws1)
 
