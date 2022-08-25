@@ -3,3 +3,4 @@ pyarrow
 numpy
 numba
 ipython
+fastapi
