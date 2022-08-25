@@ -34,9 +34,9 @@ class AudioFrame(np.ndarray):
         # Cast `np.ndarray` to be `AudioFrame`.
         # See https://numpy.org/doc/stable/user/basics.subclassing.html for details.
         obj = np.asarray(data).view(cls)
-        obj._sample_rate = sample_rate
-        obj._timestamp = timestamp
-        obj._layout = layout
+        obj.sample_rate = sample_rate
+        obj.timestamp = timestamp
+        obj.layout = layout
         return obj
 
     def __array_finalize__(self, obj):
@@ -61,15 +61,3 @@ class AudioFrame(np.ndarray):
             + " layout="
             + self._layout
         )
-
-    @property
-    def sample_rate(self):
-        return self._sample_rate
-
-    @property
-    def timestamp(self):
-        return self._timestamp
-
-    @property
-    def layout(self):
-        return self._layout

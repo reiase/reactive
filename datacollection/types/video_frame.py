@@ -34,9 +34,9 @@ class VideoFrame(np.ndarray):
         # Cast `np.ndarray` to be `Image`.
         # See https://numpy.org/doc/stable/user/basics.subclassing.html for details.
         obj = np.asarray(data).view(cls)
-        obj._mode = mode
-        obj._timestamp = timestamp
-        obj._key_frame = key_frame
+        obj.mode = mode
+        obj.timestamp = timestamp
+        obj.key_frame = key_frame
         return obj
 
     def __array_finalize__(self, obj):
@@ -68,15 +68,3 @@ class VideoFrame(np.ndarray):
         super(VideoFrame, self).__setstate__(
             state[0:-1]
         )  # pylint: disable=super-with-arguments
-
-    @property
-    def mode(self):
-        return self._mode
-
-    @property
-    def timestamp(self):
-        return self._timestamp
-
-    @property
-    def key_frame(self):
-        return self._key_frame

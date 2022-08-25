@@ -12,45 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Union, List
+from typing import Union
 from datacollection.hparam import param_scope
 
 
 class ConfigMixin:
-    """
-    Mixin to config DC, such as set the `parallel`, `chunksize`, `jit`.
+    """Mixin to manage configurations such as `parallel`, `chunksize` and `jit`.
 
     Examples:
+        >>> import datacollection as dc
+        >>> dc0 = dc.dc['a'](range(20))
+        >>> dc0 = dc0.set_chunksize(10)
+        >>> dc0 = dc0.set_parallel(2)
+        >>> dc0 = dc0.set_jit('numba')
+        >>> dc0.get_config()
+        {'parallel': 2, 'chunksize': 10, 'jit': 'numba'}
 
-    >>> import datacollection as dc
-    >>> dc0 = dc.dc['a'](range(20))
-    >>> dc0 = dc0.set_chunksize(10)
-    >>> dc0 = dc0.set_parallel(2)
-    >>> dc0 = dc0.set_jit('numba')
-    >>> dc0.get_config()
-    {'parallel': 2, 'chunksize': 10, 'jit': 'numba'}
-    >>> dc1 = dc.dc([1,2,3]).config(jit='numba')
-    >>> dc2 = dc.dc['a'](range(40)).config(parallel=2, chunksize=20)
-    >>> dc1.get_config()
-    {'parallel': None, 'chunksize': None, 'jit': 'numba'}
-    >>> dc2.get_config()
-    {'parallel': 2, 'chunksize': 20, 'jit': None}
+        >>> dc1 = dc.dc([1,2,3]).config(jit='numba')
+        >>> dc2 = dc.dc['a'](range(40)).config(parallel=2, chunksize=20)
+        >>> dc1.get_config()
+        {'parallel': None, 'chunksize': None, 'jit': 'numba'}
+        >>> dc2.get_config()
+        {'parallel': 2, 'chunksize': 20, 'jit': None}
 
-    >>> import datacollection as dc
-    >>> dc0 = dc.dc['a'](range(20))
-    >>> dc0 = dc0.set_chunksize(10)
-    >>> dc0 = dc0.set_parallel(2)
-    >>> dc0 = dc0.set_jit('numba')
+        >>> import datacollection as dc
+        >>> dc0 = dc.dc['a'](range(20))
+        >>> dc0 = dc0.set_chunksize(10)
+        >>> dc0 = dc0.set_parallel(2)
+        >>> dc0 = dc0.set_jit('numba')
     """
 
     def __init__(self) -> None:
         super().__init__()
         with param_scope() as hp:
             parent = hp().data_collection.parent(None)
-        if parent is not None and hasattr(parent, "_config"):
-            self._config = parent._config
-        else:
-            self._config = None
         if parent is None or not hasattr(parent, "_num_worker"):
             self._num_worker = None
         if parent is None or not hasattr(parent, "_chunksize"):
@@ -89,12 +84,12 @@ class ConfigMixin:
         """
         Return the config in DC, such as `parallel`, `chunksize` and `jit`.
         """
-        self._config = {}
+        config = {}
 
         if hasattr(self, "_num_worker"):
-            self._config["parallel"] = self._num_worker
+            config["parallel"] = self._num_worker
         if hasattr(self, "_chunksize"):
-            self._config["chunksize"] = self._chunksize
+            config["chunksize"] = self._chunksize
         if hasattr(self, "_jit"):
-            self._config["jit"] = self._jit
-        return self._config
+            config["jit"] = self._jit
+        return config

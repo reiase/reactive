@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=redefined-builtin
-
-VERSION = "0.1.0"
-
 from .datacollection import DataCollection, DataFrame
 from .execution.factory import ops
 from .execution.registry import register
@@ -23,6 +19,8 @@ from .hparam import HyperParameter as Document
 from .hparam import HyperParameter as State
 from .hparam import dynamic_dispatch, param_scope
 from .types import Entity
+
+VERSION = "0.1.0"
 
 from_glob = DataCollection.from_glob
 from_pandas = DataFrame.from_pandas

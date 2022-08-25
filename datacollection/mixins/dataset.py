@@ -18,7 +18,7 @@ from pathlib import Path
 from datacollection.types.entity import Entity
 
 
-def url_valid(uri) -> bool:
+def _url_valid(uri) -> bool:
     regex = re.compile(
         r"^(?:http|ftp)s?://"  # http:// or https://
         r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain...
@@ -109,7 +109,7 @@ class DatasetMixin:
         from zipfile import ZipFile
 
         def inner():
-            if url_valid(str(url)):
+            if _url_valid(str(url)):
                 with urlopen(url) as zip_file:
                     zip_path = BytesIO(zip_file.read())
             else:
@@ -130,7 +130,7 @@ class DatasetMixin:
         Examples:
             >>> import pandas as pd
             >>> import io
-            >>> df = pd.DataFrame({"a": range(10), "b": range(10)})
+            >>> df = pd.DataFrame({"a": range(5), "b": range(10)})
             >>> buff = io.StringIO()
             >>> df.to_json(buff, orient="records", lines=True)
             >>> _ = buff.seek(0)
@@ -143,11 +143,6 @@ class DatasetMixin:
             2  2  2
             3  3  3
             4  4  4
-            5  5  5
-            6  6  6
-            7  7  7
-            8  8  8
-            9  9  9
 
             >>> _ = buff.seek(0)
             >>> dc.read_json(buff, stream=True).as_str().to_list()[0]
@@ -176,7 +171,7 @@ class DatasetMixin:
         Examples:
             >>> import pandas as pd
             >>> import io
-            >>> df = pd.DataFrame({"a": range(10), "b": range(10)})
+            >>> df = pd.DataFrame({"a": range(5), "b": range(10)})
             >>> buff = io.StringIO()
             >>> df.to_csv(buff, index=False)
             >>> _ = buff.seek(0)
@@ -189,11 +184,6 @@ class DatasetMixin:
             2  2  2
             3  3  3
             4  4  4
-            5  5  5
-            6  6  6
-            7  7  7
-            8  8  8
-            9  9  9
 
             >>> _ = buff.seek(0)
             >>> dc.read_csv(buff, stream=True).as_str().to_list()[0]
