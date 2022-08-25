@@ -53,9 +53,13 @@ class ColumnMixin:
         pyarrow.Table
         a: int64
         b: int64
+        a: [[0,1,2,3,4,5,6,7,8,9]]
+        b: [[1,2,3,4,5,6,7,8,9,10]]
         pyarrow.Table
         a: int64
         b: int64
+        a: [[10,11,12,13,14,15,16,17,18,19]]
+        b: [[11,12,13,14,15,16,17,18,19,20]]
 
         >>> dc_3 = dc.dc['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
@@ -93,6 +97,8 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
+        a: [["abc","def","ghi"]]
+        b: [[1,2,3]]
 
         >>> df.stream()._create_col_table()
         pyarrow.Table
@@ -152,6 +158,8 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
+        a: [["abc","def","ghi"]]
+        b: [[1,2,3]]
         """
 
         # pylint: disable=protected-access
@@ -184,6 +192,9 @@ class ColumnMixin:
         pyarrow.Table
         a: int64
         b: int64
+        a: [[0,1,2,3,4,5,6,7,8,9]]
+        b: [[1,2,3,4,5,6,7,8,9,10]]
+
         >>> len(d._iterable)
         10
         """
