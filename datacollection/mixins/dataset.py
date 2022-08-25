@@ -130,7 +130,7 @@ class DatasetMixin:
         Examples:
             >>> import pandas as pd
             >>> import io
-            >>> df = pd.DataFrame({"a": range(5), "b": range(10)})
+            >>> df = pd.DataFrame({"a": range(5), "b": range(5)})
             >>> buff = io.StringIO()
             >>> df.to_json(buff, orient="records", lines=True)
             >>> _ = buff.seek(0)
@@ -171,7 +171,7 @@ class DatasetMixin:
         Examples:
             >>> import pandas as pd
             >>> import io
-            >>> df = pd.DataFrame({"a": range(5), "b": range(10)})
+            >>> df = pd.DataFrame({"a": range(5), "b": range(5)})
             >>> buff = io.StringIO()
             >>> df.to_csv(buff, index=False)
             >>> _ = buff.seek(0)
