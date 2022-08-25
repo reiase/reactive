@@ -53,11 +53,13 @@ class ColumnMixin:
         pyarrow.Table
         a: int64
         b: int64
+        ----
         a: [[0,1,2,3,4,5,6,7,8,9]]
         b: [[1,2,3,4,5,6,7,8,9,10]]
         pyarrow.Table
         a: int64
         b: int64
+        ----
         a: [[10,11,12,13,14,15,16,17,18,19]]
         b: [[11,12,13,14,15,16,17,18,19,20]]
 
@@ -68,9 +70,15 @@ class ColumnMixin:
         pyarrow.Table
         a: int64
         b: int64
+        ----
+        a: [[0,1,2,3,4,5,6,7,8,9]]
+        b: [[1,2,3,4,5,6,7,8,9,10]]
         pyarrow.Table
         a: int64
         b: int64
+        ----
+        a: [[10,11,12,13,14,15,16,17,18,19]]
+        b: [[11,12,13,14,15,16,17,18,19,20]]
         """
 
         self._chunksize = chunksize
@@ -97,6 +105,7 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
+        ----
         a: [["abc","def","ghi"]]
         b: [[1,2,3]]
 
@@ -104,6 +113,9 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
+        ----
+        a: [["abc","def","ghi"]]
+        b: [[1,2,3]]
         """
         import pyarrow as pa
         from datacollection.types.tensor_array import TensorArray
@@ -158,6 +170,7 @@ class ColumnMixin:
         pyarrow.Table
         a: string
         b: int64
+        ----
         a: [["abc","def","ghi"]]
         b: [[1,2,3]]
         """
@@ -192,6 +205,7 @@ class ColumnMixin:
         pyarrow.Table
         a: int64
         b: int64
+        ----
         a: [[0,1,2,3,4,5,6,7,8,9]]
         b: [[1,2,3,4,5,6,7,8,9,10]]
 

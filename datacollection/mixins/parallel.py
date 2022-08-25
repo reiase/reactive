@@ -67,11 +67,13 @@ class ParallelMixin:
     pyarrow.Table
     a: int64
     b: int64
+    ----
     a: [[0,1]]
     b: [[1,2]]
     pyarrow.Table
     a: int64
     b: int64
+    ----
     a: [[2,3]]
     b: [[3,4]]
 
