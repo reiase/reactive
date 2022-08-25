@@ -1,7 +1,8 @@
-scikit-learn
-pyarrow==7.0.0
-numpy
-numba
-ipython
 fastapi
+ipython
+multipart
+numba
+numpy
 pandas
+pyarrow==7.0.0
+scikit-learn
