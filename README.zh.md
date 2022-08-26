@@ -3,33 +3,33 @@ DataCollection
 
 DataCollection 是面向数据科学和机器学习设计的一种数据结构， 目标是向数据科学家和机器学习工程师提供高阶能力的同时尽量保持Python中 `列表`与`迭代器`的简洁性. 
 
-DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于探索DataCollection数据结构上支持 MLOps 能力的可能性. 
+DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于探索DataCollection数据结构上支持 MLOps 能力的可能性。若对如何构建embedding流水线感兴趣，请移步 [Towhee项目](https://github.com/towhee-io/towhee)。 
 
-### Features
+### 特性
 
-- Method-chaining API that makes building data processing pipeline much easier;
-- Streaming computation that allows large-scale data beyond the memory limitation;
-- Easier tabular data programming API;
-- Hyper-parameter support in data processing;
+- 链式调用，可方便构建数据处理管线;
+- 流式计算，可处理超大数据集而不受内存限制;
+- 表格数据，方便按字段处理数据;
+- 超参支持，支持MLOps功能;
 
-### Use Cases
+### 用例
 
 
-- Building prototyping ML pipeline with experiment config and metric tracking;
-- Tuning ML pipeline performance with ease;
-- Deploying ML application into production;
+- 构建机器学习应用原型，并可以追踪试验配置和模型指标;
+- 快速调优ML Pipeline性能;
+- 部署ML Pipeline到生产环境，并优化性能;
 
-Quick Start
-------------
+快速开始
+-------
 
-### Installation
+### 安装
 
 ```bash
 pip install datacollection
 ```
-### DataCollection as a Python List
+### `DataCollection` 与Python列表
 
-`DataCollection` is an enhancement to the `list` data type in Python. Creating a DataCollection from a list is as simple as:
+`DataCollection` 是对Python `list` 数据类型的直接增强. 可以比较便捷的从`list`创建`DataCollection`:
 
 ```python
 >>> import datacollection as dc
@@ -39,7 +39,7 @@ pip install datacollection
 
 ```
 
-The behavior of DataCollection is designed to be a drop-in-place replacement for the Python `list`:
+`DataCollection` 的行为基本与Python `list` 类型一致，可直接替代:
 
 ``` python
 >>> d = dc.new([0, 1, 2, 3])
@@ -60,9 +60,9 @@ The behavior of DataCollection is designed to be a drop-in-place replacement for
 
 ```
 
-### Functional API and Method-Chaining Style
+### 函数式编程接口与链式调用
 
-DataCollection provides high-order functions such as `map` and `filter`:
+`DataCollection` 提供诸如 `map` 和 `filter` 这种高阶函数:
 
 ```python
 >>> dc.new([0, 1, 2, 3, 4]).map(lambda x: x*2)
@@ -73,7 +73,7 @@ DataCollection provides high-order functions such as `map` and `filter`:
 
 ```
 
-The `map` and `filter` always return a new DataCollection, making the method-chaining style possible in python:
+`map` 和 `filter` 也返回`DataCollection`类型, 因此我们在Python中也获得了链式调用的能力:
 
 ```python
 >>> (
@@ -86,9 +86,9 @@ The `map` and `filter` always return a new DataCollection, making the method-cha
 
 ```
 
-### Extendable
+### 扩展性
 
-DataCollection is designed to be extendable by simply defining or import functions:
+我们可以通过定义函数或者导入函数的形式来扩展 `DataCollection`， 比如:
 
 ```python
 >>> def add1(x):
@@ -101,11 +101,11 @@ DataCollection is designed to be extendable by simply defining or import functio
 
 ```
 
-we can directly call the function `add1` defined in the context as an API of DataCollection.
+`add1` 是定义在当前上下文的函数，我们可以将这种函数当做`DataCollection` 的API来调用而无需额外工作.
 
-### Tabular Data Processing
+### 表格数据处理
 
-DataCollection provides an easier way for processing tabular data in Pandas, for example:
+`DataCollection`提供Pandas表格数据的一种便捷处理方式，比如:
 
 ```python
 >>> import pandas as pd
@@ -113,7 +113,7 @@ DataCollection provides an easier way for processing tabular data in Pandas, for
 
 ```
 
-The DataFrame can be wrapped into a DataCollection, and apply function to different columns.
+Pandas的`DataFrame`可以直接包装为DataCollection，并通过函数式接口处理指定列.
 
 ```python
 >>> d = dc.from_pandas(df)
@@ -133,12 +133,11 @@ The DataFrame can be wrapped into a DataCollection, and apply function to differ
 
 ```
 
-where `add1["a", "b"]` means that we apply `add1` to column `a` and store the output into column `b`. 
+其中 `add1["a", "b"]` 表示以列`a` 为输入计算`add1`并将结果存入`b`. 
 
 ## Roadmap
 
-DataCollection aims to provide a collection API similar to `scala.collection`, but try to be more pythonic. Deep learning and Python have fundamentally changed data science and players in the area. And DataCollection tries to improve the readability and performance of ML-related python codes.
-
+DataCollection 目标是提供一套类似`scala.collection`的数据接口，但尽可能保持pythonic。深度学习和Python已经根本性的改变了数据科学和相关从业者，因此基于Python为开发者提供更好的体验，提升python代码的可读性和性能十分必要。
 
   - [ ] Collection API;
     - [ ] stream and unstream execution; 
