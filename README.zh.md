@@ -1,9 +1,9 @@
 DataCollection
 ==============
 
-DataCollection is an extended data structure for data science and machine learning tasks. It is designed to support advanced features but kept as simple as Python list or iterable. 
+DataCollection 是面向数据科学和机器学习设计的一种数据结构， 目标是向数据科学家和机器学习工程师提供高阶能力的同时尽量保持Python中 `列表`与`迭代器`的简洁性. 
 
-DataCollection is an experimental fork of `towhee.DataCollection` with effects that having better MLOps support. 
+DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于探索DataCollection数据结构上支持 MLOps 能力的可能性. 
 
 ### Features
 

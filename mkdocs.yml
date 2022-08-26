@@ -1,9 +1,16 @@
 site_name: Data.Collection for Python
+repo_url: https://github.com/reiase/datacollection
 
 theme:
   name: "material"
 
 plugins:
+  - search
+  - i18n:
+      languages:
+        en: "English"
+        zh: "中文"
+      default_language: 'en'
   - mkdocstrings:
       handlers:
         python:
@@ -15,5 +22,17 @@ plugins:
             show_submodules: no
 
 nav:
-  - Data.Collection Docs: index.md
-  - reference.md
+  - Home: index.md
+  - Reference: reference.md
+
+watch:
+    - datacollection
+
+extra:
+  alternate:
+    - name: English
+      link: /en/ 
+      lang: en
+    - name: 中文
+      link: /zh/
+      lang: zh
