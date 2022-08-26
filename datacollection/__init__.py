@@ -138,6 +138,7 @@ def _dc(iterable):
 
 dc = dynamic_dispatch(_dc)
 
+new = dc
 
 # Place all functions that are meant to be called by towhee.func() here aftering importing them.
 __all__ = [
