@@ -351,7 +351,7 @@ class DataCollection(Iterable, DCMixins):
         """Filter the DataCollection data based on function.
 
         Filters the DataCollection based on the function provided. If data is stored
-        as an Option (see datacollection.Option), drop empty will decide whether
+        as an Option (see pulse.Option), drop empty will decide whether
         to remove the element or set it to empty.
 
         Args:

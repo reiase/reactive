@@ -178,13 +178,13 @@ class CompileMixin:
 
     >>> t1 = time.time()
     >>> dc1 = (
-    ...     pulse.dc['a'](data)
+    ...     pulse.new['a'](data)
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
     ... )
     >>> t2 = time.time()
     >>> dc2 = (
-    ...     pulse.dc['a'](data)
+    ...     pulse.new['a'](data)
     ...     .config(jit='numba')
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()

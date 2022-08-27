@@ -64,7 +64,7 @@ class DatasetMixin:
 
         Examples:
             >>> import pulse
-            >>> pulse.dc([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
+            >>> pulse.new([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
                a
             0  1
             1  2
@@ -214,7 +214,7 @@ class DatasetMixin:
             >>> buff = io.StringIO()
 
             >>> import pulse
-            >>> dc = pulse.dc([{"a":1}, {"a":2}]).to_df().as_entity()
+            >>> dc = pulse.new([{"a":1}, {"a":2}]).to_df().as_entity()
             >>> dc.to_csv(buff)
             >>> _ = buff.seek(0)
             >>> print(buff.read())

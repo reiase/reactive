@@ -21,21 +21,21 @@ class ConfigMixin:
 
     Examples:
         >>> import pulse
-        >>> dc0 = pulse.dc['a'](range(20))
+        >>> dc0 = pulse.new['a'](range(20))
         >>> dc0 = dc0.set_chunksize(10)
         >>> dc0 = dc0.set_parallel(2)
         >>> dc0 = dc0.set_jit('numba')
         >>> dc0.get_config()
         {'parallel': 2, 'chunksize': 10, 'jit': 'numba'}
 
-        >>> dc1 = pulse.dc([1,2,3]).config(jit='numba')
-        >>> dc2 = pulse.dc['a'](range(40)).config(parallel=2, chunksize=20)
+        >>> dc1 = pulse.new([1,2,3]).config(jit='numba')
+        >>> dc2 = pulse.new['a'](range(40)).config(parallel=2, chunksize=20)
         >>> dc1.get_config()
         {'parallel': None, 'chunksize': None, 'jit': 'numba'}
         >>> dc2.get_config()
         {'parallel': 2, 'chunksize': 20, 'jit': None}
 
-        >>> dc0 = pulse.dc['a'](range(20))
+        >>> dc0 = pulse.new['a'](range(20))
         >>> dc0 = dc0.set_chunksize(10)
         >>> dc0 = dc0.set_parallel(2)
         >>> dc0 = dc0.set_jit('numba')

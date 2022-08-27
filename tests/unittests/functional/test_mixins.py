@@ -156,13 +156,13 @@ class TestCompileMixin(unittest.TestCase):
 
         t1 = time.time()
         _ = (
-            pulse.dc["a"](data)
+            pulse.new["a"](data)
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
         )
         t2 = time.time()
         _ = (
-            pulse.dc["a"](data)
+            pulse.new["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
@@ -190,7 +190,7 @@ class TestCompileMixin(unittest.TestCase):
 
         with self.assertLogs():
             _ = (
-                pulse.dc["a"](data)
+                pulse.new["a"](data)
                 .config(jit="numba")
                 .runas_op["a", "b"](func=lambda _: query)
                 .inner_distance1[("b", "a"), "c"]()

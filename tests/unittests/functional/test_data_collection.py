@@ -57,7 +57,7 @@ class TestDataCollection(unittest.TestCase):
     """
 
     def test_example_for_basic_api(self):
-        dc = pulse.dc(range(10))
+        dc = pulse.new(range(10))
         result = dc.map(lambda x: x + 1).filter(lambda x: x < 3)
         self.assertListEqual(list(result), [1, 2])
 

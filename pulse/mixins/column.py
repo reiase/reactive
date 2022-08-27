@@ -44,7 +44,7 @@ class ColumnMixin:
         Examples:
 
         >>> import pulse
-        >>> d1 = pulse.dc['a'](range(20))
+        >>> d1 = pulse.new['a'](range(20))
         >>> d1 = d1.set_chunksize(10)
         >>> d2 = d1.runas_op['a', 'b'](func=lambda x: x+1)
         >>> d1.get_chunksize(), d2.get_chunksize()
@@ -63,7 +63,7 @@ class ColumnMixin:
         a: [[10,11,12,13,14,15,16,17,18,19]]
         b: [[11,12,13,14,15,16,17,18,19,20]]
 
-        >>> dc_3 = pulse.dc['a'](range(20)).stream()
+        >>> dc_3 = pulse.new['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
         >>> dc_4 = dc_3.runas_op['a', 'b'](func=lambda x: x+1)
         >>> for chunk in dc_4._iterable.chunks(): print(chunk)
@@ -189,7 +189,7 @@ class ColumnMixin:
         Examples:
 
         >>> import pulse
-        >>> dc = pulse.dc['a'](range(10))
+        >>> dc = pulse.new['a'](range(10))
         >>> dc = dc.to_column()
         >>> dc = dc.runas_op['a', 'b'](func=lambda x: x+1)
 

@@ -66,7 +66,7 @@ class TestDispatcher(TestCase):
         def add_with_schema(x):
             return x + 1
 
-        retval = pulse.dc["a"]([0, 1, 2]).add_with_schema["a", "b"]()
+        retval = pulse.new["a"]([0, 1, 2]).add_with_schema["a", "b"]()
         self.assertListEqual(retval.select("b").as_raw().to_list(), [1, 2, 3])
 
     def test_global_function(self):

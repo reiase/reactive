@@ -55,13 +55,13 @@ class ParallelMixin:
     1000
 
     >>> import pulse
-    >>> dc = pulse.dc['a'](range(1000)).set_parallel(5)
+    >>> dc = pulse.new['a'](range(1000)).set_parallel(5)
     >>> dc = dc.runas_op['a', 'b'](lambda x: x+1).to_list()
     >>> len(dc)
     1000
 
     >>> import pulse
-    >>> dc = pulse.dc['a'](range(1000)).set_parallel(5).set_chunksize(2)
+    >>> dc = pulse.new['a'](range(1000)).set_parallel(5).set_chunksize(2)
     >>> dc = dc.runas_op['a', 'b'](lambda x: x+1)
     >>> for chunk in dc._iterable.chunks()[:2]: print(chunk)
     pyarrow.Table
@@ -151,7 +151,7 @@ class ParallelMixin:
         1. Split:
 
         >>> import pulse
-        >>> d = pulse.dc([0, 1, 2, 3, 4]).stream()
+        >>> d = pulse.new([0, 1, 2, 3, 4]).stream()
         >>> a, b, c = d.split(3)
         >>> a.zip(b, c).to_list()
         [(0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4)]

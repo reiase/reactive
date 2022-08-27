@@ -116,15 +116,15 @@ def _dc(iterable):
     1. create a simple data collection;
 
     >>> import pulse
-    >>> pulse.dc([0, 1, 2]).to_list()
+    >>> pulse.new([0, 1, 2]).to_list()
     [0, 1, 2]
 
     2. create a data collection of structural data.
 
-    >>> pulse.dc['column']([0, 1, 2]).to_list()
+    >>> pulse.new['column']([0, 1, 2]).to_list()
     [<Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>]
 
-    >>> pulse.dc['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
+    >>> pulse.new['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
     [<Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>]
     """
 
