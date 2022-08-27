@@ -43,8 +43,8 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import datacollection as dc
-        >>> d1 = dc.dc['a'](range(20))
+        >>> import pulse
+        >>> d1 = pulse.dc['a'](range(20))
         >>> d1 = d1.set_chunksize(10)
         >>> d2 = d1.runas_op['a', 'b'](func=lambda x: x+1)
         >>> d1.get_chunksize(), d2.get_chunksize()
@@ -63,7 +63,7 @@ class ColumnMixin:
         a: [[10,11,12,13,14,15,16,17,18,19]]
         b: [[11,12,13,14,15,16,17,18,19,20]]
 
-        >>> dc_3 = dc.dc['a'](range(20)).stream()
+        >>> dc_3 = pulse.dc['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
         >>> dc_4 = dc_3.runas_op['a', 'b'](func=lambda x: x+1)
         >>> for chunk in dc_4._iterable.chunks(): print(chunk)
@@ -188,10 +188,10 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import datacollection as dc
-        >>> d = dc.dc['a'](range(10))
-        >>> d = d.to_column()
-        >>> d = d.runas_op['a', 'b'](func=lambda x: x+1)
+        >>> import pulse
+        >>> dc = pulse.dc['a'](range(10))
+        >>> dc = dc.to_column()
+        >>> dc = dc.runas_op['a', 'b'](func=lambda x: x+1)
 
         # >>> dc.show(limit=5, tablefmt='plain')
         #   a    b
@@ -201,7 +201,7 @@ class ColumnMixin:
         #   3    4
         #   4    5
 
-        >>> d._iterable
+        >>> dc._iterable
         pyarrow.Table
         a: int64
         b: int64
@@ -209,7 +209,7 @@ class ColumnMixin:
         a: [[0,1,2,3,4,5,6,7,8,9]]
         b: [[1,2,3,4,5,6,7,8,9,10]]
 
-        >>> len(d._iterable)
+        >>> len(dc._iterable)
         10
         """
         # pylint: disable=protected-access

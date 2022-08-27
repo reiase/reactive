@@ -47,23 +47,23 @@ class ParallelMixin:
 
     Examples:
 
-    >>> import datacollection as dc
+    >>> import pulse
     >>> def add_1(x):
     ...     return x+1
-    >>> result = dc.range(1000).set_parallel(2).map(add_1).to_list()
+    >>> result = pulse.range(1000).set_parallel(2).map(add_1).to_list()
     >>> len(result)
     1000
 
-    >>> import datacollection as dc
-    >>> d = dc.dc['a'](range(1000)).set_parallel(5)
-    >>> d = d.runas_op['a', 'b'](lambda x: x+1).to_list()
-    >>> len(d)
+    >>> import pulse
+    >>> dc = pulse.dc['a'](range(1000)).set_parallel(5)
+    >>> dc = dc.runas_op['a', 'b'](lambda x: x+1).to_list()
+    >>> len(dc)
     1000
 
-    >>> import datacollection as dc
-    >>> d = dc.dc['a'](range(1000)).set_parallel(5).set_chunksize(2)
-    >>> d = d.runas_op['a', 'b'](lambda x: x+1)
-    >>> for chunk in d._iterable.chunks()[:2]: print(chunk)
+    >>> import pulse
+    >>> dc = pulse.dc['a'](range(1000)).set_parallel(5).set_chunksize(2)
+    >>> dc = dc.runas_op['a', 'b'](lambda x: x+1)
+    >>> for chunk in dc._iterable.chunks()[:2]: print(chunk)
     pyarrow.Table
     a: int64
     b: int64
@@ -77,7 +77,7 @@ class ParallelMixin:
     a: [[2,3]]
     b: [[3,4]]
 
-    >>> result = dc.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
+    >>> result = pulse.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
     >>> result[990:]
     [992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001]
     """
@@ -112,12 +112,12 @@ class ParallelMixin:
 
         Examples:
 
-        >>> import datacollection as dc
+        >>> import pulse
         >>> import threading
         >>> stage_1_thread_set = set()
         >>> stage_2_thread_set = set()
         >>> result = (
-        ...     dc.range(1000).stream().set_parallel(4)
+        ...     pulse.range(1000).stream().set_parallel(4)
         ...     .map(lambda x: stage_1_thread_set.add(threading.current_thread().ident))
         ...     .map(lambda x: stage_2_thread_set.add(threading.current_thread().ident)).to_list()
         ... )
@@ -150,8 +150,8 @@ class ParallelMixin:
 
         1. Split:
 
-        >>> import datacollection as dc
-        >>> d = dc.dc([0, 1, 2, 3, 4]).stream()
+        >>> import pulse
+        >>> d = pulse.dc([0, 1, 2, 3, 4]).stream()
         >>> a, b, c = d.split(3)
         >>> a.zip(b, c).to_list()
         [(0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4)]
@@ -250,12 +250,12 @@ class ParallelMixin:
 
         Examples:
 
-        >>> import datacollection as dc
+        >>> import pulse
         >>> import threading
         >>> stage_1_thread_set = {threading.current_thread().ident}
         >>> stage_2_thread_set = {threading.current_thread().ident}
         >>> result = (
-        ...     dc.range(1000).stream()
+        ...     pulse.range(1000).stream()
         ...     .pmap(lambda x: stage_1_thread_set.add(threading.current_thread().ident), 5)
         ...     .pmap(lambda x: stage_2_thread_set.add(threading.current_thread().ident), 4).to_list()
         ... )

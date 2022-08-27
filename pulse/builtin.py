@@ -10,8 +10,8 @@ class runas_op:
         func (`Callable`):
             The user-defined function.
     Examples:
-    >>> from datacollection import DataCollection
-    >>> from datacollection import Entity
+    >>> from pulse import DataCollection
+    >>> from pulse import Entity
     >>> entities = [Entity(a=i, b=i) for i in range(5)]
     >>> dc = DataCollection(entities)
     >>> res = dc.runas_op['a', 'b'](func=lambda x: x - 1).to_list()

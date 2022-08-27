@@ -32,9 +32,9 @@ pip install datacollection
 `DataCollection` 是对Python `list` 数据类型的直接增强. 可以比较便捷的从`list`创建`DataCollection`:
 
 ```python
->>> import datacollection as dc
->>> d = dc.new([0, 1, 2, 3])
->>> d
+>>> import pulse
+>>> dc = pulse.new([0, 1, 2, 3])
+>>> dc
 [0, 1, 2, 3]
 
 ```
@@ -42,20 +42,20 @@ pip install datacollection
 `DataCollection` 的行为基本与Python `list` 类型一致，可直接替代:
 
 ``` python
->>> d = dc.new([0, 1, 2, 3])
->>> d
+>>> dc = pulse.new([0, 1, 2, 3])
+>>> dc
 [0, 1, 2, 3]
 
 # indexing
->>> d[1], d[2]
+>>> dc[1], dc[2]
 (1, 2)
 
 # slicing
->>> d[:2]
+>>> dc[:2]
 [0, 1]
 
 # appending
->>> d.append(4).append(5)
+>>> dc.append(4).append(5)
 [0, 1, 2, 3, 4, 5]
 
 ```
@@ -65,10 +65,10 @@ pip install datacollection
 `DataCollection` 提供诸如 `map` 和 `filter` 这种高阶函数:
 
 ```python
->>> dc.new([0, 1, 2, 3, 4]).map(lambda x: x*2)
+>>> pulse.new([0, 1, 2, 3, 4]).map(lambda x: x*2)
 [0, 2, 4, 6, 8]
 
->>> dc.new([0, 1, 2, 3, 4]).filter(lambda x: int(x%2)==0)
+>>> pulse.new([0, 1, 2, 3, 4]).filter(lambda x: int(x%2)==0)
 [0, 2, 4]
 
 ```
@@ -77,7 +77,7 @@ pip install datacollection
 
 ```python
 >>> (
-...   	dc.new([0, 1, 2, 3, 4])
+...   	pulse.new([0, 1, 2, 3, 4])
 ...           .filter(lambda x: x%2==1)
 ...           .map(lambda x: x+1)
 ...           .map(lambda x: x*2)
@@ -116,12 +116,12 @@ pip install datacollection
 Pandas的`DataFrame`可以直接包装为DataCollection，并通过函数式接口处理指定列.
 
 ```python
->>> d = dc.from_pandas(df)
+>>> dc = pulse.from_pandas(df)
 
 >>> def add1(x): return x+1
 >>> def mul2(x): return x*2
 >>> (
-...   d.add1["a", "b"]()
+...   dc.add1["a", "b"]()
 ... 		.mul2["b", "c"]()
 ... )
    a  b   c

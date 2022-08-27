@@ -34,9 +34,9 @@ class DispatcherMixin:
     """
     Mixin for call dispatcher for data collection
 
-    >>> from datacollection import register
-    >>> from datacollection import ops
-    >>> from datacollection import DataCollection
+    >>> from pulse import register
+    >>> from pulse import ops
+    >>> from pulse import DataCollection
     >>> @register(name='add_1')
     ... def add_1(x):
     ...     return x+1

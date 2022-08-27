@@ -397,7 +397,7 @@ class DataCollection(Iterable, DCMixins):
             DataFrame: Resulting converted DataFrame.
 
         Examples:
-            >>> from datacollection import DataCollection, Entity
+            >>> from pulse import DataCollection, Entity
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> d = DataCollection(e)
             >>> type(d)

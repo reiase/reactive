@@ -153,8 +153,8 @@ class MetricMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
-        >>> from datacollection import Entity
+        >>> from pulse import DataCollection
+        >>> from pulse import Entity
         >>> dc1 = DataCollection([Entity(a=a, b=b, c=c) for a, b, c in zip([0,1,1,0,0], [0,1,1,1,0], [0,1,1,0,0])])
         >>> dc1.with_metrics(['accuracy', 'recall']).evaluate['a', 'c'](name='lr').evaluate['a', 'b'](name='rf').report()
             accuracy  recall

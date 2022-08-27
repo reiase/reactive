@@ -30,7 +30,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([0, 1, 2])
         >>> dc.append(3).append(4)
         [0, 1, 2, 3, 4]
@@ -48,7 +48,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.clear()
         []
@@ -66,7 +66,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc_1 = dc.copy()
         >>> dc_1._iterable.append(4)
@@ -85,7 +85,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.count(1)
         1
@@ -102,7 +102,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.extend([4, 5])
         [1, 2, 3, 4, 5]
@@ -120,7 +120,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.insert(0, 0)
         [0, 1, 2, 3]
@@ -138,7 +138,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.pop()
         [1, 2]
@@ -156,7 +156,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.remove(1)
         [2, 3]
@@ -174,7 +174,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 2, 3])
         >>> dc.reverse()
         [3, 2, 1]
@@ -192,7 +192,7 @@ class ListMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([1, 4, 3])
         >>> dc.sort()
         [1, 3, 4]

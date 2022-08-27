@@ -160,9 +160,10 @@ class CompileMixin:
     Examples:
 
     >>> import numpy
-    >>> import datacollection as dc
     >>> import time
-    >>> from datacollection import register
+    >>> import pulse
+    >>> from pulse import register
+
     >>> @register(name='inner_distance')
     ... def inner_distance(query, data):
     ...     dists = []
@@ -177,13 +178,13 @@ class CompileMixin:
 
     >>> t1 = time.time()
     >>> dc1 = (
-    ...     dc.dc['a'](data)
+    ...     pulse.dc['a'](data)
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
     ... )
     >>> t2 = time.time()
     >>> dc2 = (
-    ...     dc.dc['a'](data)
+    ...     pulse.dc['a'](data)
     ...     .config(jit='numba')
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()

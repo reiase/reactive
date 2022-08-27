@@ -32,9 +32,9 @@ pip install datacollection
 `DataCollection` is an enhancement to the `list` data type in Python. Creating a DataCollection from a list is as simple as:
 
 ```python
->>> import datacollection as dc
->>> d = dc.new([0, 1, 2, 3])
->>> d
+>>> import pulse
+>>> dc = pulse.new([0, 1, 2, 3])
+>>> dc
 [0, 1, 2, 3]
 
 ```

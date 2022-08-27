@@ -39,13 +39,13 @@ def _range(*args, **kwargs):  # pragma: no cover
 
     1. create a simple data collection;
 
-    >>> import datacollection as dc
-    >>> dc.range(5).to_list() #doctest: +SKIP
+    >>> import pulse
+    >>> pulse.range(5).to_list() #doctest: +SKIP
     [0, 1, 2, 3, 4]
 
     2. create a data collection of schema'd range.
 
-    >>> dc.range['nums'](5).select['nums']().as_raw() #doctest: +SKIP
+    >>> pulse.range['nums'](5).select['nums']().as_raw() #doctest: +SKIP
     [0, 1, 2, 3, 4]
     """
 
@@ -68,15 +68,15 @@ def _api():
     >>> from fastapi.testclient import TestClient
     >>> app = FastAPI()
 
-    >>> import datacollection as dc
-    >>> with dc.api() as api:
+    >>> import pulse
+    >>> with pulse.api() as api:
     ...     app1 = (
     ...         api.map(lambda x: x+' -> 1')
     ...            .map(lambda x: x+' => 1')
     ...            .serve('/app1', app)
     ...     )
 
-    >>> with dc.api['x']() as api:
+    >>> with pulse.api['x']() as api:
     ...     app2 = (
     ...         api.runas_op['x', 'x_plus_1'](func=lambda x: x+' -> 2')
     ...            .runas_op['x_plus_1', 'y'](func=lambda x: x+' => 2')
@@ -84,7 +84,7 @@ def _api():
     ...            .serve('/app2', app)
     ...     )
 
-    >>> with dc.api() as api:
+    >>> with pulse.api() as api:
     ...     app2 = (
     ...         api.parse_json()
     ...            .runas_op['x', 'x_plus_1'](func=lambda x: x+' -> 3')
@@ -115,16 +115,16 @@ def _dc(iterable):
 
     1. create a simple data collection;
 
-    >>> import datacollection as dc
-    >>> dc.dc([0, 1, 2]).to_list()
+    >>> import pulse
+    >>> pulse.dc([0, 1, 2]).to_list()
     [0, 1, 2]
 
     2. create a data collection of structural data.
 
-    >>> dc.dc['column']([0, 1, 2]).to_list()
+    >>> pulse.dc['column']([0, 1, 2]).to_list()
     [<Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>]
 
-    >>> dc.dc['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
+    >>> pulse.dc['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
     [<Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>]
     """
 

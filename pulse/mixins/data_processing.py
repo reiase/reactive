@@ -29,7 +29,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc1 = DataCollection([0.8, 0.9, 8.1, 9.2])
         >>> dc2 = DataCollection([[1, 2, 0], [2, 3, 0]])
 
@@ -58,7 +58,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc1 = DataCollection([1,2,3,4])
         >>> dc2 = DataCollection([1,2,3,4]).map(lambda x: x+1)
         >>> dc3 = dc1.zip(dc2)
@@ -78,7 +78,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> DataCollection.range(10).head(3).to_list()
         [0, 1, 2]
         """
@@ -103,7 +103,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection(range(10000))
         >>> result = dc.sample(0.1)
         >>> ratio = len(result.to_list()) / 10000.
@@ -128,7 +128,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection(range(10))
         >>> [list(batch) for batch in dc.batch(2)]
         [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
@@ -181,7 +181,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection(range(5))
         >>> [list(batch) for batch in dc.rolling(3)]
         [[0, 1, 2], [1, 2, 3], [2, 3, 4]]
@@ -194,12 +194,12 @@ class DataProcessingMixin:
         >>> [list(batch) for batch in dc.rolling(3, drop_tail=False)]
         [[0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4], [4]]
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection(range(5))
         >>> dc.rolling(2, 2, drop_head=False, drop_tail=False)
         [[0], [0, 1], [2, 3], [4]]
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection(range(5))
         >>> dc.rolling(2, 4, drop_head=False, drop_tail=False)
         [[0], [0, 1], [4]]
@@ -244,7 +244,7 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection, Entity
+        >>> from pulse import DataCollection, Entity
         >>> dc = DataCollection(range(10))
         >>> nested_dc = dc.batch(2)
         >>> nested_dc.flatten().to_list()
@@ -294,7 +294,7 @@ class DataProcessingMixin:
 
         1. Shuffle:
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([0, 1, 2, 3, 4])
         >>> a = dc.shuffle()
         >>> tuple(a) == tuple(range(5))

@@ -45,9 +45,9 @@ class DatasetMixin:
 
         Examples:
             >>> import pandas as pd
-            >>> import datacollection as dc
+            >>> import pulse
             >>> df = pd.DataFrame({"a": range(5), "b": range(5)})
-            >>> dc.from_pandas(df).df
+            >>> pulse.from_pandas(df).df
                a  b
             0  0  0
             1  1  1
@@ -63,8 +63,8 @@ class DatasetMixin:
         """Create Pandas DataFrame
 
         Examples:
-            >>> import datacollection as dc
-            >>> dc.dc([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
+            >>> import pulse
+            >>> pulse.dc([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
                a
             0  1
             1  2
@@ -135,8 +135,8 @@ class DatasetMixin:
             >>> df.to_json(buff, orient="records", lines=True)
             >>> _ = buff.seek(0)
 
-            >>> import datacollection as dc
-            >>> dc.read_json(buff)
+            >>> import pulse
+            >>> pulse.read_json(buff)
                a  b
             0  0  0
             1  1  1
@@ -145,7 +145,7 @@ class DatasetMixin:
             4  4  4
 
             >>> _ = buff.seek(0)
-            >>> dc.read_json(buff, stream=True).as_str().to_list()[0]
+            >>> pulse.read_json(buff, stream=True).as_str().to_list()[0]
             "{'a': 0, 'b': 0}"
         """
         kwargs["lines"] = True
@@ -176,8 +176,8 @@ class DatasetMixin:
             >>> df.to_csv(buff, index=False)
             >>> _ = buff.seek(0)
 
-            >>> import datacollection as dc
-            >>> dc.read_csv(buff)
+            >>> import pulse
+            >>> pulse.read_csv(buff)
                a  b
             0  0  0
             1  1  1
@@ -186,7 +186,7 @@ class DatasetMixin:
             4  4  4
 
             >>> _ = buff.seek(0)
-            >>> dc.read_csv(buff, stream=True).as_str().to_list()[0]
+            >>> pulse.read_csv(buff, stream=True).as_str().to_list()[0]
             "{'a': 0, 'b': 0}"
         """
         if stream:
@@ -213,9 +213,9 @@ class DatasetMixin:
             >>> import io
             >>> buff = io.StringIO()
 
-            >>> import datacollection as dc
-            >>> d = dc.dc([{"a":1}, {"a":2}]).to_df().as_entity()
-            >>> d.to_csv(buff)
+            >>> import pulse
+            >>> dc = pulse.dc([{"a":1}, {"a":2}]).to_df().as_entity()
+            >>> dc.to_csv(buff)
             >>> _ = buff.seek(0)
             >>> print(buff.read())
             ,a
@@ -236,8 +236,8 @@ class DatasetMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
-        >>> dc = DataCollection.range(10)
+        >>> import pulse
+        >>> dc = pulse.range(10)
         >>> train, test = dc.split_train_test(shuffle=False)
         >>> train.to_list()
         [0, 1, 2, 3, 4, 5, 6, 7, 8]

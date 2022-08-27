@@ -26,7 +26,7 @@ class StreamMixin:
         Examples:
         1. Convert a data collection to streamed version
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([0, 1, 2, 3, 4])
         >>> dc.is_stream
         False
@@ -47,7 +47,7 @@ class StreamMixin:
 
         1. Create a unstream data collection
 
-        >>> from datacollection import DataCollection
+        >>> from pulse import DataCollection
         >>> dc = DataCollection(iter(range(5))).unstream()
         >>> dc.is_stream
         False
@@ -71,8 +71,7 @@ class StreamMixin:
 
         Examples:
 
-        >>> from datacollection import DataCollection
-        >>> from typing import Iterable
+        >>> from pulse import DataCollection
         >>> dc = DataCollection([0,1,2,3,4])
         >>> dc.is_stream
         False

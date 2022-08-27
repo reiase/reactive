@@ -24,9 +24,9 @@ class StateMixin:
 
     Examples:
 
-    >>> import datacollection as dc
+    >>> import pulse as pu
     >>> from datacollection import param_scope, State
-    >>> dc = dc.range(10).set_state(State(a=1))
+    >>> dc = pu.range(10).set_state(State(a=1))
     >>> dc.get_state()
     {'a': 1}
 
