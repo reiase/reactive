@@ -78,9 +78,9 @@ pip install pulse
 ```python
 >>> (
 ...   	pulse.new([0, 1, 2, 3, 4])
-...           .filter(lambda x: x%2==1)
-...           .map(lambda x: x+1)
-...           .map(lambda x: x*2)
+...          .filter(lambda x: x%2==1)
+...          .map(lambda x: x+1)
+...          .map(lambda x: x*2)
 ... )
 [4, 8]
 
@@ -94,8 +94,8 @@ pip install pulse
 >>> def add1(x):
 ...   return x + 1
 >>> (
-...		dc.new([0, 1, 2, 3, 4])
-... 		.add1()
+...		pulse.new([0, 1, 2, 3, 4])
+... 		   .add1()
 ... )
 [1, 2, 3, 4, 5]
 
