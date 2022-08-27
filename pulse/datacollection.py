@@ -164,7 +164,7 @@ class DataCollection(Iterable, DCMixins):
 
         Args:
             index (int): The index location of the element being set.
-            val (any): The value to be set.
+            value (any): The value to be set.
 
         Raises:
             TypeError: If function called on streamed DataCollection

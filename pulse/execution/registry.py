@@ -68,9 +68,6 @@ def register(name: str = None):
 
     Args:
         name (str, optional): operator name, will use the class/function name if None.
-
-    Returns:
-        [type]: [description]
     """
     if callable(name):
         # the decorator is called directly without any arguments,

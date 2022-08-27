@@ -29,7 +29,7 @@ class Entity:
         """Define the representation of the Entity.
 
         Returns:
-            string: the repr of the entity.
+            string (str): the repr of the entity.
 
         Examples:
             >>> from pulse import Entity
