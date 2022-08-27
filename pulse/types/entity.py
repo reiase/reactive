@@ -32,7 +32,7 @@ class Entity:
             string: the repr of the entity.
 
         Examples:
-            >>> from datacollection import Entity
+            >>> from pulse import Entity
             >>> e = Entity(a = 1, b = 2)
             >>> e
             <Entity dict_keys(['a', 'b'])>
@@ -47,7 +47,7 @@ class Entity:
             string: the string representation of the entity.
 
         Examples:
-            >>> from datacollection import Entity
+            >>> from pulse import Entity
             >>> e = Entity(a = 1, b = 2)
             >>> str(e)
             "{'a': 1, 'b': 2}"
@@ -65,7 +65,7 @@ class Entity:
 
         Examples:
 
-            >>> from datacollection import Entity
+            >>> from pulse import Entity
             >>> d = {'a': 1, 'b': 2}
             >>> str(Entity.from_dict(d))
             "{'a': 1, 'b': 2}"
@@ -78,7 +78,7 @@ class EntityView:
     The view to iterate DataFrames.
 
     Examples:
-        >>> from datacollection import Entity, DataFrame
+        >>> from pulse import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(range(3), range(3))]
         >>> df = DataFrame(e)
         >>> df = df.to_column()
@@ -139,7 +139,7 @@ class EntityView:
 
         Examples:
 
-            >>> from datacollection import Entity, DataFrame
+            >>> from pulse import Entity, DataFrame
             >>> e = [Entity(a=a, b=b) for a,b in zip(range(5), range(5))]
             >>> df = DataFrame(e)
             >>> df = df.to_column()

@@ -1,5 +1,5 @@
-::: datacollection
+::: pulse
     show_submodules: True
 
-::: datacollection.mixins
+::: pulse.mixins
     show_submodules: True

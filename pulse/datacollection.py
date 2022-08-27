@@ -95,7 +95,7 @@ class DataCollection(Iterable, DCMixins):
                 call.
 
         Examples:
-            >>> from datacollection import register
+            >>> from pulse import register
             >>> dc = DataCollection([1,2,3,4])
             >>> @register(name='add1')
             ... def add1(x):
@@ -413,7 +413,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
     """Entity based DataCollection.
 
     Examples:
-        >>> from datacollection import Entity
+        >>> from pulse import Entity
         >>> DataFrame([Entity(id=a) for a in [1,2,3]])
         [<Entity dict_keys(['id'])>, <Entity dict_keys(['id'])>, <Entity dict_keys(['id'])>]
     """
@@ -470,7 +470,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             DataCollection: Resulting DataCollection from DataFrame
 
         Examples:
-            >>> from datacollection import DataFrame, Entity
+            >>> from pulse import DataFrame, Entity
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> df = DataFrame(e)
             >>> type(df)
@@ -491,7 +491,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             ModeFlag: The storage format of the Dataframe.
 
         Examples:
-            >>> from datacollection import Entity, DataFrame
+            >>> from pulse import Entity, DataFrame
             >>> e = [Entity(a=a, b=b) for a,b in zip(range(5), range(5))]
             >>> df = DataFrame(e)
             >>> df.mode
@@ -511,7 +511,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
 
         Examples:
             1. Row Based::
-            >>> from datacollection import Entity, DataFrame
+            >>> from pulse import Entity, DataFrame
             >>> e = [Entity(a=a, b=b) for a,b in zip(range(3), range(3))]
             >>> df = DataFrame(e)
             >>> df.to_list()[0]

@@ -97,7 +97,7 @@ class ColumnMixin:
 
         Examples:
 
-        >>> from datacollection import Entity, DataFrame
+        >>> from pulse import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
         >>> df = DataFrame(e)
         >>> table = df._create_col_table()
@@ -161,7 +161,7 @@ class ColumnMixin:
 
         Examples:
 
-        >>> from datacollection import Entity, DataFrame
+        >>> from pulse import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
         >>> df = DataFrame(e)
         >>> df

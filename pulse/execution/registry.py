@@ -35,7 +35,7 @@ def register(name: str = None):
     Examples:
 
         1. register a function as operator
-        >>> from datacollection import register
+        >>> from pulse import register
         >>> @register
         ... def foo(x, y):
         ...     return x+y
@@ -50,7 +50,7 @@ def register(name: str = None):
 
         By default, function/class name is used as operator name,
         which is used by the operator factory `towhee.ops` to invoke the operator.
-        >>> from datacollection import ops
+        >>> from pulse import ops
         >>> op = ops.foo()
         >>> op(1, 2)
         3

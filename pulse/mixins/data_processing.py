@@ -141,7 +141,7 @@ class DataProcessingMixin:
         >>> dc.batch(3, drop_tail=True)
         [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 
-        >>> from datacollection import Entity
+        >>> from pulse import Entity
         >>> dc = DataCollection([Entity(a=a, b=b) for a,b in zip(['abc', 'vdfvcd', 'cdsc'], [1,2,3])])
         >>> dc.batch(2)
         [[<Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>], [<Entity dict_keys(['a', 'b'])>]]
