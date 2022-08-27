@@ -16,21 +16,21 @@ import doctest
 import unittest
 from pathlib import Path
 
-import datacollection
-import datacollection.mixins.computer_vision
-import datacollection.mixins.config
-import datacollection.mixins.data_processing
-import datacollection.mixins.dataframe
-import datacollection.mixins.dataset
-import datacollection.mixins.list
-import datacollection.mixins.metric
-import datacollection.mixins.parallel
-import datacollection.mixins.safe
-import datacollection.mixins.serve
-import datacollection.mixins.state
-import datacollection.mixins.stream
+import pulse
+import pulse.mixins.computer_vision
+import pulse.mixins.config
+import pulse.mixins.data_processing
+import pulse.mixins.dataframe
+import pulse.mixins.dataset
+import pulse.mixins.list
+import pulse.mixins.metric
+import pulse.mixins.parallel
+import pulse.mixins.safe
+import pulse.mixins.serve
+import pulse.mixins.state
+import pulse.mixins.stream
 import numpy as np
-from datacollection import dc
+from pulse import dc
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -38,19 +38,19 @@ public_path = Path(__file__).parent.parent.resolve()
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
     for mod in [
-        datacollection.mixins.computer_vision,
-        datacollection.mixins.dataset,
-        datacollection.mixins.dataframe,
-        datacollection.mixins.metric,
-        datacollection.mixins.parallel,
-        datacollection.mixins.state,
-        datacollection.mixins.serve,
-        datacollection.mixins.column,
-        datacollection.mixins.config,
-        datacollection.mixins.list,
-        datacollection.mixins.data_processing,
-        datacollection.mixins.stream,
-        datacollection.mixins.safe,
+        pulse.mixins.computer_vision,
+        pulse.mixins.dataset,
+        pulse.mixins.dataframe,
+        pulse.mixins.metric,
+        pulse.mixins.parallel,
+        pulse.mixins.state,
+        pulse.mixins.serve,
+        pulse.mixins.column,
+        pulse.mixins.config,
+        pulse.mixins.list,
+        pulse.mixins.data_processing,
+        pulse.mixins.stream,
+        pulse.mixins.safe,
     ]:
         tests.addTests(doctest.DocTestSuite(mod))
 
@@ -71,7 +71,7 @@ class TestMetricMixin(unittest.TestCase):
         pred_2 = [[0, 1, 2, 3, 4, 5, 6, 7, 8]]
         pred_3 = [[0, 11, 12]]
 
-        mhr = datacollection.mixins.metric.mean_hit_ratio
+        mhr = pulse.mixins.metric.mean_hit_ratio
         self.assertEqual(1, mhr(true, pred_1))
         self.assertEqual(0.8, mhr(true, pred_2))
         self.assertEqual(0, mhr(true, pred_3))
@@ -85,7 +85,7 @@ class TestMetricMixin(unittest.TestCase):
         trues = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
         pred_4 = [[1, 6, 2, 7, 8, 3, 9, 10, 4, 5], [0, 1, 6, 7, 2, 8, 3, 9, 10]]
 
-        mean_ap = datacollection.mixins.metric.mean_average_precision
+        mean_ap = pulse.mixins.metric.mean_average_precision
         self.assertEqual(0.62, round(mean_ap(true, pred_1), 2))
         self.assertEqual(0.44, round(mean_ap(true, pred_2), 2))
         self.assertEqual(0, mean_ap(true, pred_3))
@@ -103,13 +103,21 @@ class TestColumnComputing(unittest.TestCase):
         self.assertTrue(all(map(lambda x: x.a == x.b - 1, df)))
 
     def test_simo(self):
-        df = dc["a"](range(10)).to_column().runas_op["a", ("b", "c")](func=lambda x: (x + 1, x - 1))
+        df = (
+            dc["a"](range(10))
+            .to_column()
+            .runas_op["a", ("b", "c")](func=lambda x: (x + 1, x - 1))
+        )
 
         self.assertTrue(all(map(lambda x: x.a == x.b - 1, df)))
         self.assertTrue(all(map(lambda x: x.a == x.c + 1, df)))
 
     def test_miso(self):
-        df = dc["a", "b"]([range(10), range(10)]).to_column().runas_op[("a", "b"), "c"](func=lambda x, y: x + y)
+        df = (
+            dc["a", "b"]([range(10), range(10)])
+            .to_column()
+            .runas_op[("a", "b"), "c"](func=lambda x, y: x + y)
+        )
 
         self.assertTrue(all(map(lambda x: x.c == x.a + x.b, df)))
 
@@ -131,7 +139,7 @@ class TestCompileMixin(unittest.TestCase):
     def test_compile(self):
         import time
 
-        from datacollection import register
+        from pulse import register
 
         @register(name="inner_distance")
         def inner_distance(query, data):
@@ -147,10 +155,14 @@ class TestCompileMixin(unittest.TestCase):
         query = np.random.random(128)
 
         t1 = time.time()
-        _ = datacollection.dc["a"](data).runas_op["a", "b"](func=lambda _: query).inner_distance[("b", "a"), "c"]()
+        _ = (
+            pulse.dc["a"](data)
+            .runas_op["a", "b"](func=lambda _: query)
+            .inner_distance[("b", "a"), "c"]()
+        )
         t2 = time.time()
         _ = (
-            datacollection.dc["a"](data)
+            pulse.dc["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
@@ -159,7 +171,7 @@ class TestCompileMixin(unittest.TestCase):
         self.assertTrue(t3 - t2 < t2 - t1)
 
     def test_failed_compile(self):
-        from datacollection import register
+        from pulse import register
 
         @register(name="inner_distance1")
         def inner_distance1(query, data):
@@ -178,7 +190,7 @@ class TestCompileMixin(unittest.TestCase):
 
         with self.assertLogs():
             _ = (
-                datacollection.dc["a"](data)
+                pulse.dc["a"](data)
                 .config(jit="numba")
                 .runas_op["a", "b"](func=lambda _: query)
                 .inner_distance1[("b", "a"), "c"]()

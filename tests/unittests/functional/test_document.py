@@ -13,8 +13,8 @@
 # limitations under the License.
 import unittest
 import json
-from datacollection import Document
-from datacollection import DataCollection
+from pulse import Document
+from pulse import DataCollection
 
 
 class TestDocument(unittest.TestCase):

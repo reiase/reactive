@@ -15,7 +15,7 @@
 import re
 from pathlib import Path
 
-from datacollection.types.entity import Entity
+from pulse.types.entity import Entity
 
 
 def _url_valid(uri) -> bool:

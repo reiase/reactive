@@ -22,9 +22,9 @@ try:
 except:  # pylint: disable=bare-except
     pass
 
-from datacollection.hparam.hyperparameter import param_scope
-from datacollection.types.option import Empty, Option, _Reason
-from datacollection.types.storages import ChunkedTable, WritableTable
+from pulse.hparam.hyperparameter import param_scope
+from pulse.types.option import Empty, Option, _Reason
+from pulse.types.storages import ChunkedTable, WritableTable
 
 from ..utils.log import get_logger
 

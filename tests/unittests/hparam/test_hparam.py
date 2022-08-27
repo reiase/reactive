@@ -15,8 +15,8 @@
 import doctest
 import unittest
 
-import datacollection.hparam.hyperparameter
-from datacollection.hparam import param_scope, HyperParameter
+import pulse.hparam.hyperparameter
+from pulse.hparam import param_scope, HyperParameter
 
 
 class TestHyperParameter(unittest.TestCase):
@@ -110,7 +110,7 @@ class TestParamScope(unittest.TestCase):
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(datacollection.hparam.hyperparameter))
+    tests.addTests(doctest.DocTestSuite(pulse.hparam.hyperparameter))
     return tests
 
 

@@ -48,7 +48,7 @@ class WritableTable:
     def seal(self):
         # pylint: disable=protected-access
         import pyarrow as pa
-        from datacollection.types.tensor_array import TensorArray
+        from pulse.types.tensor_array import TensorArray
 
         names = list(self._buffer)
         arrays = []
@@ -121,7 +121,7 @@ class ChunkedTable:
 
     def _create_table(self, chunk, head):
         import pyarrow as pa
-        from datacollection.types.tensor_array import TensorArray
+        from pulse.types.tensor_array import TensorArray
 
         # head = []
         cols = None

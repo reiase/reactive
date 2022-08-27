@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from typing import Union
-from datacollection.hparam import param_scope
+from pulse.hparam import param_scope
 
 
 class ConfigMixin:

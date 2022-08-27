@@ -15,7 +15,7 @@
 import types
 from typing import Any, Dict
 
-from datacollection.hparam import param_scope
+from pulse.hparam import param_scope
 
 
 REGISTRY: Dict[str, Any] = {}

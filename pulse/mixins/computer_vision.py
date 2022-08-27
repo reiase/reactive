@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # pylint: disable=import-outside-toplevel
-from datacollection.types.video_frame import VideoFrame
+from pulse.types.video_frame import VideoFrame
 
 
 class ComputerVisionMixin:
@@ -60,7 +60,7 @@ class ComputerVisionMixin:
             format:
                 The format of the images loaded from video.
         """
-        from datacollection.utils.thirdparty.av_utils import av
+        from pulse.utils.thirdparty.av_utils import av
 
         vcontainer = av.open(path)
         video_stream = vcontainer.streams.video[0]

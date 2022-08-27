@@ -16,9 +16,9 @@ import unittest
 
 import numpy as np
 
-from datacollection import DataCollection
+from pulse import DataCollection
 
-import datacollection.mixins.parallel
+import pulse.mixins.parallel
 
 
 class TestParallel(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestParallel(unittest.TestCase):
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(datacollection.functional.mixins.parallel))
+    tests.addTests(doctest.DocTestSuite(pulse.functional.mixins.parallel))
     return tests
 
 

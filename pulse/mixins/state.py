@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datacollection.hparam import param_scope
-from datacollection.hparam import HyperParameter
+from pulse.hparam import param_scope
+from pulse.hparam import HyperParameter
 
 
 class StateMixin:

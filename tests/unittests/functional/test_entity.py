@@ -14,13 +14,13 @@
 import unittest
 import doctest
 
-import datacollection.types.entity
-from datacollection import Entity
+import pulse.types.entity
+from pulse import Entity
 
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(datacollection.types.entity))
+    tests.addTests(doctest.DocTestSuite(pulse.types.entity))
     return tests
 
 

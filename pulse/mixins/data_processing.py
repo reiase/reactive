@@ -14,8 +14,8 @@
 import random
 from typing import Iterable
 
-from datacollection.types.entity import Entity
-from datacollection.hparam.hyperparameter import dynamic_dispatch, param_scope
+from pulse.types.entity import Entity
+from pulse.hparam.hyperparameter import dynamic_dispatch, param_scope
 
 
 class DataProcessingMixin:

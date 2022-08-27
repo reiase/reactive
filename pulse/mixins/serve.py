@@ -15,8 +15,8 @@
 import queue
 import threading
 import concurrent.futures
-from datacollection.types.entity import Entity
-from datacollection.types.option import Some
+from pulse.types.entity import Entity
+from pulse.types.option import Some
 
 # pylint: disable=import-outside-toplevel
 

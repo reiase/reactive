@@ -13,9 +13,9 @@
 # limitations under the License.
 from enum import Flag, auto
 
-from datacollection.hparam.hyperparameter import param_scope
+from pulse.hparam.hyperparameter import param_scope
 
-from datacollection.types.storages import ChunkedTable, WritableTable
+from pulse.types.storages import ChunkedTable, WritableTable
 
 
 # pylint: disable=import-outside-toplevel
@@ -118,7 +118,7 @@ class ColumnMixin:
         b: [[1,2,3]]
         """
         import pyarrow as pa
-        from datacollection.types.tensor_array import TensorArray
+        from pulse.types.tensor_array import TensorArray
 
         header = None
         cols = None
@@ -237,7 +237,7 @@ class ColumnMixin:
     def __col_apply__(self, cols, unary_op):
         # pylint: disable=protected-access
         import pyarrow as pa
-        from datacollection.types.tensor_array import TensorArray
+        from pulse.types.tensor_array import TensorArray
 
         import numpy as np
 

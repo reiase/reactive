@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # pylint: disable=import-outside-toplevel
-from datacollection.types.audio_frame import AudioFrame
+from pulse.types.audio_frame import AudioFrame
 
 
 class AudioMixin:
