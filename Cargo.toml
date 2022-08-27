@@ -13,4 +13,3 @@ futures = "0.3"
 [lib]
 name = "pulse"
 crate-type = ["rlib", "cdylib"]
-
