@@ -25,7 +25,7 @@ DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于�
 ### 安装
 
 ```bash
-pip install datacollection
+pip install pulse
 ```
 ### `DataCollection` 与Python列表
 

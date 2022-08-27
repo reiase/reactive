@@ -25,7 +25,7 @@ Quick Start
 ### Installation
 
 ```bash
-pip install datacollection
+pip install pulse
 ```
 ### DataCollection as a Python List
 

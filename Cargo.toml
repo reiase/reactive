@@ -1,5 +1,5 @@
 [package]
-name = "datacollection"
+name = "pulse"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
@@ -11,6 +11,6 @@ pyo3 = "0.17.0"
 futures = "0.3"
 
 [lib]
-name = "datacollection"
+name = "pulse"
 crate-type = ["rlib", "cdylib"]
 

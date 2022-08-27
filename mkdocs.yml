@@ -1,5 +1,5 @@
-site_name: Data.Collection for Python
-repo_url: https://github.com/reiase/datacollection
+site_name: Pulse - Data.Collection for Python
+repo_url: https://github.com/reiase/pulse
 
 theme:
   name: "material"
@@ -26,7 +26,7 @@ nav:
   - Reference: reference.md
 
 watch:
-    - datacollection
+    - pulse
 
 extra:
   alternate:
