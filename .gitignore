@@ -112,3 +112,9 @@ venv.bak/
 *.JPEG
 *.jpg
 datacollection/benchmark/
+
+
+# Added by cargo
+
+/target
+Cargo.lock
