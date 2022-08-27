@@ -125,15 +125,15 @@ class ServeMixin:
         >>> from fastapi.testclient import TestClient
         >>> app = FastAPI()
 
-        >>> import pu as pu
-        >>> with pu.api() as api:
+        >>> import pulse
+        >>> with pulse.api() as api:
         ...     app1 = (
         ...         api.map(lambda x: x+' -> 1')
         ...            .map(lambda x: x+' => 1')
         ...            .serve('/app1', app)
         ...     )
 
-        >>> with pu.api['x']() as api:
+        >>> with pulse.api['x']() as api:
         ...     app2 = (
         ...         api.runas_op['x', 'x_plus_1'](func=lambda x: x+' -> 2')
         ...            .runas_op['x_plus_1', 'y'](func=lambda x: x+' => 2')
@@ -141,7 +141,7 @@ class ServeMixin:
         ...            .serve('/app2', app)
         ...     )
 
-        >>> with pu.api() as api:
+        >>> with pulse.api() as api:
         ...     app2 = (
         ...         api.parse_json()
         ...            .runas_op['x', 'x_plus_1'](func=lambda x: x+' -> 3')
@@ -189,15 +189,15 @@ class ServeMixin:
 
         Examples:
 
-        >>> import pulse as pu
-        >>> with pu.api() as api:
+        >>> import pulse
+        >>> with pulse.api() as api:
         ...     func1 = (
         ...         api.map(lambda x: x+' -> 1')
         ...            .map(lambda x: x+' => 1')
         ...            .as_function()
         ...     )
 
-        >>> with pu.api['x']() as api:
+        >>> with pulse.api['x']() as api:
         ...     func2 = (
         ...         api.runas_op['x', 'x_plus_1'](func=lambda x: x+' -> 2')
         ...            .runas_op['x_plus_1', 'y'](func=lambda x: x+' => 2')
@@ -206,7 +206,7 @@ class ServeMixin:
         ...            .as_function()
         ...     )
 
-        >>> with pu.api() as api:
+        >>> with pulse.api() as api:
         ...     func3 = (
         ...         api.parse_json()
         ...            .runas_op['x', 'x_plus_1'](func=lambda x: x+' -> 3')

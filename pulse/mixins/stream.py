@@ -89,6 +89,8 @@ class StreamMixin:
         >>> result = dc.map(lambda x: x+1)
         >>> result.is_stream
         True
+
+        >>> from typing import Iterable
         >>> isinstance(result._iterable, Iterable)
         True
 

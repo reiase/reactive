@@ -96,16 +96,16 @@ class DataCollection(Iterable, DCMixins):
 
         Examples:
             >>> from pulse import register
-            >>> dc = DataCollection([1,2,3,4])
+
             >>> @register(name='add1')
             ... def add1(x):
             ...     return x+1
-            >>> dc.add1().to_list()
+            >>> DataCollection([1,2,3,4]).add1()
             [2, 3, 4, 5]
 
             >>> def add2(x):
             ...     return x+2
-            >>> DataCollection([1,2,3,4]).add2().to_list()
+            >>> DataCollection([1,2,3,4]).add2()
             [3, 4, 5, 6]
         """
         if name.startswith("_"):
@@ -308,13 +308,11 @@ class DataCollection(Iterable, DCMixins):
 
         Examples:
             1. Single Function::
-            >>> dc = DataCollection([1,2,3,4])
-            >>> dc.map(lambda x: x+1).map(lambda x: x*2).to_list()
+            >>> DataCollection([1,2,3,4]).map(lambda x: x+1).map(lambda x: x*2)
             [4, 6, 8, 10]
 
             2. Multiple Functions::
-            >>> dc = DataCollection([1,2,3,4])
-            >>> a, b = dc.map(lambda x: x+1, lambda x: x*2)
+            >>> a, b = DataCollection([1,2,3,4]).map(lambda x: x+1, lambda x: x*2)
             >>> (a.to_list(), b.to_list())
             ([2, 3, 4, 5], [2, 4, 6, 8])
         """
@@ -401,10 +399,10 @@ class DataCollection(Iterable, DCMixins):
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> d = DataCollection(e)
             >>> type(d)
-            <class 'datacollection.datacollection.DataCollection'>
+            <class 'pulse.datacollection.DataCollection'>
 
             >>> type(d.to_df())
-            <class 'datacollection.datacollection.DataFrame'>
+            <class 'pulse.datacollection.DataFrame'>
         """
         return DataFrame(self._iterable)
 
@@ -474,10 +472,10 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> df = DataFrame(e)
             >>> type(df)
-            <class 'datacollection.datacollection.DataFrame'>
+            <class 'pulse.datacollection.DataFrame'>
 
             >>> type(df.to_dc())
-            <class 'datacollection.datacollection.DataCollection'>
+            <class 'pulse.datacollection.DataCollection'>
         """
         return DataCollection(self._iterable)
 
