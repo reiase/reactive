@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pulse.hparam import param_scope
-from pulse.hparam import HyperParameter
+from hyperparameter import param_scope
+from hyperparameter import HyperParameter
 
 
 class StateMixin:
@@ -25,7 +25,8 @@ class StateMixin:
     Examples:
 
     >>> import pulse as pu
-    >>> from pulse import param_scope, State
+    >>> from hyperparameter import param_scope
+    >>> from hyperparameter import param_scope as State
     >>> dc = pu.range(10).set_state(State(a=1))
     >>> dc.get_state()
     {'a': 1}

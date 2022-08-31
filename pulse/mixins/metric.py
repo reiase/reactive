@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Tuple
-
 import numpy as np
-from pulse.hparam import param_scope
+from hyperparameter import dynamic_dispatch, param_scope
 
 
 class Collector:
@@ -92,46 +90,6 @@ def mean_average_precision(actual, predicted):
     return sum(aps) / len(aps)
 
 
-def _evaluate_callback(self):
-    def wrapper(_: str, index: Tuple[str], *arg, **kws):
-        # pylint: disable=import-outside-toplevel
-        # pylint: disable=unused-argument
-        actual, predicted = index
-        name = None
-        if "name" in kws:
-            name = kws["name"]
-        elif arg:
-            (name,) = arg
-        self.collector.add_labels({name: {"actual": actual, "predicted": predicted}})
-        score = {name: {}}
-        actual_list = []
-        predicted_list = []
-        for x in self:
-            actual_list.append(getattr(x, actual))
-            predicted_list.append(getattr(x, predicted))
-
-        from sklearn import metrics
-
-        for metric_type in self.collector.metrics:
-            if metric_type == "accuracy":
-                re = metrics.accuracy_score(actual_list, predicted_list)
-            elif metric_type == "recall":
-                re = metrics.recall_score(
-                    actual_list, predicted_list, average="weighted"
-                )
-            elif metric_type == "confusion_matrix":
-                re = metrics.confusion_matrix(actual_list, predicted_list)
-            elif metric_type == "mean_hit_ratio":
-                re = mean_hit_ratio(actual_list, predicted_list)
-            elif metric_type == "mean_average_precision":
-                re = mean_average_precision(actual_list, predicted_list)
-            score[name].update({metric_type: re})
-        self.collector.add_scores(score)
-        return self
-
-    return wrapper
-
-
 class MetricMixin:
     """
     Mixin for metric
@@ -141,11 +99,55 @@ class MetricMixin:
     def __init__(self):
         super().__init__()
         self.collector = Collector()
-        self.evaluate = param_scope().dispatch(_evaluate_callback(self))
 
     def with_metrics(self, metric_types: list = None):
         self.collector.metrics = metric_types
         return self
+
+    @property
+    def evaluate(self):
+        @dynamic_dispatch
+        def wrapper(*arg, **kws):
+            # pylint: disable=import-outside-toplevel
+            # pylint: disable=unused-argument
+            with param_scope() as hp:
+                index = hp._index
+            actual, predicted = index
+            name = None
+            if "name" in kws:
+                name = kws["name"]
+            elif arg:
+                (name,) = arg
+            self.collector.add_labels(
+                {name: {"actual": actual, "predicted": predicted}}
+            )
+            score = {name: {}}
+            actual_list = []
+            predicted_list = []
+            for x in self:
+                actual_list.append(getattr(x, actual))
+                predicted_list.append(getattr(x, predicted))
+
+            from sklearn import metrics
+
+            for metric_type in self.collector.metrics:
+                if metric_type == "accuracy":
+                    re = metrics.accuracy_score(actual_list, predicted_list)
+                elif metric_type == "recall":
+                    re = metrics.recall_score(
+                        actual_list, predicted_list, average="weighted"
+                    )
+                elif metric_type == "confusion_matrix":
+                    re = metrics.confusion_matrix(actual_list, predicted_list)
+                elif metric_type == "mean_hit_ratio":
+                    re = mean_hit_ratio(actual_list, predicted_list)
+                elif metric_type == "mean_average_precision":
+                    re = mean_average_precision(actual_list, predicted_list)
+                score[name].update({metric_type: re})
+            self.collector.add_scores(score)
+            return self
+
+        return wrapper
 
     def report(self):
         """

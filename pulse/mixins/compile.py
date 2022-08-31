@@ -14,8 +14,10 @@
 
 from ..execution.factory import op, ops
 from ..execution.registry import resolve
-from ..hparam import param_scope
 from ..utils.log import get_logger
+
+from hyperparameter import param_scope
+
 
 log = get_logger(__name__)
 

@@ -15,9 +15,9 @@
 from .datacollection import DataCollection, DataFrame
 from .execution.factory import ops
 from .execution.registry import register
-from .hparam import HyperParameter as Document
-from .hparam import HyperParameter as State
-from .hparam import dynamic_dispatch, param_scope
+from hyperparameter import HyperParameter as Document
+from hyperparameter import HyperParameter as State
+from hyperparameter import dynamic_dispatch, param_scope
 from .types import Entity
 
 VERSION = "0.1.0"

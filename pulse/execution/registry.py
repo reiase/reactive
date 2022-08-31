@@ -15,7 +15,7 @@
 import types
 from typing import Any, Dict
 
-from pulse.hparam import param_scope
+from hyperparameter import param_scope
 
 
 REGISTRY: Dict[str, Any] = {}

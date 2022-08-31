@@ -17,7 +17,7 @@ import json
 from typing import Dict, Any, Optional, Set, Union, List
 
 from pulse.types.entity import Entity
-from pulse.hparam import dynamic_dispatch, param_scope
+from hyperparameter import dynamic_dispatch, param_scope
 
 # pylint: disable=protected-access
 

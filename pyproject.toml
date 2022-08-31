@@ -28,7 +28,7 @@ count = true
 [tool.isort]
 atomic = true
 profile = "black"
-line_length = 120
+line_length = 88
 
 [tool.coverage.run]
 branch = true

@@ -13,7 +13,7 @@
 # limitations under the License.
 from enum import Flag, auto
 
-from pulse.hparam.hyperparameter import param_scope
+from hyperparameter import param_scope
 
 from pulse.types.storages import ChunkedTable, WritableTable
 

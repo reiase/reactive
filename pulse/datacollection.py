@@ -16,9 +16,10 @@ import reprlib
 from typing import Callable, Iterable, Iterator
 
 from .builtin import runas_op  # noqa: F401
-from .hparam import dynamic_dispatch, param_scope
 from .mixins import ColumnMixin, DataFrameMixin, DCMixins
 from .types import EntityView, Option, Some
+
+from hyperparameter import dynamic_dispatch, param_scope
 
 
 class DataCollection(Iterable, DCMixins):

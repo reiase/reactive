@@ -19,7 +19,7 @@ import threading
 from typing import Any, Dict, List, Tuple
 
 from .registry import resolve
-from pulse.hparam.hyperparameter import dynamic_dispatch, param_scope
+from hyperparameter import dynamic_dispatch, param_scope
 
 from .base_execution import BaseExecution
 from .pandas_execution import PandasExecution

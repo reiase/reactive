@@ -15,7 +15,7 @@
 from types import FrameType
 
 from ..execution.factory import create_op, ops
-from ..hparam import param_scope
+from hyperparameter import param_scope
 
 
 def getattr_nested(mod, path):

@@ -15,8 +15,8 @@
 import doctest
 import unittest
 
-import pulse.hparam.hyperparameter
-from pulse.hparam import param_scope, HyperParameter
+from hyperparameter import HyperParameter
+from hyperparameter import param_scope
 
 
 class TestHyperParameter(unittest.TestCase):
