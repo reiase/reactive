@@ -1,9 +1,10 @@
 fastapi
 ipython
-python-multipart
+matplotlib
 numba
 numpy
 pandas
 pyarrow==9.0.0
+python-multipart
+requests
 scikit-learn
-matplotlib
