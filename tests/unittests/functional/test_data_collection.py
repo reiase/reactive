@@ -16,14 +16,14 @@ import unittest
 from pathlib import Path
 from collections import namedtuple
 
-import pulse.datacollection
-import pulse.types.option
+import hyperdata.datacollection
+import hyperdata.types.option
 
-from pulse import register
-from pulse import DataCollection
-from pulse import Entity
+from hyperdata import register
+from hyperdata import DataCollection
+from hyperdata import Entity
 
-import pulse
+import hyperdata
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -57,7 +57,7 @@ class TestDataCollection(unittest.TestCase):
     """
 
     def test_example_for_basic_api(self):
-        dc = pulse.new(range(10))
+        dc = hyperdata.new(range(10))
         result = dc.map(lambda x: x + 1).filter(lambda x: x < 3)
         self.assertListEqual(list(result), [1, 2])
 
@@ -132,7 +132,7 @@ class TestDataCollection(unittest.TestCase):
     def test_run(self):
         # pylint: disable=unnecessary-lambda
         x = []
-        dc = pulse.range(2).stream().runas_op(func=lambda a: x.append(a))
+        dc = hyperdata.range(2).stream().runas_op(func=lambda a: x.append(a))
         self.assertEqual(x, [])
         dc.run()
         self.assertEqual(x, [0, 1])
@@ -140,8 +140,8 @@ class TestDataCollection(unittest.TestCase):
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(pulse.datacollection))
-    tests.addTests(doctest.DocTestSuite(pulse.types.option))
+    tests.addTests(doctest.DocTestSuite(hyperdata.datacollection))
+    tests.addTests(doctest.DocTestSuite(hyperdata.types.option))
     return tests
 
 

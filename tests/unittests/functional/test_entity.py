@@ -14,13 +14,13 @@
 import unittest
 import doctest
 
-import pulse.types.entity
-from pulse import Entity
+import hyperdata.types.entity
+from hyperdata import Entity
 
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(pulse.types.entity))
+    tests.addTests(doctest.DocTestSuite(hyperdata.types.entity))
     return tests
 
 

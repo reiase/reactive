@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pulse"
+name = "hyperdata"
 authors = [{ name = "Reiase", email = "reiase@gmail.com" }]
 description = "A data collection library for data scienctist."
 requires-python = ">=3.7"
@@ -12,10 +12,10 @@ license = { text = "Apache License Version 2.0" }
 dynamic = ["version"]
 
 [tool.setuptools]
-packages = ["pulse"]
+packages = ["hyperdata"]
 
 [tool.setuptools.dynamic]
-version = { attr = "pulse.VERSION" }
+version = { attr = "hyperdata.VERSION" }
 
 [tool.black]
 line-length = 88
@@ -32,9 +32,9 @@ line_length = 88
 
 [tool.coverage.run]
 branch = true
-source = ["pulse"]
+source = ["hyperdata"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q --durations=5 --doctest-modules --doctest-glob=*.md"
-testpaths = ["tests/unittests/", "pulse/"]
+testpaths = ["tests/unittests/", "hyperdata/"]

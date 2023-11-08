@@ -13,8 +13,8 @@
 # limitations under the License.
 import unittest
 import json
-from pulse import Document
-from pulse import DataCollection
+from hyperdata import Document
+from hyperdata import DataCollection
 
 
 class TestDocument(unittest.TestCase):

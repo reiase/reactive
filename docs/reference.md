@@ -1,5 +1,5 @@
-::: pulse
+::: hyperdata
     show_submodules: True
 
-::: pulse.mixins
+::: hyperdata.mixins
     show_submodules: True

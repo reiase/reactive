@@ -111,7 +111,7 @@ venv.bak/
 .vscode/
 *.JPEG
 *.jpg
-pulse/benchmark/
+hyperdata/benchmark/
 
 
 # Added by cargo
