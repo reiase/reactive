@@ -21,22 +21,22 @@ class ConfigMixin:
     """Mixin to manage configurations such as `parallel`, `chunksize` and `jit`.
 
     Examples:
-        >>> import hyperdata
-        >>> dc0 = hyperdata.new['a'](range(20))
+        >>> import reactive
+        >>> dc0 = reactive.new['a'](range(20))
         >>> dc0 = dc0.set_chunksize(10)
         >>> dc0 = dc0.set_parallel(2)
         >>> dc0 = dc0.set_jit('numba')
         >>> dc0.get_config()
         {'parallel': 2, 'chunksize': 10, 'jit': 'numba'}
 
-        >>> dc1 = hyperdata.new([1,2,3]).config(jit='numba')
-        >>> dc2 = hyperdata.new['a'](range(40)).config(parallel=2, chunksize=20)
+        >>> dc1 = reactive.new([1,2,3]).config(jit='numba')
+        >>> dc2 = reactive.new['a'](range(40)).config(parallel=2, chunksize=20)
         >>> dc1.get_config()
         {'parallel': None, 'chunksize': None, 'jit': 'numba'}
         >>> dc2.get_config()
         {'parallel': 2, 'chunksize': 20, 'jit': None}
 
-        >>> dc0 = hyperdata.new['a'](range(20))
+        >>> dc0 = reactive.new['a'](range(20))
         >>> dc0 = dc0.set_chunksize(10)
         >>> dc0 = dc0.set_parallel(2)
         >>> dc0 = dc0.set_jit('numba')

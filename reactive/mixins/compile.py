@@ -162,8 +162,8 @@ class CompileMixin:
 
     >>> import numpy
     >>> import time
-    >>> import hyperdata
-    >>> from hyperdata import register
+    >>> import reactive
+    >>> from reactive import register
 
     >>> @register(name='inner_distance')
     ... def inner_distance(query, data):
@@ -179,13 +179,13 @@ class CompileMixin:
 
     >>> t1 = time.time()
     >>> dc1 = (
-    ...     hyperdata.new['a'](data)
+    ...     reactive.new['a'](data)
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
     ... )
     >>> t2 = time.time()
     >>> dc2 = (
-    ...     hyperdata.new['a'](data)
+    ...     reactive.new['a'](data)
     ...     .config(jit='numba')
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()

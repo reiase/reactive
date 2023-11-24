@@ -96,7 +96,7 @@ class DataCollection(Iterable, DCMixins):
                 call.
 
         Examples:
-            >>> from hyperdata import register
+            >>> from reactive import register
 
             >>> @register(name='add1')
             ... def add1(x):
@@ -353,7 +353,7 @@ class DataCollection(Iterable, DCMixins):
         """Filter the DataCollection data based on function.
 
         Filters the DataCollection based on the function provided. If data is stored
-        as an Option (see hyperdata.Option), drop empty will decide whether
+        as an Option (see reactive.Option), drop empty will decide whether
         to remove the element or set it to empty.
 
         Args:
@@ -397,14 +397,14 @@ class DataCollection(Iterable, DCMixins):
             DataFrame: Resulting converted DataFrame.
 
         Examples:
-            >>> from hyperdata import DataCollection, Entity
+            >>> from reactive import DataCollection, Entity
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> d = DataCollection(e)
             >>> type(d)
-            <class 'hyperdata.datacollection.DataCollection'>
+            <class 'reactive.datacollection.DataCollection'>
 
             >>> type(d.to_df())
-            <class 'hyperdata.datacollection.DataFrame'>
+            <class 'reactive.datacollection.DataFrame'>
         """
         return DataFrame(self._iterable)
 
@@ -413,7 +413,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
     """Entity based DataCollection.
 
     Examples:
-        >>> from hyperdata import Entity
+        >>> from reactive import Entity
         >>> DataFrame([Entity(id=a) for a in [1,2,3]])
         [<Entity dict_keys(['id'])>, <Entity dict_keys(['id'])>, <Entity dict_keys(['id'])>]
     """
@@ -470,14 +470,14 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             DataCollection: Resulting DataCollection from DataFrame
 
         Examples:
-            >>> from hyperdata import DataFrame, Entity
+            >>> from reactive import DataFrame, Entity
             >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
             >>> df = DataFrame(e)
             >>> type(df)
-            <class 'hyperdata.datacollection.DataFrame'>
+            <class 'reactive.datacollection.DataFrame'>
 
             >>> type(df.to_dc())
-            <class 'hyperdata.datacollection.DataCollection'>
+            <class 'reactive.datacollection.DataCollection'>
         """
         return DataCollection(self._iterable)
 
@@ -491,7 +491,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
             ModeFlag: The storage format of the Dataframe.
 
         Examples:
-            >>> from hyperdata import Entity, DataFrame
+            >>> from reactive import Entity, DataFrame
             >>> e = [Entity(a=a, b=b) for a,b in zip(range(5), range(5))]
             >>> df = DataFrame(e)
             >>> df.mode
@@ -511,7 +511,7 @@ class DataFrame(DataCollection, DataFrameMixin, ColumnMixin):
 
         Examples:
             1. Row Based::
-            >>> from hyperdata import Entity, DataFrame
+            >>> from reactive import Entity, DataFrame
             >>> e = [Entity(a=a, b=b) for a,b in zip(range(3), range(3))]
             >>> df = DataFrame(e)
             >>> df.to_list()[0]

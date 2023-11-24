@@ -49,7 +49,7 @@ class WritableTable:
         # pylint: disable=protected-access
         import pyarrow as pa
 
-        from hyperdata.types.tensor_array import TensorArray
+        from reactive.types.tensor_array import TensorArray
 
         names = list(self._buffer)
         arrays = []
@@ -123,7 +123,7 @@ class ChunkedTable:
     def _create_table(self, chunk, head):
         import pyarrow as pa
 
-        from hyperdata.types.tensor_array import TensorArray
+        from reactive.types.tensor_array import TensorArray
 
         # head = []
         cols = None

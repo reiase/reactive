@@ -35,9 +35,9 @@ class DispatcherMixin:
     """
     Mixin for call dispatcher for data collection
 
-    >>> from hyperdata import register
-    >>> from hyperdata import ops
-    >>> from hyperdata import DataCollection
+    >>> from reactive import register
+    >>> from reactive import ops
+    >>> from reactive import DataCollection
 
     1. resolve operator from registry
 

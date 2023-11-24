@@ -90,7 +90,7 @@ class RayMixin:  # pragma: no cover
             """Ray actor that runs hub operators."""
 
             def __init__(self, path1, index1, uid, *arg1, **kws1):
-                from hyperdata.execution.factory import _OperatorLazyWrapper
+                from reactive.execution.factory import _OperatorLazyWrapper
 
                 self.op = _OperatorLazyWrapper.callback(path1, index1, *arg1, **kws1)
 
@@ -100,7 +100,7 @@ class RayMixin:  # pragma: no cover
             def cleanup(self):
                 from shutil import rmtree
 
-                from hyperdata import engine
+                from reactive import engine
 
                 try:
                     rmtree(engine.DEFAULT_LOCAL_CACHE_ROOT)

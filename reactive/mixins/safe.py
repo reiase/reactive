@@ -13,7 +13,7 @@
 # limitations under the License.
 from typing import Any, Callable
 
-from hyperdata.types.option import Empty, Option, Some
+from reactive.types.option import Empty, Option, Some
 
 
 class SafeMixin:
@@ -29,7 +29,7 @@ class SafeMixin:
 
         1. Exception breaks pipeline execution:
 
-        >>> from hyperdata import DataCollection
+        >>> from reactive import DataCollection
         >>> dc = DataCollection.range(5)
         >>> dc.map(lambda x: x / (0 if x == 3 else 2)).to_list()
         Traceback (most recent call last):
@@ -69,7 +69,7 @@ class SafeMixin:
 
         Examples:
 
-        >>> from hyperdata import DataCollection
+        >>> from reactive import DataCollection
         >>> dc = DataCollection.range(5)
         >>> dc.safe().map(lambda x: x / (0 if x == 3 else 2)).fill_empty(-1.0).to_list()
         [0.0, 0.5, 1.0, -1.0, 2.0]
@@ -91,7 +91,7 @@ class SafeMixin:
 
         Examples:
 
-        >>> from hyperdata import DataCollection
+        >>> from reactive import DataCollection
         >>> dc = DataCollection.range(5)
         >>> dc.safe().map(lambda x: x / (0 if x == 3 else 2)).drop_empty().to_list()
         [0.0, 0.5, 1.0, 2.0]

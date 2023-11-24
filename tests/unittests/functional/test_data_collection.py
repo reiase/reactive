@@ -16,14 +16,14 @@ import unittest
 from pathlib import Path
 from collections import namedtuple
 
-import hyperdata.datacollection
-import hyperdata.types.option
+import reactive.datacollection
+import reactive.types.option
 
-from hyperdata import register
-from hyperdata import DataCollection
-from hyperdata import Entity
+from reactive import register
+from reactive import DataCollection
+from reactive import Entity
 
-import hyperdata
+import reactive
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -57,7 +57,7 @@ class TestDataCollection(unittest.TestCase):
     """
 
     def test_example_for_basic_api(self):
-        dc = hyperdata.new(range(10))
+        dc = reactive.new(range(10))
         result = dc.map(lambda x: x + 1).filter(lambda x: x < 3)
         self.assertListEqual(list(result), [1, 2])
 
@@ -132,7 +132,7 @@ class TestDataCollection(unittest.TestCase):
     def test_run(self):
         # pylint: disable=unnecessary-lambda
         x = []
-        dc = hyperdata.range(2).stream().runas_op(func=lambda a: x.append(a))
+        dc = reactive.range(2).stream().runas_op(func=lambda a: x.append(a))
         self.assertEqual(x, [])
         dc.run()
         self.assertEqual(x, [0, 1])
@@ -140,8 +140,8 @@ class TestDataCollection(unittest.TestCase):
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(hyperdata.datacollection))
-    tests.addTests(doctest.DocTestSuite(hyperdata.types.option))
+    tests.addTests(doctest.DocTestSuite(reactive.datacollection))
+    tests.addTests(doctest.DocTestSuite(reactive.types.option))
     return tests
 
 

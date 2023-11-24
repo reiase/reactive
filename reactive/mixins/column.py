@@ -15,7 +15,7 @@ from enum import Flag, auto
 
 from hyperparameter import param_scope
 
-from hyperdata.types.storages import ChunkedTable, WritableTable
+from reactive.types.storages import ChunkedTable, WritableTable
 
 
 # pylint: disable=import-outside-toplevel
@@ -42,8 +42,8 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import hyperdata
-        >>> d1 = hyperdata.new['a'](range(20))
+        >>> import reactive
+        >>> d1 = reactive.new['a'](range(20))
         >>> d1 = d1.set_chunksize(10)
         >>> d2 = d1.runas_op['a', 'b'](func=lambda x: x+1)
         >>> d1.get_chunksize(), d2.get_chunksize()
@@ -62,7 +62,7 @@ class ColumnMixin:
         a: [[10,11,12,13,14,15,16,17,18,19]]
         b: [[11,12,13,14,15,16,17,18,19,20]]
 
-        >>> dc_3 = hyperdata.new['a'](range(20)).stream()
+        >>> dc_3 = reactive.new['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
         >>> dc_4 = dc_3.runas_op['a', 'b'](func=lambda x: x+1)
         >>> for chunk in dc_4._iterable.chunks(): print(chunk)
@@ -96,7 +96,7 @@ class ColumnMixin:
 
         Examples:
 
-        >>> from hyperdata import Entity, DataFrame
+        >>> from reactive import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
         >>> df = DataFrame(e)
         >>> table = df._create_col_table()
@@ -118,7 +118,7 @@ class ColumnMixin:
         """
         import pyarrow as pa
 
-        from hyperdata.types.tensor_array import TensorArray
+        from reactive.types.tensor_array import TensorArray
 
         header = None
         cols = None
@@ -161,7 +161,7 @@ class ColumnMixin:
 
         Examples:
 
-        >>> from hyperdata import Entity, DataFrame
+        >>> from reactive import Entity, DataFrame
         >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
         >>> df = DataFrame(e)
         >>> df
@@ -188,8 +188,8 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import hyperdata
-        >>> dc = hyperdata.new['a'](range(10))
+        >>> import reactive
+        >>> dc = reactive.new['a'](range(10))
         >>> dc = dc.to_column()
         >>> dc = dc.runas_op['a', 'b'](func=lambda x: x+1)
 
@@ -239,7 +239,7 @@ class ColumnMixin:
         import numpy as np
         import pyarrow as pa
 
-        from hyperdata.types.tensor_array import TensorArray
+        from reactive.types.tensor_array import TensorArray
 
         args = []
         # Multi inputs.

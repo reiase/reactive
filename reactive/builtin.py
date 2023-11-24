@@ -11,8 +11,8 @@ class runas_op:
         func (`Callable`):
             The user-defined function.
     Examples:
-    >>> from hyperdata import DataCollection
-    >>> from hyperdata import Entity
+    >>> from reactive import DataCollection
+    >>> from reactive import Entity
     >>> entities = [Entity(a=i, b=i) for i in range(5)]
     >>> dc = DataCollection(entities)
     >>> res = dc.runas_op['a', 'b'](func=lambda x: x - 1).to_list()

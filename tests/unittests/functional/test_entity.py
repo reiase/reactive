@@ -14,13 +14,13 @@
 import unittest
 import doctest
 
-import hyperdata.types.entity
-from hyperdata import Entity
+import reactive.types.entity
+from reactive import Entity
 
 
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
-    tests.addTests(doctest.DocTestSuite(hyperdata.types.entity))
+    tests.addTests(doctest.DocTestSuite(reactive.types.entity))
     return tests
 
 

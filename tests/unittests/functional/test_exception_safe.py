@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-import hyperdata
+import reactive
 
 
 class TestExceptionSafe(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestExceptionSafe(unittest.TestCase):
 
     def test_safe(self):
         retval = (
-            hyperdata.new["x"]([5, 3, 2, 1, 0])
+            reactive.new["x"]([5, 3, 2, 1, 0])
             .safe()
             .runas_op["x", "x2"](lambda x: x - 1)
             .runas_op["x2", "y"](lambda x: 10 / x)

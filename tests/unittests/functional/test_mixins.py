@@ -16,21 +16,21 @@ import doctest
 import unittest
 from pathlib import Path
 
-import hyperdata
-import hyperdata.mixins.computer_vision
-import hyperdata.mixins.config
-import hyperdata.mixins.data_processing
-import hyperdata.mixins.dataframe
-import hyperdata.mixins.dataset
-import hyperdata.mixins.list
-import hyperdata.mixins.metric
-import hyperdata.mixins.parallel
-import hyperdata.mixins.safe
-import hyperdata.mixins.serve
-import hyperdata.mixins.state
-import hyperdata.mixins.stream
+import reactive
+import reactive.mixins.computer_vision
+import reactive.mixins.config
+import reactive.mixins.data_processing
+import reactive.mixins.dataframe
+import reactive.mixins.dataset
+import reactive.mixins.list
+import reactive.mixins.metric
+import reactive.mixins.parallel
+import reactive.mixins.safe
+import reactive.mixins.serve
+import reactive.mixins.state
+import reactive.mixins.stream
 import numpy as np
-from hyperdata import dc
+from reactive import dc
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -38,19 +38,19 @@ public_path = Path(__file__).parent.parent.resolve()
 def load_tests(loader, tests, ignore):
     # pylint: disable=unused-argument
     for mod in [
-        hyperdata.mixins.computer_vision,
-        hyperdata.mixins.dataset,
-        hyperdata.mixins.dataframe,
-        hyperdata.mixins.metric,
-        hyperdata.mixins.parallel,
-        hyperdata.mixins.state,
-        hyperdata.mixins.serve,
-        hyperdata.mixins.column,
-        hyperdata.mixins.config,
-        hyperdata.mixins.list,
-        hyperdata.mixins.data_processing,
-        hyperdata.mixins.stream,
-        hyperdata.mixins.safe,
+        reactive.mixins.computer_vision,
+        reactive.mixins.dataset,
+        reactive.mixins.dataframe,
+        reactive.mixins.metric,
+        reactive.mixins.parallel,
+        reactive.mixins.state,
+        reactive.mixins.serve,
+        reactive.mixins.column,
+        reactive.mixins.config,
+        reactive.mixins.list,
+        reactive.mixins.data_processing,
+        reactive.mixins.stream,
+        reactive.mixins.safe,
     ]:
         tests.addTests(doctest.DocTestSuite(mod))
 
@@ -71,7 +71,7 @@ class TestMetricMixin(unittest.TestCase):
         pred_2 = [[0, 1, 2, 3, 4, 5, 6, 7, 8]]
         pred_3 = [[0, 11, 12]]
 
-        mhr = hyperdata.mixins.metric.mean_hit_ratio
+        mhr = reactive.mixins.metric.mean_hit_ratio
         self.assertEqual(1, mhr(true, pred_1))
         self.assertEqual(0.8, mhr(true, pred_2))
         self.assertEqual(0, mhr(true, pred_3))
@@ -85,7 +85,7 @@ class TestMetricMixin(unittest.TestCase):
         trues = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
         pred_4 = [[1, 6, 2, 7, 8, 3, 9, 10, 4, 5], [0, 1, 6, 7, 2, 8, 3, 9, 10]]
 
-        mean_ap = hyperdata.mixins.metric.mean_average_precision
+        mean_ap = reactive.mixins.metric.mean_average_precision
         self.assertEqual(0.62, round(mean_ap(true, pred_1), 2))
         self.assertEqual(0.44, round(mean_ap(true, pred_2), 2))
         self.assertEqual(0, mean_ap(true, pred_3))
@@ -139,7 +139,7 @@ class TestCompileMixin(unittest.TestCase):
     def test_compile(self):
         import time
 
-        from hyperdata import register
+        from reactive import register
 
         @register(name="inner_distance")
         def inner_distance(query, data):
@@ -156,13 +156,13 @@ class TestCompileMixin(unittest.TestCase):
 
         t1 = time.time()
         _ = (
-            hyperdata.new["a"](data)
+            reactive.new["a"](data)
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
         )
         t2 = time.time()
         _ = (
-            hyperdata.new["a"](data)
+            reactive.new["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
@@ -171,7 +171,7 @@ class TestCompileMixin(unittest.TestCase):
         # self.assertTrue(t3 - t2 < t2 - t1)
 
     def test_failed_compile(self):
-        from hyperdata import register
+        from reactive import register
 
         @register(name="inner_distance1")
         def inner_distance1(query, data):
@@ -189,7 +189,7 @@ class TestCompileMixin(unittest.TestCase):
         query = np.random.random(128)
 
         (
-            hyperdata.new["a"](data)
+            reactive.new["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance1[("b", "a"), "c"]()

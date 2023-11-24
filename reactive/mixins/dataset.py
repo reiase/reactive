@@ -15,7 +15,7 @@
 import re
 from pathlib import Path
 
-from hyperdata.types.entity import Entity
+from reactive.types.entity import Entity
 
 
 def _url_valid(uri) -> bool:
@@ -45,9 +45,9 @@ class DatasetMixin:
 
         Examples:
             >>> import pandas as pd
-            >>> import hyperdata
+            >>> import reactive
             >>> df = pd.DataFrame({"a": range(5), "b": range(5)})
-            >>> hyperdata.from_pandas(df).df
+            >>> reactive.from_pandas(df).df
                a  b
             0  0  0
             1  1  1
@@ -63,8 +63,8 @@ class DatasetMixin:
         """Create Pandas DataFrame
 
         Examples:
-            >>> import hyperdata
-            >>> hyperdata.new([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
+            >>> import reactive
+            >>> reactive.new([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
                a
             0  1
             1  2
@@ -135,8 +135,8 @@ class DatasetMixin:
             >>> df.to_json(buff, orient="records", lines=True)
             >>> _ = buff.seek(0)
 
-            >>> import hyperdata
-            >>> hyperdata.read_json(buff)
+            >>> import reactive
+            >>> reactive.read_json(buff)
                a  b
             0  0  0
             1  1  1
@@ -145,7 +145,7 @@ class DatasetMixin:
             4  4  4
 
             >>> _ = buff.seek(0)
-            >>> hyperdata.read_json(buff, stream=True).as_str().to_list()[0]
+            >>> reactive.read_json(buff, stream=True).as_str().to_list()[0]
             "{'a': 0, 'b': 0}"
         """
         kwargs["lines"] = True
@@ -176,8 +176,8 @@ class DatasetMixin:
             >>> df.to_csv(buff, index=False)
             >>> _ = buff.seek(0)
 
-            >>> import hyperdata
-            >>> hyperdata.read_csv(buff)
+            >>> import reactive
+            >>> reactive.read_csv(buff)
                a  b
             0  0  0
             1  1  1
@@ -186,7 +186,7 @@ class DatasetMixin:
             4  4  4
 
             >>> _ = buff.seek(0)
-            >>> hyperdata.read_csv(buff, stream=True).as_str().to_list()[0]
+            >>> reactive.read_csv(buff, stream=True).as_str().to_list()[0]
             "{'a': 0, 'b': 0}"
         """
         if stream:
@@ -213,8 +213,8 @@ class DatasetMixin:
             >>> import io
             >>> buff = io.StringIO()
 
-            >>> import hyperdata
-            >>> dc = hyperdata.new([{"a":1}, {"a":2}]).to_df().as_entity()
+            >>> import reactive
+            >>> dc = reactive.new([{"a":1}, {"a":2}]).to_df().as_entity()
             >>> dc.to_csv(buff)
             >>> _ = buff.seek(0)
             >>> print(buff.read())
@@ -236,8 +236,8 @@ class DatasetMixin:
 
         Examples:
 
-        >>> import hyperdata
-        >>> dc = hyperdata.range(10)
+        >>> import reactive
+        >>> dc = reactive.range(10)
         >>> train, test = dc.split_train_test(shuffle=False)
         >>> train.to_list()
         [0, 1, 2, 3, 4, 5, 6, 7, 8]

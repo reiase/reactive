@@ -1,5 +1,5 @@
-site_name: hyperdata - Data.Collection for Python
-repo_url: https://github.com/reiase/hyperdata
+site_name: reactive - Data.Collection for Python
+repo_url: https://github.com/reiase/reactive
 
 theme:
   name: "material"
@@ -26,7 +26,7 @@ nav:
   - Reference: reference.md
 
 watch:
-    - hyperdata
+    - reactive
 
 extra:
   alternate:

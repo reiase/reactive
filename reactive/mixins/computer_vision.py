@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # pylint: disable=import-outside-toplevel
-from hyperdata.types.video_frame import VideoFrame
+from reactive.types.video_frame import VideoFrame
 
 
 class ComputerVisionMixin:
@@ -60,7 +60,7 @@ class ComputerVisionMixin:
             format:
                 The format of the images loaded from video.
         """
-        from hyperdata.utils.thirdparty.av_utils import av
+        from reactive.utils.thirdparty.av_utils import av
 
         vcontainer = av.open(path)
         video_stream = vcontainer.streams.video[0]

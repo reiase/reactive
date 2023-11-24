@@ -23,7 +23,7 @@ class StateMixin:
 
     Examples:
 
-    >>> import hyperdata as pu
+    >>> import reactive as pu
     >>> from hyperparameter import param_scope
     >>> from hyperparameter import param_scope as State
     >>> dc = pu.range(10).set_state(State(a=1))
