@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from hyperparameter import HyperParameter as State
+# from hyperparameter import HyperParameter as State
 from hyperparameter import param_scope
 
 from .datacollection import DataCollection, DataFrame
 from .execution.factory import ops
 from .execution.registry import register
 from .types import Document, Entity, dynamic_dispatch
+from .types import State
 
 VERSION = "0.1.0"
 

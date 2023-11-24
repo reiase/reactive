@@ -18,6 +18,7 @@ from hyperparameter import param_scope
 
 from .audio_frame import AudioFrame
 from .document import Document
+from .document import Document as State
 from .entity import Entity, EntityView
 from .option import Empty, Option, Some
 from .video_frame import VideoFrame
@@ -89,6 +90,8 @@ __all__ = [
     "VideoFrame",
     "Empty",
     "Some",
+    "Document",
+    "State",
     "Option",
     "Entity",
     "EntityView",
