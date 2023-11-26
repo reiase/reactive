@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from hyperparameter import HyperParameter, param_scope
+from ..types import State
+from hyperparameter import param_scope
 
 
 class StateMixin:
@@ -48,7 +49,7 @@ class StateMixin:
         Returns:
             State: the state storage
         """
-        if hasattr(self, "_state") and isinstance(self._state, HyperParameter):
+        if hasattr(self, "_state") and isinstance(self._state, State):
             return self._state
         return None
 
@@ -78,7 +79,7 @@ class StateMixin:
         if state is not None:
             self._state = state
         if self.get_state() is None:
-            self._state = HyperParameter()
+            self._state = State()
         self._state.__mode__ = "training"
         return self
 
@@ -95,7 +96,7 @@ class StateMixin:
         if state is not None:
             self._state = state
         if self.get_state() is None:
-            self._state = HyperParameter()
+            self._state = State()
         self._state.__mode__ = "evaluating"
         return self
 

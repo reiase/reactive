@@ -1,1 +1,1 @@
-../README.zh.md
+![logo](assets/hlogo.svg)

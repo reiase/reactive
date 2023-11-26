@@ -12,5 +12,5 @@ scikit-learn
 # mkdocs
 mkdocstrings
 mkdocstrings-python
-mkdocs-i18n
+mkdocs-static-i18n
 mkdocs-minify-plugin

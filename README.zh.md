@@ -1,9 +1,13 @@
-DataCollection
+响应式Python编程
 ==============
 
-DataCollection 是面向数据科学和机器学习设计的一种数据结构， 目标是向数据科学家和机器学习工程师提供高阶能力的同时尽量保持Python中 `列表`与`迭代器`的简洁性. 
+`Reactive` 是一个Python下的响应式编程框架，目标是将响应式编程的一些思路引入到Python的数据与AI生态中：
 
-DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于探索DataCollection数据结构上支持 MLOps 能力的可能性。若对如何构建embedding流水线感兴趣，请移步 [Towhee项目](https://github.com/towhee-io/towhee)。 
+- 声明式编程范式：让开发者更关注想要做什么（What）而不是怎么去做（How）；
+- 回弹性（Resilient）：异常与失败不影响系统的可用性，而是得到遏制与隔离；
+- 弹性与即使响应（Elastic&Responsive）：系统总是及时给出响应，即便在不断变化的负载下也能通过增加或者减少资源来保持高效处理速率；
+
+`Reactive` 提供对Python中`list`与`iterator`的统一抽象`DataCollection`, 在向数据科学家和机器学习工程师提供高阶能力的同时尽量保持简洁易懂。 
 
 ### 特性
 
@@ -13,7 +17,6 @@ DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于�
 - 超参支持，支持MLOps功能;
 
 ### 用例
-
 
 - 构建机器学习应用原型，并可以追踪试验配置和模型指标;
 - 快速调优ML Pipeline性能;
@@ -25,15 +28,15 @@ DataCollection 是 `towhee.DataCollection` 的一个试验分支，主要用于�
 ### 安装
 
 ```bash
-pip install reactive
+pip install reactive-python
 ```
 ### `DataCollection` 与Python列表
 
 `DataCollection` 是对Python `list` 数据类型的直接增强. 可以比较便捷的从`list`创建`DataCollection`:
 
 ```python
->>> import reactive
->>> dc = reactive.new([0, 1, 2, 3])
+>>> import reactive as rv
+>>> dc = rv.new([0, 1, 2, 3])
 >>> dc
 [0, 1, 2, 3]
 
@@ -42,7 +45,7 @@ pip install reactive
 `DataCollection` 的行为基本与Python `list` 类型一致，可直接替代:
 
 ``` python
->>> dc = reactive.new([0, 1, 2, 3])
+>>> dc = rv.of([0, 1, 2, 3])
 >>> dc
 [0, 1, 2, 3]
 
@@ -65,10 +68,10 @@ pip install reactive
 `DataCollection` 提供诸如 `map` 和 `filter` 这种高阶函数:
 
 ```python
->>> reactive.new([0, 1, 2, 3, 4]).map(lambda x: x*2)
+>>> rv.of([0, 1, 2, 3, 4]).map(lambda x: x*2)
 [0, 2, 4, 6, 8]
 
->>> reactive.new([0, 1, 2, 3, 4]).filter(lambda x: int(x%2)==0)
+>>> rv.of([0, 1, 2, 3, 4]).filter(lambda x: int(x%2)==0)
 [0, 2, 4]
 
 ```
@@ -77,7 +80,7 @@ pip install reactive
 
 ```python
 >>> (
-...   	reactive.new([0, 1, 2, 3, 4])
+...   	rv.of([0, 1, 2, 3, 4])
 ...          .filter(lambda x: x%2==1)
 ...          .map(lambda x: x+1)
 ...          .map(lambda x: x*2)
@@ -94,7 +97,7 @@ pip install reactive
 >>> def add1(x):
 ...   return x + 1
 >>> (
-...		reactive.new([0, 1, 2, 3, 4])
+...		rv.of([0, 1, 2, 3, 4])
 ... 		   .add1()
 ... )
 [1, 2, 3, 4, 5]
