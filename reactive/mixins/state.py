@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from hyperparameter import HyperParameter, param_scope
+from ..types import State
+from hyperparameter import param_scope
 
 
 class StateMixin:
@@ -23,15 +24,14 @@ class StateMixin:
 
     Examples:
 
-    >>> import reactive as pu
-    >>> from hyperparameter import param_scope
-    >>> from hyperparameter import param_scope as State
-    >>> dc = pu.range(10).set_state(State(a=1))
-    >>> dc.get_state().storage().storage()
+    >>> import reactive as rv
+    >>> from reactive import State
+    >>> dc = rv.range(10).set_state(State(a=1))
+    >>> dc.get_state()
     {'a': 1}
 
     >>> dc = dc.map(lambda x: x+1).map(lambda x: x*2)
-    >>> dc.get_state().storage().storage()
+    >>> dc.get_state()
     {'a': 1}
     """
 
@@ -48,7 +48,7 @@ class StateMixin:
         Returns:
             State: the state storage
         """
-        if hasattr(self, "_state") and isinstance(self._state, HyperParameter):
+        if hasattr(self, "_state") and isinstance(self._state, State):
             return self._state
         return None
 
@@ -78,7 +78,7 @@ class StateMixin:
         if state is not None:
             self._state = state
         if self.get_state() is None:
-            self._state = HyperParameter()
+            self._state = State()
         self._state.__mode__ = "training"
         return self
 
@@ -95,7 +95,7 @@ class StateMixin:
         if state is not None:
             self._state = state
         if self.get_state() is None:
-            self._state = HyperParameter()
+            self._state = State()
         self._state.__mode__ = "evaluating"
         return self
 
