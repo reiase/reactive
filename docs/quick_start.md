@@ -1,5 +1,4 @@
-响应式Python编程
-==============
+![logo](assets/hlogo.svg)
 
 `Reactive` 是一个Python下的响应式编程框架，目标是将响应式编程的一些思路引入到Python的数据与AI生态中：
 

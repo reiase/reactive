@@ -1,16 +1,74 @@
-site_name: hyperdata - Data.Collection for Python
-repo_url: https://github.com/reiase/hyperdata
+# Project information
+site_name: Reactive Programming for Data Scienctist & AI Researchers
+site_description: >-
+  数据科学家与AI研究者的响应式编程框架
+
+# Repository
+repo_url: https://github.com/reiase/reactive
+
+# Copyright
+copyright: Copyright &copy; 2023 - 2023 Reiase
 
 theme:
   name: "material"
+  logo: assets/logo.svg
+  favicon: assets/hlogo.svg
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.code.select
+    # - content.tabs.link
+    - content.tooltips
+    - navigation.expand
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
+
+nav:
+  - Home: index.md
+  - Quick Start: quick_start.md
+  - User Guide: guide/index.md
+  - Examples: examples.md
+  - Reference: reference.md
+  - Blog:
+    - blog/index.md
+
 
 plugins:
+  - blog
   - search
   - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
       languages:
-        en: "English"
-        zh: "中文"
-      default_language: 'en'
+        - locale: en
+          name: English
+          build: true
+          site_name: "Reactive Programming for Data Scienctist & AI Researchers"
+        - locale: zh
+          default: true
+          name: "中文"
+          build: true
+          site_name: "Reactive: 面向数据科学家与AI研究者的响应式编程框架"
+          nav_translations:
+            Home: 首页
+            Quick Start: 快速开始
+            User Guide: 用户手册
+            Examples: 应用示例
+            Reference: API手册
+            Blog: 博客
   - mkdocstrings:
       handlers:
         python:
@@ -21,12 +79,54 @@ plugins:
             merge_init_into_class: yes
             show_submodules: no
 
-nav:
-  - Home: index.md
-  - Reference: reference.md
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/mkdocs.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
 
 watch:
-    - hyperdata
+    - reactive
 
 extra:
   alternate:

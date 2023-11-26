@@ -13,8 +13,8 @@
 # limitations under the License.
 import unittest
 import json
-from hyperdata import Document
-from hyperdata import DataCollection
+from reactive import Document
+from reactive import DataCollection
 
 
 class TestDocument(unittest.TestCase):
