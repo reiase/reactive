@@ -8,3 +8,9 @@ pyarrow==9.0.0
 python-multipart
 requests
 scikit-learn
+
+# mkdocs
+mkdocstrings
+mkdocstrings-python
+mkdocs-i18n
+mkdocs-minify-plugin

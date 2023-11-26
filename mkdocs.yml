@@ -1,16 +1,61 @@
-site_name: reactive - Data.Collection for Python
+# Project information
+site_name: Reactive Programming for Data Scienctist & AI Researchers
+site_description: >-
+  数据科学家与AI研究者的响应式编程框架
+
+# Repository
 repo_url: https://github.com/reiase/reactive
+
+# Copyright
+copyright: Copyright &copy; 2023 - 2023 Reiase
 
 theme:
   name: "material"
+  # logo: assets/logo.svg
+  features:
+    - navigation.expand
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - toc.follow
+    - toc.integrate
+
+nav:
+  - Home: index.md
+  - Quick Start: quick_start.md
+  - User Guide: guide/index.md
+  - Examples: examples.md
+  - Reference: reference.md
+  - Blog:
+    - blog/index.md
+
 
 plugins:
+  - blog
   - search
   - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
       languages:
-        en: "English"
-        zh: "中文"
-      default_language: 'en'
+        - locale: en
+          name: English
+          build: true
+          site_name: "Reactive Programming for Data Scienctist & AI Researchers"
+        - locale: zh
+          default: true
+          name: "中文"
+          build: true
+          site_name: "Reactive: 面向数据科学家与AI研究者的响应式编程框架"
+          nav_translations:
+            Home: 首页
+            Quick Start: 快速开始
+            User Guide: 用户手册
+            Examples: 应用示例
+            Reference: API手册
+            Blog: 博客
   - mkdocstrings:
       handlers:
         python:
@@ -20,10 +65,6 @@ plugins:
               ignore_init_summary: yes
             merge_init_into_class: yes
             show_submodules: no
-
-nav:
-  - Home: index.md
-  - Reference: reference.md
 
 watch:
     - reactive
