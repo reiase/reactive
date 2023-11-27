@@ -24,15 +24,14 @@ class StateMixin:
 
     Examples:
 
-    >>> import reactive as pu
-    >>> from hyperparameter import param_scope
-    >>> from hyperparameter import param_scope as State
-    >>> dc = pu.range(10).set_state(State(a=1))
-    >>> dc.get_state().storage().storage()
+    >>> import reactive as rv
+    >>> from reactive import State
+    >>> dc = rv.range(10).set_state(State(a=1))
+    >>> dc.get_state()
     {'a': 1}
 
     >>> dc = dc.map(lambda x: x+1).map(lambda x: x*2)
-    >>> dc.get_state().storage().storage()
+    >>> dc.get_state()
     {'a': 1}
     """
 
