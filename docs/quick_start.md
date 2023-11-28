@@ -6,7 +6,63 @@
 - 回弹性（Resilient）：异常与失败不影响系统的可用性，而是得到遏制与隔离；
 - 弹性与即使响应（Elastic&Responsive）：系统总是及时给出响应，即便在不断变化的负载下也能通过增加或者减少资源来保持高效处理速率；
 
-`Reactive` 提供对Python中`list`与`iterator`的统一抽象`DataCollection`, 在向数据科学家和机器学习工程师提供高阶能力的同时尽量保持简洁易懂。 
+`Reactive` 提供对Python中`list`与`iterator`的统一抽象`DataCollection`, 在向数据科学家和机器学习工程师提供高阶能力的同时尽量保持简洁易懂。`Reactive`可以通过`pip`命令快速安装：
+
+```bash
+pip install reactive-python
+```
+
+DataCollection
+==============
+
+不同于Java和C#等类C语言，Python天生就支持函数式编程范式。
+然而在实际代码中却极少见到函数式编程的大量应用，我们猜测与Python的`map`与`filter`实现有关：
+```python
+map(lambda x: x+1, [1, 2, 3, 4])
+map(lambda x: x+1, map(lambda y: y*2, [1, 2, 3, 4]))
+```
+如上述例子所示，嵌套调用的`map`很难让代码清晰易懂。
+`DataCollection` 是`Reactive`提供的对`list`和`iterator`等Python核心数据结构的抽象，提供类似Jave和Scala等语言中的链式调用：
+
+```python
+import reactive as rv
+
+(
+  rv.of([1,2,3,4])
+    .map(lambda x: x+1)
+    .map(lambda y: y*2)
+)
+```
+
+DataCollection支持常见的Reactive编程API（也称函数式编程API），比如：
+
+- 变换操作：
+  - `map(fn)`
+  - `flatMap(fn)`
+  - `filter(fn)`
+- 聚合操作：
+  - `batch(batch_size)`: 将数据按`batch_size`聚合一个个batch；
+  - `flatten()`：将batch展开成；
+  - `rolling(window_size)`：将数据按`window_size`去滑动窗口；
+- 订阅操作：
+  - `to_list()/collect()`：将处理后的数据按顺序收集为一个list对象；
+  - `run()`：执行全部数据处理操作，但不回收结果；
+  - `subscribe(fn)`：同上，但将结果交给`fn`处理；
+
+流式计算
+-------
+
+`DataCollection`支持批量计算和流式计算：
+
+- 批量计算：对应Python中的`list`对象，所有计算在定义时被立刻执行；
+- 流式计算：对应Python中的`iterator`对象，计算在定义时不会立刻被执行，只有计算结果被`订阅`时才会按顺序执行计算；
+
+从`list`对象创建的`DataCollection`总是以批量计算方式被执行，从`iterator`对象创建的`DataCollection`总是以流式计算方式被执行。批量计算与流式计算可以通过`stream()`与`unstream()`进行切换：
+
+- `stream()`：将`DataCollection`切换到流计算模式，已经为流模式则不做处理；
+- `unstream()`：将`DataCollection`切换到批量计算模式，已经为批量计算模式则不做处理；
+
+-------------------------------------------------------
 
 ### 特性
 
