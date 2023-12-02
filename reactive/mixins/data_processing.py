@@ -80,8 +80,8 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from reactive import DataCollection
-        >>> DataCollection.range(10).head(3).to_list()
+        >>> import reactive as rv
+        >>> rv.range(10).head(3).to_list()
         [0, 1, 2]
         """
 

@@ -180,7 +180,6 @@ class TestCompileMixin(unittest.TestCase):
             for vec in data:
                 dist = 0
                 for i in range(len(vec)):
-
                     dist += vec[i] * query[i]
                 dists.append(dist)
             return dists

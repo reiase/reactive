@@ -1,16 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import inspect
 import reprlib
 from typing import Callable, Iterable, Iterator
@@ -45,37 +32,13 @@ class DataCollection(Iterable, DCMixins):
         ...      .map(lambda x: x*2)
         ... ).to_list()
         [2, 4, 6, 8, 10]
-
-        3. Multi-line closures are also supported via decorator syntax::
-        >>> dc = DataCollection([1,2,3,4])
-        >>> @dc.map
-        ... def add1(x):
-        ...     return x+1
-        >>> @add1.map
-        ... def mul2(x):
-        ...     return x *2
-        >>> @mul2.filter
-        ... def ge3(x):
-        ...     return x>=7
-        >>> ge3.to_list()
-        [8, 10]
     """
 
     def __init__(self, iterable: Iterable) -> None:
-        """Initializes a new DataCollection instance.
-
-        Args:
-            iterable (Iterable): The iterable data that is stored in the DataCollection.
-        """
         super().__init__()
         self._iterable = iterable
 
     def __iter__(self) -> iter:
-        """Generate an iterator of the DataCollection.
-
-        Returns:
-            iter : iterator for the data.
-        """
         if hasattr(self._iterable, "iterrows"):
             return (x[1] for x in self._iterable.iterrows())
         return iter(self._iterable)
@@ -101,14 +64,8 @@ class DataCollection(Iterable, DCMixins):
             >>> @register(name='add1')
             ... def add1(x):
             ...     return x+1
-            >>> dc = DataCollection([1,2,3,4]).add1()
-
-            # [2, 3, 4, 5]
-
-            # >>> def add2(x):
-            # ...     return x+2
-            # >>> DataCollection([1,2,3,4]).add2()
-            # [3, 4, 5, 6]
+            >>> DataCollection([1,2,3,4]).add1()
+            [2, 3, 4, 5]
         """
         if name.startswith("_"):
             return super().__getattribute__(name)
@@ -202,9 +159,9 @@ class DataCollection(Iterable, DCMixins):
             DataCollection: A new DataCollection of the concated DataCollections.
 
         Examples:
-            >>> dc0 = DataCollection.range(5)
-            >>> dc1 = DataCollection.range(5)
-            >>> dc2 = DataCollection.range(5)
+            >>> dc0 = DataCollection(range(5))
+            >>> dc1 = DataCollection(range(5))
+            >>> dc2 = DataCollection(range(5))
             >>> (dc0 + dc1 + dc2)
             [0, 1, 2, 3, 4, 0, ...]
         """
@@ -265,23 +222,6 @@ class DataCollection(Iterable, DCMixins):
             ps.data_collection.parent = self
             return DataCollection(iterable)
 
-    @staticmethod
-    def range(*arg, **kws) -> "DataCollection":
-        """Generate DataCollection with range of values.
-
-        Generate DataCollection with a range of numbers as the data. Functions in same
-        way as Python `range()` function.
-
-        Returns:
-            DataCollection: Returns a new DataCollection.
-
-        Examples:
-            >>> DataCollection.range(5).to_list()
-            [0, 1, 2, 3, 4]
-
-        """
-        return DataCollection(range(*arg, **kws))
-
     def to_list(self) -> list:
         """Convert DataCollection to list.
 
@@ -289,7 +229,7 @@ class DataCollection(Iterable, DCMixins):
             list: List of values stored in DataCollection.
 
         Examples:
-            >>> DataCollection.range(5).to_list()
+            >>> DataCollection(range(5)).to_list()
             [0, 1, 2, 3, 4]
         """
         return (
@@ -381,14 +321,32 @@ class DataCollection(Iterable, DCMixins):
 
         return self._factory(filter(inner, self._iterable))
 
-    def run(self):
+    def run(self, fn: Callable = None):
         """Iterate through the DataCollections data.
 
         Stream-based DataCollections will not run if the data is not a datasink. This
         function is a datasink that consumes the data without any operations.
+
+        Args:
+            fn (Callable): callback function for each element;
+
+        Examples:
+            >>> DataCollection([1, 2, 3, 4]).run()
+            >>> DataCollection([1, 2, 3, 4]).run(print)
+            1
+            2
+            3
+            4
         """
-        for _ in self._iterable:
-            pass
+        if fn is None:
+            for _ in self._iterable:
+                pass
+        else:
+            for x in self._iterable:
+                fn(x)
+
+    def subscribe(self, fn: Callable = None):
+        return self.run(fn)
 
     def to_df(self) -> "DataFrame":
         """Turn a DataCollection into a DataFrame.

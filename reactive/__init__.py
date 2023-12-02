@@ -1,3 +1,5 @@
+import builtins
+
 from hyperparameter import param_scope
 
 from .datacollection import DataCollection, DataFrame
@@ -25,20 +27,22 @@ def _range(*args, **kwargs):  # pragma: no cover
 
     1. create a simple data collection;
 
-    >>> import reactive
-    >>> reactive.range(5).to_list() #doctest: +SKIP
+    >>> import reactive as rv
+    >>> rv.range(5).to_list() #doctest: +SKIP
     [0, 1, 2, 3, 4]
 
     2. create a data collection of schema'd range.
 
-    >>> reactive.range['nums'](5).select['nums']().as_raw() #doctest: +SKIP
+    >>> rv.range['nums'](5).select['nums']().as_raw() #doctest: +SKIP
     [0, 1, 2, 3, 4]
     """
 
     index = param_scope._index | None
     if index is None:
-        return DataCollection.range(*args, **kwargs)
-    return DataFrame.range(*args, **kwargs).map(lambda x: Entity(**{index: x}))
+        return DataCollection(builtins.range(*args, **kwargs))
+    return DataFrame(builtins.range(*args, **kwargs)).map(
+        lambda x: Entity(**{index: x})
+    )
 
 
 range = dynamic_dispatch(_range)

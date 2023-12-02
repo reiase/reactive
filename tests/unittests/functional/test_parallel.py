@@ -17,6 +17,7 @@ import unittest
 import numpy as np
 
 from reactive import DataCollection
+import reactive as rv
 
 import reactive.mixins.parallel
 
@@ -28,14 +29,14 @@ class TestParallel(unittest.TestCase):
 
     def test_example_for_basic_api(self):
         _ = (
-            DataCollection.range(50)
+            rv.range(50)
             .stream()
             .pmap(lambda x: np.random.random((x * 20, x * 20)), 3)
             .pmap(lambda x: np.dot(x, x), 4)
             .to_list()
         )
         _ = (
-            DataCollection.range(10)
+            rv.range(10)
             .stream()
             .safe()
             .pmap(lambda x: np.random.random((x * 20, x * 20)), 3)
