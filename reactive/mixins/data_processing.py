@@ -1,16 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import random
 from typing import Iterable
 
@@ -25,29 +12,6 @@ class DataProcessingMixin:
     Mixin for processing data.
     """
 
-    def select_from(self, other):
-        """
-        Select data from dc with list(self).
-
-        Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc1 = DataCollection([0.8, 0.9, 8.1, 9.2])
-        >>> dc2 = DataCollection([[1, 2, 0], [2, 3, 0]])
-
-        >>> dc3 = dc2.select_from(dc1)
-        >>> list(dc3)
-        [[0.9, 8.1, 0.8], [8.1, 9.2, 0.8]]
-        """
-
-        def inner(x):
-            if isinstance(x, Iterable):
-                return [other[i] for i in x]
-            return other[x]
-
-        result = map(inner, self._iterable)
-        return self._factory(result)
-
     def zip(self, *others) -> "DataCollection":
         """
         Combine two data collections.
@@ -60,9 +24,9 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from reactive import DataCollection
-        >>> dc1 = DataCollection([1,2,3,4])
-        >>> dc2 = DataCollection([1,2,3,4]).map(lambda x: x+1)
+        >>> import reactive as rv
+        >>> dc1 = rv.of([1,2,3,4])
+        >>> dc2 = rv.of([1,2,3,4]).map(lambda x: x+1)
         >>> dc3 = dc1.zip(dc2)
         >>> list(dc3)
         [(1, 2), (2, 3), (3, 4), (4, 5)]
@@ -105,8 +69,8 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection(range(10000))
+        >>> import reactive as rv
+        >>> dc = rv.of(range(10000))
         >>> result = dc.sample(0.1)
         >>> ratio = len(result.to_list()) / 10000.
         >>> 0.09 < ratio < 0.11
@@ -130,21 +94,21 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection(range(10))
+        >>> import reactive as rv
+        >>> dc = rv.of(range(10))
         >>> [list(batch) for batch in dc.batch(2)]
         [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
 
-        >>> dc = DataCollection(range(10))
+        >>> dc = rv.of(range(10))
         >>> dc.batch(3)
         [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
 
-        >>> dc = DataCollection(range(10))
+        >>> dc = rv.of(range(10))
         >>> dc.batch(3, drop_tail=True)
         [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 
         >>> from reactive import Entity
-        >>> dc = DataCollection([Entity(a=a, b=b) for a,b in zip(['abc', 'vdfvcd', 'cdsc'], [1,2,3])])
+        >>> dc = rv.of([Entity(a=a, b=b) for a,b in zip(['abc', 'vdfvcd', 'cdsc'], [1,2,3])])
         >>> dc.batch(2)
         [[<Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>], [<Entity dict_keys(['a', 'b'])>]]
         """
@@ -183,27 +147,23 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection(range(5))
+        >>> import reactive as rv
+        >>> dc = rv.range(5)
         >>> [list(batch) for batch in dc.rolling(3)]
         [[0, 1, 2], [1, 2, 3], [2, 3, 4]]
 
-        >>> dc = DataCollection(range(5))
+        >>> dc = rv.range(5)
         >>> [list(batch) for batch in dc.rolling(3, drop_head=False)]
         [[0], [0, 1], [0, 1, 2], [1, 2, 3], [2, 3, 4]]
 
-        >>> dc = DataCollection(range(5))
+        >>> dc = rv.range(5)
         >>> [list(batch) for batch in dc.rolling(3, drop_tail=False)]
         [[0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4], [4]]
 
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection(range(5))
-        >>> dc.rolling(2, 2, drop_head=False, drop_tail=False)
+        >>> rv.range(5).rolling(2, 2, drop_head=False, drop_tail=False)
         [[0], [0, 1], [2, 3], [4]]
 
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection(range(5))
-        >>> dc.rolling(2, 4, drop_head=False, drop_tail=False)
+        >>> rv.range(5).rolling(2, 4, drop_head=False, drop_tail=False)
         [[0], [0, 1], [4]]
         """
 
@@ -246,15 +206,15 @@ class DataProcessingMixin:
 
         Examples:
 
-        >>> from reactive import DataCollection, Entity
-        >>> dc = DataCollection(range(10))
+        >>> import reactive as rv
+        >>> dc = rv.range(10)
         >>> nested_dc = dc.batch(2)
         >>> nested_dc.flatten().to_list()
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
         >>> g = (i for i in range(3))
         >>> e = Entity(a=1, b=2, c=g)
-        >>> dc = DataCollection([e]).flatten['c']()
+        >>> dc = rv.of([e]).flatten['c']()
         >>> [str(i) for i in dc]
         ["{'a': 1, 'b': 2, 'c': 0}", "{'a': 1, 'b': 2, 'c': 1}", "{'a': 1, 'b': 2, 'c': 2}"]
         """
@@ -296,15 +256,15 @@ class DataProcessingMixin:
 
         1. Shuffle:
 
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([0, 1, 2, 3, 4])
+        >>> import reactive as rv
+        >>> dc = rv.range(5)
         >>> a = dc.shuffle()
         >>> tuple(a) == tuple(range(5))
         False
 
         2. streamed data collection is not supported:
 
-        >>> dc = DataCollection([0, 1, 2, 3, 4]).stream()
+        >>> dc = rv.of([0, 1, 2, 3, 4]).stream()
         >>> _ = dc.shuffle()
         Traceback (most recent call last):
         TypeError: shuffle is not supported for streamed data collection.

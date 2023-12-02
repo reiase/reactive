@@ -1,17 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import re
 from pathlib import Path
 
@@ -63,8 +49,8 @@ class DatasetMixin:
         """Create Pandas DataFrame
 
         Examples:
-            >>> import reactive
-            >>> reactive.new([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
+            >>> import reactive as rv
+            >>> rv.of([{"a":1}, {"a":2}]).to_df().as_entity().to_pandas()
                a
             0  1
             1  2
@@ -213,8 +199,8 @@ class DatasetMixin:
             >>> import io
             >>> buff = io.StringIO()
 
-            >>> import reactive
-            >>> dc = reactive.new([{"a":1}, {"a":2}]).to_df().as_entity()
+            >>> import reactive as rv
+            >>> dc = rv.of([{"a":1}, {"a":2}]).to_df().as_entity()
             >>> dc.to_csv(buff)
             >>> _ = buff.seek(0)
             >>> print(buff.read())

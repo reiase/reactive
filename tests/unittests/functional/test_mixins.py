@@ -1,22 +1,10 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import doctest
 import unittest
 from pathlib import Path
 
-import reactive
+import numpy as np
+
+import reactive as rv
 import reactive.mixins.computer_vision
 import reactive.mixins.config
 import reactive.mixins.data_processing
@@ -29,8 +17,6 @@ import reactive.mixins.safe
 import reactive.mixins.serve
 import reactive.mixins.state
 import reactive.mixins.stream
-import numpy as np
-from reactive import dc
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -98,13 +84,13 @@ class TestColumnComputing(unittest.TestCase):
     """
 
     def test_siso(self):
-        df = dc["a"](range(10)).to_column().runas_op["a", "b"](func=lambda x: x + 1)
+        df = rv.of["a"](range(10)).to_column().runas_op["a", "b"](func=lambda x: x + 1)
 
         self.assertTrue(all(map(lambda x: x.a == x.b - 1, df)))
 
     def test_simo(self):
         df = (
-            dc["a"](range(10))
+            rv.of["a"](range(10))
             .to_column()
             .runas_op["a", ("b", "c")](func=lambda x: (x + 1, x - 1))
         )
@@ -114,7 +100,7 @@ class TestColumnComputing(unittest.TestCase):
 
     def test_miso(self):
         df = (
-            dc["a", "b"]([range(10), range(10)])
+            rv.of["a", "b"]([range(10), range(10)])
             .to_column()
             .runas_op[("a", "b"), "c"](func=lambda x, y: x + y)
         )
@@ -123,7 +109,7 @@ class TestColumnComputing(unittest.TestCase):
 
     def test_mimo(self):
         df = (
-            dc["a", "b"]([range(10), range(10)])
+            rv.of["a", "b"]([range(10), range(10)])
             .to_column()
             .runas_op[("a", "b"), ("c", "d")](func=lambda x, y: (x + 1, y - 1))
         )
@@ -156,13 +142,13 @@ class TestCompileMixin(unittest.TestCase):
 
         t1 = time.time()
         _ = (
-            reactive.new["a"](data)
+            rv.of["a"](data)
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
         )
         t2 = time.time()
         _ = (
-            reactive.new["a"](data)
+            rv.of["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance[("b", "a"), "c"]()
@@ -188,7 +174,7 @@ class TestCompileMixin(unittest.TestCase):
         query = np.random.random(128)
 
         (
-            reactive.new["a"](data)
+            rv.of["a"](data)
             .config(jit="numba")
             .runas_op["a", "b"](func=lambda _: query)
             .inner_distance1[("b", "a"), "c"]()

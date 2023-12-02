@@ -16,10 +16,9 @@ import unittest
 
 import numpy as np
 
-from reactive import DataCollection
 import reactive as rv
-
 import reactive.mixins.parallel
+from reactive import DataCollection
 
 
 class TestParallel(unittest.TestCase):

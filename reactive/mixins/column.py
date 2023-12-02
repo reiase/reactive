@@ -1,16 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 from enum import Flag, auto
 
 from hyperparameter import param_scope
@@ -42,8 +29,8 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import reactive
-        >>> d1 = reactive.new['a'](range(20))
+        >>> import reactive as rv
+        >>> d1 = rv.of['a'](range(20))
         >>> d1 = d1.set_chunksize(10)
         >>> d2 = d1.runas_op['a', 'b'](func=lambda x: x+1)
         >>> d1.get_chunksize(), d2.get_chunksize()
@@ -62,7 +49,7 @@ class ColumnMixin:
         a: [[10,11,12,13,14,15,16,17,18,19]]
         b: [[11,12,13,14,15,16,17,18,19,20]]
 
-        >>> dc_3 = reactive.new['a'](range(20)).stream()
+        >>> dc_3 = rv.of['a'](range(20)).stream()
         >>> dc_3 = dc_3.set_chunksize(10)
         >>> dc_4 = dc_3.runas_op['a', 'b'](func=lambda x: x+1)
         >>> for chunk in dc_4._iterable.chunks(): print(chunk)
@@ -95,26 +82,25 @@ class ColumnMixin:
         Create a column-based table.
 
         Examples:
+            >>> from reactive import Entity, DataFrame
+            >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
+            >>> df = DataFrame(e)
+            >>> table = df._create_col_table()
+            >>> table
+            pyarrow.Table
+            a: string
+            b: int64
+            ----
+            a: [["abc","def","ghi"]]
+            b: [[1,2,3]]
 
-        >>> from reactive import Entity, DataFrame
-        >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
-        >>> df = DataFrame(e)
-        >>> table = df._create_col_table()
-        >>> table
-        pyarrow.Table
-        a: string
-        b: int64
-        ----
-        a: [["abc","def","ghi"]]
-        b: [[1,2,3]]
-
-        >>> df.stream()._create_col_table()
-        pyarrow.Table
-        a: string
-        b: int64
-        ----
-        a: [["abc","def","ghi"]]
-        b: [[1,2,3]]
+            >>> df.stream()._create_col_table()
+            pyarrow.Table
+            a: string
+            b: int64
+            ----
+            a: [["abc","def","ghi"]]
+            b: [[1,2,3]]
         """
         import pyarrow as pa
 
@@ -160,19 +146,18 @@ class ColumnMixin:
         Convert the iterables to column-based table.
 
         Examples:
-
-        >>> from reactive import Entity, DataFrame
-        >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
-        >>> df = DataFrame(e)
-        >>> df
-        [<Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>]
-        >>> df.to_column()
-        pyarrow.Table
-        a: string
-        b: int64
-        ----
-        a: [["abc","def","ghi"]]
-        b: [[1,2,3]]
+            >>> from reactive import Entity, DataFrame
+            >>> e = [Entity(a=a, b=b) for a,b in zip(['abc', 'def', 'ghi'], [1,2,3])]
+            >>> df = DataFrame(e)
+            >>> df
+            [<Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>, <Entity dict_keys(['a', 'b'])>]
+            >>> df.to_column()
+            pyarrow.Table
+            a: string
+            b: int64
+            ----
+            a: [["abc","def","ghi"]]
+            b: [[1,2,3]]
         """
 
         # pylint: disable=protected-access
@@ -188,8 +173,8 @@ class ColumnMixin:
 
         Examples:
 
-        >>> import reactive
-        >>> dc = reactive.new['a'](range(10))
+        >>> import reactive as rv
+        >>> dc = rv.of['a'](range(10))
         >>> dc = dc.to_column()
         >>> dc = dc.runas_op['a', 'b'](func=lambda x: x+1)
 

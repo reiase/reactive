@@ -96,7 +96,7 @@ def _api():
 api = dynamic_dispatch(_api)
 
 
-def _dc(iterable):
+def _of(iterable):
     """
     Return a DataCollection.
 
@@ -104,16 +104,16 @@ def _dc(iterable):
 
     1. create a simple data collection;
 
-    >>> import reactive
-    >>> reactive.new([0, 1, 2]).to_list()
+    >>> import reactive as rv
+    >>> rv.of([0, 1, 2]).to_list()
     [0, 1, 2]
 
     2. create a data collection of structural data.
 
-    >>> reactive.new['column']([0, 1, 2]).to_list()
+    >>> rv.of['column']([0, 1, 2]).to_list()
     [<Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>]
 
-    >>> reactive.new['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
+    >>> rv.of['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
     [<Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>]
     """
 
@@ -125,11 +125,7 @@ def _dc(iterable):
     return DataFrame(iterable).map(lambda x: Entity(**{index: x}))
 
 
-dc = dynamic_dispatch(_dc)
-
-new = dc
-
-of = dc
+of = dynamic_dispatch(_of)
 
 # Place all functions that are meant to be called by towhee.func() here aftering importing them.
 __all__ = [
@@ -149,6 +145,6 @@ __all__ = [
     "read_json",
     "read_video",
     "read_zip",
-    "dc",
+    "of",
     "api",
 ]
