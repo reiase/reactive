@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..types import State
 from hyperparameter import param_scope
+
+from ..types import State
 
 
 class StateMixin:
@@ -104,7 +105,7 @@ class StateMixin:
         if self._state().__mode__("evaluating") == "training":
             op.set_training(True)
             with param_scope() as ps:
-                ps.towhee.data_collection.training = True
+                ps.reactive.data_collection.training = True
                 for x in self:
                     op(x)
             op.set_training(False)

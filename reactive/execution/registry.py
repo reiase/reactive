@@ -27,7 +27,7 @@ def resolve(name: str) -> Any:
 
 def register(name: str = None):
     """
-    Register a class, function, or callable as a towhee operator.
+    Register a class, function, or callable as a operator.
 
     Examples:
 
@@ -46,7 +46,7 @@ def register(name: str = None):
         ...         return self.x + y
 
         By default, function/class name is used as operator name,
-        which is used by the operator factory `towhee.ops` to invoke the operator.
+        which is used by the operator factory `reavtive.ops` to invoke the operator.
         >>> from reactive import ops
         >>> op = ops.foo()
         >>> op(1, 2)

@@ -2,12 +2,10 @@ import asyncio
 import threading
 import uuid
 from queue import Queue
+from warnings import warn
 
 from ..types.option import Empty, Option, _Reason
-from ..utils.log import get_logger
 from .parallel import EOS
-
-log = get_logger(__name__)
 
 
 def _map_task_ray(unary_op):  # pragma: no cover
@@ -18,7 +16,7 @@ def _map_task_ray(unary_op):  # pragma: no cover
             else:
                 return unary_op(x)
         except Exception as e:  # pylint: disable=broad-except
-            log.warning(
+            warn(
                 f"{e}, please check {x} with op {unary_op}. Continue..."
             )  # pylint: disable=logging-fstring-interpolation
             return Empty(_Reason(x, e))
@@ -63,10 +61,10 @@ class RayMixin:  # pragma: no cover
         pip_packages = [] if pip_packages is None else pip_packages
 
         if (
-            "towhee" not in pip_packages
-            and "towhee" not in [str(x.__name__) for x in local_packages]
+            "reactive" not in pip_packages
+            and "reactive" not in [str(x.__name__) for x in local_packages]
         ) and (address is not None):
-            pip_packages.append("towhee")
+            pip_packages.append("reactive")
         runtime_env = {"py_modules": local_packages, "pip": pip_packages}
 
         ray.init(

@@ -1,24 +1,9 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+from warnings import warn
 
 from hyperparameter import param_scope
 
 from ..execution.factory import op, ops
 from ..execution.registry import resolve
-from ..utils.log import get_logger
-
-log = get_logger(__name__)
 
 
 class NumbaCompiler:
@@ -35,7 +20,7 @@ class NumbaCompiler:
             if func is not None:
                 break
         if func is None:
-            log.warning("The Operator: %s is not of types.FunctionType.", name)
+            warn("The Operator: {} is not of types.FunctionType.".format(name))
             raise RuntimeError(f"The Operator: {name} is not of types.FunctionType.")
         self._func = njit(func, nogil=True)
         self._op = getattr(ops, name)[index](*arg, **kws)
@@ -55,7 +40,7 @@ class NumbaCompiler:
 
     def jit_call(self, *arg, **kws):
         if bool(kws):
-            log.warning("The compiled function in Numba does not support kwargs.")
+            warn("The compiled function in Numba does not support kwargs.")
             raise KeyError("The compiled function in Numba does not support kwargs.")
         if bool(self._index):
             res = self.__apply__(*arg)
@@ -86,72 +71,16 @@ class NumbaCompiler:
                 return self.jit_call(*arg, **kws)
             except Exception as e:  # pylint: disable=broad-except
                 self._success = False
-                log.warning(
-                    "Failed to speed up your function:%s with error:%s in JIT mode, will back to Python interpreter.",
-                    self._name,
-                    e,
+                warn(
+                    "Failed to speed up your function:{} with error:{} in JIT mode, will back to Python interpreter.".format(
+                        self._name, e
+                    )
                 )
                 return self._op.__call__(*arg, **kws)
         elif self._success:
             return self.jit_call(*arg, **kws)
         else:
             return self._op.__call__(*arg, **kws)
-
-
-class TowheeCompiler:  # pragma: no cover
-    """
-    Towhee's just-in-time compiler
-    """
-
-    def __init__(self, name, index, *arg, **kws):
-        from towhee.compiler import (  # pylint: disable=import-outside-toplevel
-            jit_compile,
-        )
-
-        # self._op = getattr(ops, name)[index](*arg, **kws)
-        self._name = name
-        self._index = index
-        self._compiler = jit_compile()
-        op_name = self._name.replace(".", "/").replace("_", "-")
-        with param_scope(index=self._index):
-            self._op = op(op_name, "main", arg, kws)
-
-    def set_compiler(self, compiler):
-        self._compiler = compiler
-
-    def __apply__(self, *arg):
-        # Multi inputs.
-        if isinstance(self._index[0], tuple):
-            args = [getattr(arg[0], x) for x in self._index[0]]
-        # Single input.
-        else:
-            args = [getattr(arg[0], self._index[0])]
-        with self._compiler:
-            return self._op(*args)
-
-    def __call__(self, *arg, **kws):
-        if bool(self._index):
-            res = self.__apply__(*arg)
-
-            # Multi outputs.
-            if isinstance(res, tuple):
-                if not isinstance(self._index[1], tuple) or len(self._index[1]) != len(
-                    res
-                ):
-                    raise IndexError(
-                        f"Op has {len(res)} outputs, but {len(self._index[1])} indices are given."
-                    )
-                for i, j in zip(self._index[1], res):
-                    setattr(arg[0], i, j)
-            # Single output.
-            else:
-                setattr(arg[0], self._index[1], res)
-
-            return arg[0]
-        else:
-            with self._compiler:
-                return self._op.__call__(*arg, **kws)
-
 
 class CompileMixin:
     """
@@ -162,7 +91,7 @@ class CompileMixin:
 
     >>> import numpy
     >>> import time
-    >>> import reactive
+    >>> import reactive as rv
     >>> from reactive import register
 
     >>> @register(name='inner_distance')
@@ -179,13 +108,13 @@ class CompileMixin:
 
     >>> t1 = time.time()
     >>> dc1 = (
-    ...     reactive.new['a'](data)
+    ...     rv.of['a'](data)
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
     ... )
     >>> t2 = time.time()
     >>> dc2 = (
-    ...     reactive.new['a'](data)
+    ...     rv.of['a'](data)
     ...     .config(jit='numba')
     ...     .runas_op['a', 'b'](func=lambda _: query)
     ...     .inner_distance[('b', 'a'), 'c']()
@@ -203,10 +132,10 @@ class CompileMixin:
             self._jit = parent._jit
 
     def set_jit(self, compiler, **kws):  # pylint: disable=unused-argument
-        if compiler in ["numba", "towhee"]:
+        if compiler in ["numba"]:
             self._jit = compiler
         else:
-            log.error(
+            warn(
                 "Error when setting jit, please make sure the configuration about jit in ['numba']."
             )
             raise KeyError(
@@ -219,10 +148,8 @@ class CompileMixin:
             if isinstance(self._jit, str):
                 if self._jit == "numba":
                     return NumbaCompiler(name, index, *arg, **kws)
-                if self._jit == "towhee":
-                    return TowheeCompiler(name, index, *arg, **kws)
             else:
-                retval = TowheeCompiler(name, index, *arg, **kws)
+                retval = NumbaCompiler(name, index, *arg, **kws)
                 retval.set_compiler(self._jit)
                 return retval
         except:  # pylint: disable=bare-except

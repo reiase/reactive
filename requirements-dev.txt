@@ -4,7 +4,7 @@ matplotlib
 numba
 numpy
 pandas
-pyarrow==9.0.0
+pyarrow
 python-multipart
 requests
 scikit-learn
@@ -13,5 +13,6 @@ httpx
 # mkdocs
 mkdocstrings
 mkdocstrings-python
+mkdocs-material
 mkdocs-static-i18n
 mkdocs-minify-plugin

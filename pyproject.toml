@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "reactive"
+name = "reactive-python"
 authors = [{ name = "Reiase", email = "reiase@gmail.com" }]
 description = "Reactive programming for data scienctist."
 requires-python = ">=3.7"

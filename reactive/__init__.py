@@ -1,10 +1,11 @@
+import builtins
+
 from hyperparameter import param_scope
 
 from .datacollection import DataCollection, DataFrame
 from .execution.factory import ops
 from .execution.registry import register
-from .types import Document, Entity, dynamic_dispatch
-from .types import State
+from .types import Document, Entity, State, dynamic_dispatch
 
 VERSION = "0.1.0"
 
@@ -25,20 +26,22 @@ def _range(*args, **kwargs):  # pragma: no cover
 
     1. create a simple data collection;
 
-    >>> import reactive
-    >>> reactive.range(5).to_list() #doctest: +SKIP
+    >>> import reactive as rv
+    >>> rv.range(5).to_list() #doctest: +SKIP
     [0, 1, 2, 3, 4]
 
     2. create a data collection of schema'd range.
 
-    >>> reactive.range['nums'](5).select['nums']().as_raw() #doctest: +SKIP
+    >>> rv.range['nums'](5).select['nums']().as_raw() #doctest: +SKIP
     [0, 1, 2, 3, 4]
     """
 
     index = param_scope._index | None
     if index is None:
-        return DataCollection.range(*args, **kwargs)
-    return DataFrame.range(*args, **kwargs).map(lambda x: Entity(**{index: x}))
+        return DataCollection(builtins.range(*args, **kwargs))
+    return DataFrame(builtins.range(*args, **kwargs)).map(
+        lambda x: Entity(**{index: x})
+    )
 
 
 range = dynamic_dispatch(_range)
@@ -93,7 +96,7 @@ def _api():
 api = dynamic_dispatch(_api)
 
 
-def _dc(iterable):
+def _of(iterable):
     """
     Return a DataCollection.
 
@@ -101,16 +104,16 @@ def _dc(iterable):
 
     1. create a simple data collection;
 
-    >>> import reactive
-    >>> reactive.new([0, 1, 2]).to_list()
+    >>> import reactive as rv
+    >>> rv.of([0, 1, 2]).to_list()
     [0, 1, 2]
 
     2. create a data collection of structural data.
 
-    >>> reactive.new['column']([0, 1, 2]).to_list()
+    >>> rv.of['column']([0, 1, 2]).to_list()
     [<Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>, <Entity dict_keys(['column'])>]
 
-    >>> reactive.new['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
+    >>> rv.of['string', 'int']([['a', 1], ['b', 2], ['c', 3]]).to_list()
     [<Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>, <Entity dict_keys(['string', 'int'])>]
     """
 
@@ -122,13 +125,8 @@ def _dc(iterable):
     return DataFrame(iterable).map(lambda x: Entity(**{index: x}))
 
 
-dc = dynamic_dispatch(_dc)
+of = dynamic_dispatch(_of)
 
-new = dc
-
-of = dc
-
-# Place all functions that are meant to be called by towhee.func() here aftering importing them.
 __all__ = [
     "ops",
     "register",
@@ -146,6 +144,6 @@ __all__ = [
     "read_json",
     "read_video",
     "read_zip",
-    "dc",
+    "of",
     "api",
 ]

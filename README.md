@@ -32,8 +32,8 @@ pip install reactive
 `DataCollection` is an enhancement to the `list` data type in Python. Creating a DataCollection from a list is as simple as:
 
 ```python
->>> import reactive
->>> dc = reactive.new([0, 1, 2, 3])
+>>> import reactive as rv
+>>> dc = rv.of([0, 1, 2, 3])
 >>> dc
 [0, 1, 2, 3]
 
@@ -42,7 +42,7 @@ pip install reactive
 The behavior of DataCollection is designed to be a drop-in-place replacement for the Python `list`:
 
 ``` python
->>> dc = reactive.new([0, 1, 2, 3])
+>>> dc = rv.of([0, 1, 2, 3])
 >>> dc
 [0, 1, 2, 3]
 
@@ -65,10 +65,10 @@ The behavior of DataCollection is designed to be a drop-in-place replacement for
 DataCollection provides high-order functions such as `map` and `filter`:
 
 ```python
->>> reactive.new([0, 1, 2, 3, 4]).map(lambda x: x*2)
+>>> rv.of([0, 1, 2, 3, 4]).map(lambda x: x*2)
 [0, 2, 4, 6, 8]
 
->>> reactive.new([0, 1, 2, 3, 4]).filter(lambda x: int(x%2)==0)
+>>> rv.of([0, 1, 2, 3, 4]).filter(lambda x: int(x%2)==0)
 [0, 2, 4]
 
 ```
@@ -77,10 +77,10 @@ The `map` and `filter` always return a new DataCollection, making the method-cha
 
 ```python
 >>> (
-...   	reactive.new([0, 1, 2, 3, 4])
-...          .filter(lambda x: x%2==1)
-...          .map(lambda x: x+1)
-...          .map(lambda x: x*2)
+...   	rv.of([0, 1, 2, 3, 4])
+...       .filter(lambda x: x%2==1)
+...       .map(lambda x: x+1)
+...       .map(lambda x: x*2)
 ... )
 [4, 8]
 
@@ -94,8 +94,8 @@ DataCollection is designed to be extendable by simply defining or import functio
 >>> def add1(x):
 ...   return x + 1
 >>> (
-...		reactive.new([0, 1, 2, 3, 4])
-... 		   .add1()
+...		rv.of([0, 1, 2, 3, 4])
+... 		.add1()
 ... )
 [1, 2, 3, 4, 5]
 
