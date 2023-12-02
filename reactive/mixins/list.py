@@ -1,18 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
 class ListMixin:
     """
     Mixin to make dc an extension of python list.
@@ -29,11 +14,10 @@ class ListMixin:
             DataCollection: self
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([0, 1, 2])
-        >>> dc.append(3).append(4)
-        [0, 1, 2, 3, 4]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.append(4).append(5)
+            [1, 2, 3, 4, 5]
         """
         if hasattr(self._iterable, "append"):
             self._iterable.append(*args)
@@ -47,11 +31,10 @@ class ListMixin:
         Clear a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.clear()
-        []
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.clear()
+            []
         """
         if hasattr(self._iterable, "clear"):
             self._iterable.clear(*args)
@@ -65,13 +48,12 @@ class ListMixin:
         Copy a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc_1 = dc.copy()
-        >>> dc_1._iterable.append(4)
-        >>> dc, dc_1
-        ([1, 2, 3], [1, 2, 3, 4])
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc_1 = dc.copy()
+            >>> dc_1._iterable.append(4)
+            >>> dc, dc_1
+            ([1, 2, 3], [1, 2, 3, 4])
         """
         if hasattr(self._iterable, "copy"):
             return self._factory(self._iterable.copy(*args))
@@ -84,11 +66,10 @@ class ListMixin:
         Count an element in  DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.count(1)
-        1
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.count(1)
+            1
         """
         if hasattr(self._iterable, "count"):
             return self._iterable.count(*args)
@@ -101,11 +82,10 @@ class ListMixin:
         Extend a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.extend([4, 5])
-        [1, 2, 3, 4, 5]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.extend([4, 5])
+            [1, 2, 3, 4, 5]
         """
         if hasattr(self._iterable, "extend"):
             self._iterable.extend(*args)
@@ -119,11 +99,10 @@ class ListMixin:
         Insert data into a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.insert(0, 0)
-        [0, 1, 2, 3]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.insert(0, 0)
+            [0, 1, 2, 3]
         """
         if hasattr(self._iterable, "insert"):
             self._iterable.insert(*args)
@@ -137,11 +116,10 @@ class ListMixin:
         Extend a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.pop()
-        [1, 2]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.pop()
+            [1, 2]
         """
         if hasattr(self._iterable, "pop"):
             self._iterable.pop(*args)
@@ -155,11 +133,10 @@ class ListMixin:
         Remove element from DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.remove(1)
-        [2, 3]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.remove(1)
+            [2, 3]
         """
         if hasattr(self._iterable, "remove"):
             self._iterable.remove(*args)
@@ -173,11 +150,10 @@ class ListMixin:
         Reverse a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 2, 3])
-        >>> dc.reverse()
-        [3, 2, 1]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 2, 3])
+            >>> dc.reverse()
+            [3, 2, 1]
         """
         if hasattr(self._iterable, "reverse"):
             self._iterable.reverse(*args)
@@ -191,11 +167,10 @@ class ListMixin:
         Sort a DataCollection.
 
         Examples:
-
-        >>> from reactive import DataCollection
-        >>> dc = DataCollection([1, 4, 3])
-        >>> dc.sort()
-        [1, 3, 4]
+            >>> import reactive as rv
+            >>> dc = rv.of([1, 3, 2])
+            >>> dc.sort()
+            [1, 2, 3]
         """
         if hasattr(self._iterable, "sort"):
             self._iterable.sort(*args)

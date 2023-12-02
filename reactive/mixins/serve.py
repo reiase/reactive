@@ -92,7 +92,10 @@ class _PipeWrapper:
 
 
 async def _decode_content(req):
-    from multipart.multipart import parse_options_header
+    try:
+        from multipart.multipart import parse_options_header
+    except:
+        from multipart import parse_options_header
 
     try:
         content_type_header = req.headers.get("Content-Type")

@@ -1,29 +1,12 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import doctest
 import unittest
-from pathlib import Path
 from collections import namedtuple
+from pathlib import Path
 
+import reactive as rv
 import reactive.datacollection
 import reactive.types.option
-
-from reactive import register
-from reactive import DataCollection
-from reactive import Entity
-
-import reactive
+from reactive import DataCollection, Entity, register
 
 public_path = Path(__file__).parent.parent.resolve()
 
@@ -57,7 +40,7 @@ class TestDataCollection(unittest.TestCase):
     """
 
     def test_example_for_basic_api(self):
-        dc = reactive.new(range(10))
+        dc = rv.of(range(10))
         result = dc.map(lambda x: x + 1).filter(lambda x: x < 3)
         self.assertListEqual(list(result), [1, 2])
 

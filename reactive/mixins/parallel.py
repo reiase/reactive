@@ -1,21 +1,9 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import asyncio
 import concurrent.futures
 import threading
 import time
 from queue import Queue
+from warnings import warn
 
 try:
     import torch
@@ -27,9 +15,6 @@ from hyperparameter import param_scope
 from reactive.types.option import Empty, Option, _Reason
 from reactive.types.storages import ChunkedTable, WritableTable
 
-from ..utils.log import get_logger
-
-log = get_logger(__name__)
 stream = threading.local()
 
 
@@ -48,21 +33,19 @@ class ParallelMixin:
 
     Examples:
 
-    >>> import reactive
+    >>> import reactive as rv
     >>> def add_1(x):
     ...     return x+1
-    >>> result = reactive.range(1000).set_parallel(2).map(add_1).to_list()
+    >>> result = rv.range(1000).set_parallel(2).map(add_1).to_list()
     >>> len(result)
     1000
 
-    >>> import reactive
-    >>> dc = reactive.new['a'](range(1000)).set_parallel(5)
+    >>> dc = rv.of['a'](range(1000)).set_parallel(5)
     >>> dc = dc.runas_op['a', 'b'](lambda x: x+1).to_list()
     >>> len(dc)
     1000
 
-    >>> import reactive
-    >>> dc = reactive.new['a'](range(1000)).set_parallel(5).set_chunksize(2)
+    >>> dc = rv.of['a'](range(1000)).set_parallel(5).set_chunksize(2)
     >>> dc = dc.runas_op['a', 'b'](lambda x: x+1)
     >>> for chunk in dc._iterable.chunks()[:2]: print(chunk)
     pyarrow.Table
@@ -78,7 +61,7 @@ class ParallelMixin:
     a: [[2,3]]
     b: [[3,4]]
 
-    >>> result = reactive.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
+    >>> result = rv.range(1000).pmap(add_1, 10).pmap(add_1, 10).to_list()
     >>> result[990:]
     [992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001]
     """
@@ -113,12 +96,12 @@ class ParallelMixin:
 
         Examples:
 
-        >>> import reactive
+        >>> import reactive as rv
         >>> import threading
         >>> stage_1_thread_set = set()
         >>> stage_2_thread_set = set()
         >>> result = (
-        ...     reactive.range(1000).stream().set_parallel(4)
+        ...     rv.range(1000).stream().set_parallel(4)
         ...     .map(lambda x: stage_1_thread_set.add(threading.current_thread().ident))
         ...     .map(lambda x: stage_2_thread_set.add(threading.current_thread().ident)).to_list()
         ... )
@@ -151,8 +134,8 @@ class ParallelMixin:
 
         1. Split:
 
-        >>> import reactive
-        >>> d = reactive.new([0, 1, 2, 3, 4]).stream()
+        >>> import reactive as rv
+        >>> d = rv.of([0, 1, 2, 3, 4]).stream()
         >>> a, b, c = d.split(3)
         >>> a.zip(b, c).to_list()
         [(0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4)]
@@ -222,7 +205,7 @@ class ParallelMixin:
                     res = unary_op(x)
                 return res
             except Exception as e:  # pylint: disable=broad-except
-                log.warning(
+                warn(
                     f"{e}, please check {x} with op {unary_op}. Continue..."
                 )  # pylint: disable=logging-fstring-interpolation
                 return Empty(_Reason(x, e))
@@ -251,12 +234,12 @@ class ParallelMixin:
 
         Examples:
 
-        >>> import reactive
+        >>> import reactive as rv
         >>> import threading
         >>> stage_1_thread_set = {threading.current_thread().ident}
         >>> stage_2_thread_set = {threading.current_thread().ident}
         >>> result = (
-        ...     reactive.range(1000).stream()
+        ...     rv.range(1000).stream()
         ...     .pmap(lambda x: stage_1_thread_set.add(threading.current_thread().ident), 5)
         ...     .pmap(lambda x: stage_2_thread_set.add(threading.current_thread().ident), 4).to_list()
         ... )

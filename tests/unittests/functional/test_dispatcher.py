@@ -17,7 +17,7 @@
 
 from unittest import TestCase
 
-import reactive
+import reactive as rv
 from reactive import ops
 
 
@@ -35,7 +35,7 @@ class AddX:
         return y + self._x
 
 
-@reactive.register
+@rv.register
 def add_register(x):
     return x + 1
 
@@ -59,28 +59,28 @@ class TestDispatcher(TestCase):
         def add_local(x):
             return x + 1
 
-        retval = reactive.range(3).add_local().to_list()
+        retval = rv.range(3).add_local().to_list()
         self.assertListEqual(retval, [1, 2, 3])
 
     def test_local_function_with_schema(self):
         def add_with_schema(x):
             return x + 1
 
-        retval = reactive.new["a"]([0, 1, 2]).add_with_schema["a", "b"]()
+        retval = rv.of["a"]([0, 1, 2]).add_with_schema["a", "b"]()
         self.assertListEqual(retval.select("b").as_raw().to_list(), [1, 2, 3])
 
     def test_global_function(self):
-        retval = reactive.range(3).add_global().to_list()
+        retval = rv.range(3).add_global().to_list()
         self.assertListEqual(retval, [1, 2, 3])
 
     def test_global_class(self):
-        retval = reactive.range(3).AddX(2).to_list()
+        retval = rv.range(3).AddX(2).to_list()
         self.assertListEqual(retval, [2, 3, 4])
 
     def test_import_method(self):
-        retval = reactive.range(3).ops.add_register().to_list()
+        retval = rv.range(3).ops.add_register().to_list()
         self.assertListEqual(retval, [1, 2, 3])
 
     def test_import_method_nested(self):
-        retval = reactive.range(3).mock_ns.path_1.path_2.path_3().to_list()
+        retval = rv.range(3).mock_ns.path_1.path_2.path_3().to_list()
         self.assertListEqual(retval, [1, 2, 3])

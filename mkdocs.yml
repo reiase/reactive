@@ -76,8 +76,12 @@ plugins:
             docstring_style: google
             docstring_options:
               ignore_init_summary: yes
+            group_by_category: true
             merge_init_into_class: yes
-            show_submodules: no
+            show_submodules: yes
+            show_bases: false
+            filters:
+            - "!^_"
 
 # Extensions
 markdown_extensions:
@@ -123,6 +127,7 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
+  - tables
 
 
 watch:

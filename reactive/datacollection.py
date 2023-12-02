@@ -1,16 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import inspect
 import reprlib
 from typing import Callable, Iterable, Iterator
@@ -23,93 +10,50 @@ from .types import EntityView, Option, Some, dynamic_dispatch
 
 
 class DataCollection(Iterable, DCMixins):
-    """A pythonic computation and processing framework.
+    """A generalization container datatype for `list` and `iterator`.
 
-    DataCollection is a pythonic computation and processing framework for unstructured
-    data in machine learning and data science. It allows a data scientist or researcher
-    to assemble data processing pipelines and do their model work (embedding,
-    transforming, or classification) with a method-chaining style API. It is also
-    designed to behave as a python list or iterator. When created from a list,
-    operations arent performed once all data has been stored from previous step. When
-    created from an iterator, operations are performed streamwise, reading and operating
-    on data one by one, and only progressing if its previous output has been consumed.
+    `DataCollection` also supports chaining invocations, exception safety
+    and parallel execution. Can be thought of as a `list` if created from `list`,
+    and as a `iterator` if create from `iterator`. The primary data structure for
+    reactive programming.
 
     Examples:
-        1. Create a DataCollection from list or iterator::
-        >>> dc = DataCollection([0, 1, 2, 3, 4])
-        >>> dc = DataCollection(iter([0, 1, 2, 3, 4]))
+        - Create `DataCollection` from list or iterator:
+        >>> import reactive as rv
+        >>> rv.of([1, 2, 3, 4])
+        [1, 2, 3, 4]
+        >>> rv.of(iter([0, 1, 2, 3, 4])) #doctest: +ELLIPSIS
+        <list_iterator object at ...>
 
-        2. Chaining function invocations makes your code clean and fluent::
+        - Chaining method calls:
         >>> (
-        ...    dc.map(lambda x: x+1)
-        ...      .map(lambda x: x*2)
+        ...     rv.of([1, 2, 3, 4])
+        ...       .map(lambda x: x+1)
+        ...       .map(lambda x: x*2)
         ... ).to_list()
-        [2, 4, 6, 8, 10]
+        [4, 6, 8, 10]
 
-        3. Multi-line closures are also supported via decorator syntax::
-        >>> dc = DataCollection([1,2,3,4])
-        >>> @dc.map
-        ... def add1(x):
-        ...     return x+1
-        >>> @add1.map
-        ... def mul2(x):
-        ...     return x *2
-        >>> @mul2.filter
-        ... def ge3(x):
-        ...     return x>=7
-        >>> ge3.to_list()
-        [8, 10]
+        - Any function invocations:
+        >>> def add1(x): return x+1
+        >>> def mul2(x): return x*2
+        >>> (
+        ...     rv.of([1, 2, 3, 4])
+        ...       .add1()
+        ...       .mul2()
+        ... )
+        [4, 6, 8, 10]
     """
 
     def __init__(self, iterable: Iterable) -> None:
-        """Initializes a new DataCollection instance.
-
-        Args:
-            iterable (Iterable): The iterable data that is stored in the DataCollection.
-        """
         super().__init__()
         self._iterable = iterable
 
     def __iter__(self) -> iter:
-        """Generate an iterator of the DataCollection.
-
-        Returns:
-            iter : iterator for the data.
-        """
         if hasattr(self._iterable, "iterrows"):
             return (x[1] for x in self._iterable.iterrows())
         return iter(self._iterable)
 
     def __getattr__(self, name) -> "DataCollection":
-        """Unknown method dispatcher.
-
-        When an unknown method is invoked on a `DataCollection` object, the function call
-        will be dispatched to a method resolver. By registering function to the
-        resolver, you are able to extend `DataCollection`'s API at runtime without
-        modifying its code.
-
-        Args:
-            name (str): The unknown attribute.
-
-        Returns:
-            DataCollection: Returns a new DataCollection for the output of attribute
-                call.
-
-        Examples:
-            >>> from reactive import register
-
-            >>> @register(name='add1')
-            ... def add1(x):
-            ...     return x+1
-            >>> dc = DataCollection([1,2,3,4]).add1()
-
-            # [2, 3, 4, 5]
-
-            # >>> def add2(x):
-            # ...     return x+2
-            # >>> DataCollection([1,2,3,4]).add2()
-            # [3, 4, 5, 6]
-        """
         if name.startswith("_"):
             return super().__getattribute__(name)
 
@@ -202,9 +146,9 @@ class DataCollection(Iterable, DCMixins):
             DataCollection: A new DataCollection of the concated DataCollections.
 
         Examples:
-            >>> dc0 = DataCollection.range(5)
-            >>> dc1 = DataCollection.range(5)
-            >>> dc2 = DataCollection.range(5)
+            >>> dc0 = DataCollection(range(5))
+            >>> dc1 = DataCollection(range(5))
+            >>> dc2 = DataCollection(range(5))
             >>> (dc0 + dc1 + dc2)
             [0, 1, 2, 3, 4, 0, ...]
         """
@@ -265,37 +209,6 @@ class DataCollection(Iterable, DCMixins):
             ps.data_collection.parent = self
             return DataCollection(iterable)
 
-    @staticmethod
-    def range(*arg, **kws) -> "DataCollection":
-        """Generate DataCollection with range of values.
-
-        Generate DataCollection with a range of numbers as the data. Functions in same
-        way as Python `range()` function.
-
-        Returns:
-            DataCollection: Returns a new DataCollection.
-
-        Examples:
-            >>> DataCollection.range(5).to_list()
-            [0, 1, 2, 3, 4]
-
-        """
-        return DataCollection(range(*arg, **kws))
-
-    def to_list(self) -> list:
-        """Convert DataCollection to list.
-
-        Returns:
-            list: List of values stored in DataCollection.
-
-        Examples:
-            >>> DataCollection.range(5).to_list()
-            [0, 1, 2, 3, 4]
-        """
-        return (
-            self._iterable if isinstance(self._iterable, list) else list(self._iterable)
-        )
-
     def map(self, *arg) -> "DataCollection":
         """Apply a function across all values in a DataCollection.
 
@@ -321,35 +234,33 @@ class DataCollection(Iterable, DCMixins):
         # mmap
         if len(arg) > 1:
             return self.mmap(list(arg))
-        unary_op = arg[0]
+        fn = arg[0]
 
         # smap map for stateful operator
-        if hasattr(unary_op, "is_stateful") and unary_op.is_stateful:
-            return self.smap(unary_op)
+        if hasattr(fn, "is_stateful") and fn.is_stateful:
+            return self.smap(fn)
 
         # pmap
         if self.get_executor() is not None:
-            return self.pmap(unary_op)
+            return self.pmap(fn)
 
         if hasattr(self._iterable, "map"):
-            return self._factory(self._iterable.map(unary_op))
+            return self._factory(self._iterable.map(fn))
 
-        if hasattr(self._iterable, "apply") and hasattr(
-            unary_op, "__dataframe_apply__"
-        ):
-            return self._factory(unary_op.__dataframe_apply__(self._iterable))
+        if hasattr(self._iterable, "apply") and hasattr(fn, "__dataframe_apply__"):
+            return self._factory(fn.__dataframe_apply__(self._iterable))
 
         # map
         def inner(x):
             if isinstance(x, Option):
-                return x.map(unary_op)
+                return x.map(fn)
             else:
-                return unary_op(x)
+                return fn(x)
 
         result = map(inner, self._iterable)
         return self._factory(result)
 
-    def filter(self, unary_op: Callable, drop_empty=False) -> "DataCollection":
+    def filter(self, fn: Callable, drop_empty=False) -> "DataCollection":
         """Filter the DataCollection data based on function.
 
         Filters the DataCollection based on the function provided. If data is stored
@@ -367,28 +278,58 @@ class DataCollection(Iterable, DCMixins):
         def inner(x):
             if isinstance(x, Option):
                 if isinstance(x, Some):
-                    return unary_op(x.get())
+                    return fn(x.get())
                 return not drop_empty
-            return unary_op(x)
+            return fn(x)
 
         if hasattr(self._iterable, "filter"):
-            return self._factory(self._iterable.filter(unary_op))
+            return self._factory(self._iterable.filter(fn))
 
-        if hasattr(self._iterable, "apply") and hasattr(
-            unary_op, "__dataframe_filter__"
-        ):
-            return DataCollection(unary_op.__dataframe_apply__(self._iterable))
+        if hasattr(self._iterable, "apply") and hasattr(fn, "__dataframe_filter__"):
+            return DataCollection(fn.__dataframe_apply__(self._iterable))
 
         return self._factory(filter(inner, self._iterable))
 
-    def run(self):
+    def run(self, fn: Callable = None):
         """Iterate through the DataCollections data.
 
         Stream-based DataCollections will not run if the data is not a datasink. This
         function is a datasink that consumes the data without any operations.
+
+        Args:
+            fn (Callable): callback function for each element;
+
+        Examples:
+            >>> DataCollection([1, 2, 3, 4]).run()
+            >>> DataCollection([1, 2, 3, 4]).run(print)
+            1
+            2
+            3
+            4
         """
-        for _ in self._iterable:
-            pass
+        if fn is None:
+            for _ in self._iterable:
+                pass
+        else:
+            for x in self._iterable:
+                fn(x)
+
+    def subscribe(self, fn: Callable = None):
+        return self.run(fn)
+
+    def to_list(self) -> list:
+        """Convert DataCollection to list.
+
+        Returns:
+            list: List of values stored in DataCollection.
+
+        Examples:
+            >>> DataCollection(range(5)).to_list()
+            [0, 1, 2, 3, 4]
+        """
+        return (
+            self._iterable if isinstance(self._iterable, list) else list(self._iterable)
+        )
 
     def to_df(self) -> "DataFrame":
         """Turn a DataCollection into a DataFrame.

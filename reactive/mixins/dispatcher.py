@@ -37,7 +37,7 @@ class DispatcherMixin:
 
     >>> from reactive import register
     >>> from reactive import ops
-    >>> from reactive import DataCollection
+    >>> import reactive as rv
 
     1. resolve operator from registry
 
@@ -45,7 +45,7 @@ class DispatcherMixin:
     ... def add_1(x):
     ...     return x+1
 
-    >>> dc = DataCollection.range(5).stream()
+    >>> dc = rv.range(5).stream()
     >>> dc.add_1['a','b','c']() #doctest: +ELLIPSIS
     <map object at ...>
 
@@ -53,14 +53,14 @@ class DispatcherMixin:
 
     >>> def add_2(x):
     ...     return x+2
-    >>> dc = DataCollection.range(5).stream()
-    >>> dc.range(5).add_2()
+    >>> dc = rv.range(5).stream()
+    >>> rv.range(5).add_2()
     [2, 3, 4, 5, 6]
 
     3. resolve operator from module
     >>> import math
-    >>> dc.range(5).math.sin()
-    [0.0, 0.8414709848078965, 0.9092974268256817, 0.1411200080598672, -0.7568024953079282]
+    >>> rv.range(5).math.sin()
+    [0.0, 0.8414709848078965, 0.9092974268256817, 0.1411200080598672, -0.7568024953079283]
     """
 
     def resolve(self, stack: FrameType = None, *arg, **kws):

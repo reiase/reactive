@@ -1,17 +1,3 @@
-# Copyright 2021 Zilliz. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from typing import Union
 
 from hyperparameter import param_scope
@@ -21,22 +7,22 @@ class ConfigMixin:
     """Mixin to manage configurations such as `parallel`, `chunksize` and `jit`.
 
     Examples:
-        >>> import reactive
-        >>> dc0 = reactive.new['a'](range(20))
+        >>> import reactive as rv
+        >>> dc0 = rv.of['a'](range(20))
         >>> dc0 = dc0.set_chunksize(10)
         >>> dc0 = dc0.set_parallel(2)
         >>> dc0 = dc0.set_jit('numba')
         >>> dc0.get_config()
         {'parallel': 2, 'chunksize': 10, 'jit': 'numba'}
 
-        >>> dc1 = reactive.new([1,2,3]).config(jit='numba')
-        >>> dc2 = reactive.new['a'](range(40)).config(parallel=2, chunksize=20)
+        >>> dc1 = rv.of([1,2,3]).config(jit='numba')
+        >>> dc2 = rv.of['a'](range(40)).config(parallel=2, chunksize=20)
         >>> dc1.get_config()
         {'parallel': None, 'chunksize': None, 'jit': 'numba'}
         >>> dc2.get_config()
         {'parallel': 2, 'chunksize': 20, 'jit': None}
 
-        >>> dc0 = reactive.new['a'](range(20))
+        >>> dc0 = rv.of['a'](range(20))
         >>> dc0 = dc0.set_chunksize(10)
         >>> dc0 = dc0.set_parallel(2)
         >>> dc0 = dc0.set_jit('numba')
