@@ -5,8 +5,7 @@ from hyperparameter import param_scope
 from .datacollection import DataCollection, DataFrame
 from .execution.factory import ops
 from .execution.registry import register
-from .types import Document, Entity, dynamic_dispatch
-from .types import State
+from .types import Document, Entity, State, dynamic_dispatch
 
 VERSION = "0.1.0"
 

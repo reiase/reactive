@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..types import State
 from hyperparameter import param_scope
+
+from ..types import State
 
 
 class StateMixin:

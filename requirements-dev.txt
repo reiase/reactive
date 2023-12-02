@@ -13,5 +13,6 @@ httpx
 # mkdocs
 mkdocstrings
 mkdocstrings-python
+mkdocs-material
 mkdocs-static-i18n
 mkdocs-minify-plugin
